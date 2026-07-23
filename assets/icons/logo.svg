@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="circleBoundary">
+      <circle cx="512" cy="512" r="342"/>
+    </clipPath>
+  </defs>
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#000000"/>
+  <!-- Sunrise Circle -->
+  <circle cx="512" cy="512" r="330" stroke="#FFFFFF" stroke-width="24"/>
+  <!-- Sunrise Line -->
+  <line x1="0" y1="634.791" x2="1024" y2="634.791" stroke="#FFFFFF" stroke-width="24" clip-path="url(#circleBoundary)"/>
+</svg>
