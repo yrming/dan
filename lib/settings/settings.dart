@@ -2,5 +2,7 @@ export 'view/account_switcher_sheet.dart';
 export 'view/add_account_page.dart';
 export 'view/font_size_page.dart';
 export 'view/font_size_view.dart';
+export 'view/legal_document_page.dart';
 export 'view/settings_page.dart';
 export 'view/settings_view.dart';
+export 'view/web_content_view.dart';

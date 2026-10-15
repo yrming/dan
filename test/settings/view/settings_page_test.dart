@@ -1,6 +1,7 @@
 import 'package:appearance_repository/appearance_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/appearance/appearance.dart';
 import 'package:dan/authentication/authentication.dart';
 import 'package:dan/l10n/l10n.dart';
@@ -8,7 +9,11 @@ import 'package:dan/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../helpers/fake_webview_platform.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -54,31 +59,64 @@ void main() {
     });
 
     group('legal links', () {
-      testWidgets('opens the agreement and privacy policy URLs', (
+      testWidgets('reads both documents in app and returns to settings', (
         tester,
       ) async {
-        final launchedUris = <Uri>[];
-        await tester.pumpApp(
-          BlocProvider.value(
-            value: appearanceCubit,
-            child: SettingsPage(
-              externalLinkLauncher: (uri) async {
-                launchedUris.add(uri);
-                return true;
-              },
+        final platform = FakeWebViewPlatform();
+        final previousPlatform = WebViewPlatform.instance;
+        WebViewPlatform.instance = platform;
+        addTearDown(
+          () => WebViewPlatform.instance =
+              previousPlatform ?? FakeWebViewPlatform(),
+        );
+        final router = GoRouter(
+          initialLocation: '/account-id/settings',
+          routes: [
+            GoRoute(
+              path: '/:userId/settings',
+              builder: (context, state) => const SettingsPage(),
+              routes: [
+                GoRoute(
+                  name: AppRouteName.userAgreement,
+                  path: AppRoutePath.userAgreement,
+                  builder: (context, state) => const LegalDocumentPage(),
+                ),
+                GoRoute(
+                  name: AppRouteName.privacyPolicy,
+                  path: AppRoutePath.privacyPolicy,
+                  builder: (context, state) =>
+                      const LegalDocumentPage(privacyPolicy: true),
+                ),
+              ],
             ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await tester.pumpRouterApp(
+          router,
+          wrapper: (child) => BlocProvider.value(
+            value: appearanceCubit,
+            child: child,
           ),
         );
+        await tester.pumpTransition();
 
-        await tester.tap(find.byKey(const Key('settings-user-agreement-row')));
-        await tester.pump();
-        await tester.tap(find.byKey(const Key('settings-privacy-policy-row')));
-        await tester.pump();
-
-        expect(launchedUris, [
-          Uri.parse('https://dan.yrm.dev/user-agreement'),
-          Uri.parse('https://dan.yrm.dev/privacy-policy'),
-        ]);
+        for (final document in ['user-agreement', 'privacy-policy']) {
+          await tester.tap(find.byKey(Key('settings-$document-row')));
+          await tester.pumpTransition();
+          expect(find.byType(WebViewWidget), findsOneWidget);
+          expect(
+            platform.requests.last,
+            Uri.parse(
+              'https://dan.yrm.dev/$document?source=dan&colorMode=light',
+            ),
+          );
+          platform.delegate.onFinished(platform.requests.last.toString());
+          await tester.pump();
+          await tester.tap(find.byType(BackButton));
+          await tester.pumpTransition();
+          expect(find.byType(SettingsView), findsOneWidget);
+        }
       });
     });
 

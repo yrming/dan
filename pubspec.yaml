@@ -43,6 +43,7 @@ dependencies:
     path: packages/user_api_client
   user_repository:
     path: packages/user_repository
+  webview_flutter: ^4.14.1
 
 dev_dependencies:
   bloc_lint: ^0.4.1
@@ -53,6 +54,7 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^1.0.5
   very_good_analysis: ^10.3.0
+  webview_flutter_platform_interface: ^2.15.1
 
 dependency_overrides:
   # path_provider_android 2.3.x uses jni 1.0.1, whose Gradle plugin is not

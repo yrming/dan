@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dan/app/configuration/app_links.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
@@ -13,19 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// Opens an external link from settings.
-typedef SettingsExternalLinkLauncher = Future<bool> Function(Uri uri);
-
 /// Route boundary for application settings.
 class SettingsPage extends StatelessWidget {
   /// Creates a settings page.
-  const SettingsPage({
-    this.externalLinkLauncher = AppLinks.openExternal,
-    super.key,
-  });
-
-  /// Opens a legal document when its settings row is tapped.
-  final SettingsExternalLinkLauncher externalLinkLauncher;
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +41,13 @@ class SettingsPage extends StatelessWidget {
           context: context,
           applicationName: context.l10n.loginBrandLogoLabel,
         ),
-        onUserAgreementPressed: () => unawaited(
-          externalLinkLauncher(AppLinks.userAgreement),
+        onUserAgreementPressed: () => _openDocument(
+          context,
+          AppRouteName.userAgreement,
         ),
-        onPrivacyPolicyPressed: () => unawaited(
-          externalLinkLauncher(AppLinks.privacyPolicy),
+        onPrivacyPolicyPressed: () => _openDocument(
+          context,
+          AppRouteName.privacyPolicy,
         ),
         onSwitchAccountPressed: () => showAccountSwitcherSheet(
           context,
@@ -67,6 +59,17 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         onSignOutPressed: () => unawaited(_showSignOutDialog(context)),
+      ),
+    );
+  }
+
+  void _openDocument(BuildContext context, String routeName) {
+    unawaited(
+      context.pushNamed<void>(
+        routeName,
+        pathParameters: {
+          'userId': GoRouterState.of(context).pathParameters['userId']!,
+        },
       ),
     );
   }

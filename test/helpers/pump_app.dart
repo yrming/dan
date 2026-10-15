@@ -33,21 +33,21 @@ extension PumpApp on WidgetTester {
 
   Future<void> pumpRouterApp(
     GoRouter router, {
+    Widget Function(Widget child)? wrapper,
     ThemeData? theme,
     ThemeData? darkTheme,
     ThemeMode themeMode = ThemeMode.system,
     Locale? locale,
   }) {
-    return pumpWidget(
-      MaterialApp.router(
-        theme: theme ?? AppTheme.light(),
-        darkTheme: darkTheme ?? AppTheme.dark(),
-        themeMode: themeMode,
-        locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: router,
-      ),
+    final app = MaterialApp.router(
+      theme: theme ?? AppTheme.light(),
+      darkTheme: darkTheme ?? AppTheme.dark(),
+      themeMode: themeMode,
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      routerConfig: router,
     );
+    return pumpWidget(wrapper?.call(app) ?? app);
   }
 }

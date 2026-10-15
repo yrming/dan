@@ -48,6 +48,12 @@ abstract final class AppRouteName {
   /// Appearance settings route.
   static const settings = 'settings';
 
+  /// User agreement below settings.
+  static const userAgreement = 'user-agreement';
+
+  /// Privacy policy below settings.
+  static const privacyPolicy = 'privacy-policy';
+
   /// Font-size adjustment below settings.
   static const fontSize = 'font-size';
 
@@ -122,6 +128,12 @@ abstract final class AppRoutePath {
 
   /// Appearance settings path relative to a user route.
   static const settings = 'settings';
+
+  /// User agreement below settings.
+  static const userAgreement = 'user-agreement';
+
+  /// Privacy policy below settings.
+  static const privacyPolicy = 'privacy-policy';
 
   /// Font-size adjustment below settings.
   static const fontSize = 'font-size';
