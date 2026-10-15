@@ -60,7 +60,7 @@ class FollowRequestsView extends StatelessWidget {
           if (state.users.isEmpty) {
             return Center(
               child: Text(
-                l10n.statusListPersonalEmptyLabel,
+                l10n.statusListEmptyLabel,
                 textAlign: TextAlign.center,
                 style: context.appTypography.statusBody.copyWith(
                   color: context.appColors.textSecondary,

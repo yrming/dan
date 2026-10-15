@@ -186,11 +186,7 @@ class _StatusListState extends State<StatusList> {
               scrollController: _scrollController,
               onRefresh: widget.enableRefresh ? _refresh : null,
               child: _StatusListMessage(
-                text:
-                    widget.emptyLabel ??
-                    (widget.personalEmpty
-                        ? context.l10n.statusListPersonalEmptyLabel
-                        : context.l10n.statusListEmptyLabel),
+                text: widget.emptyLabel ?? context.l10n.statusListEmptyLabel,
               ),
             ),
             StatusListStatus.failure => _RefreshableStatusListMessage(

@@ -57,9 +57,7 @@ class FollowListView extends StatelessWidget {
           if (state.users.isEmpty) {
             return Center(
               child: Text(
-                personal
-                    ? l10n.statusListPersonalEmptyLabel
-                    : l10n.statusListEmptyLabel,
+                l10n.statusListEmptyLabel,
                 textAlign: TextAlign.center,
                 style: context.appTypography.statusBody.copyWith(
                   color: context.appColors.textSecondary,

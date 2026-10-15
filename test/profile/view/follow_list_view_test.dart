@@ -402,9 +402,7 @@ void main() {
               );
               expect(
                 find.text(
-                  personal
-                      ? '你似季候风\n抵挡计划全也无用\n然后是场空'
-                      : '这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪',
+                  '这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪',
                 ),
                 findsOneWidget,
               );
