@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dan (local)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}",
+      "toolArgs": [
+        "--dart-define-from-file=config/fanfou.local.json"
+      ]
+    }
+  ]
+}

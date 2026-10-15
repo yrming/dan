@@ -1,0 +1,254 @@
+{
+    "@@locale": "zh",
+    "authenticationLoadingLabel": "正在加载你的账号信息",
+    "retryButtonLabel": "重试",
+    "retryPageMessage": "很抱歉，出错了，请重试。",
+    "retryLoadMoreMessage": "很抱歉，出错了，请重试。",
+    "loginTagline": "看看饭否上发生了什么",
+    "loginBrandLogoLabel": "旦",
+    "loginOAuthButtonLabel": "使用饭否授权登录",
+    "loginConsentNotice": "授权登录即表示你同意我们的用户协议和隐私政策。为了授权成功，在饭否授权页面请不要勾选“记录我的登录状态”。",
+    "loginOAuthSubmittingLabel": "正在等待饭否授权",
+    "loginApiFailure": "无法连接饭否，请检查网络后重试。",
+    "loginStorageFailure": "无法在此设备上保存你的账号。",
+    "loginOAuthDenied": "饭否授权已取消或被拒绝。",
+    "loginOAuthFailure": "无法完成浏览器登录，请重试。",
+    "loginGenericFailure": "无法登录，请重试。",
+    "homePageTitle": "首页",
+    "mentionsPageTitle": "提到",
+    "mentionsNavigationLabelWithUnreadCount": "提到，{count} 条未读",
+    "@mentionsNavigationLabelWithUnreadCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "createStatusLabel": "发布新消息",
+    "statusComposerPageTitle": "发布消息",
+    "statusComposerKeepDraftTitle": "保留当前内容？",
+    "statusComposerKeepDraftMessage": "保留后，下次进入时将自动恢复",
+    "statusComposerKeepDraftLabel": "保留",
+    "statusComposerDiscardDraftLabel": "不保留",
+    "statusComposerDraftSaveFailure": "无法保存草稿更改，请重试。",
+    "statusComposerDraftLoadFailure": "无法恢复草稿，请关闭后重试。",
+    "statusMentionTitle": "提及用户",
+    "statusHashtagTitle": "插入话题",
+    "statusMentionEmpty": "最近 @我的人中没有匹配用户",
+    "statusComposerHint": "你在做什么？",
+    "statusComposerCloseLabel": "关闭发布页面",
+    "statusComposerPublishLabel": "发布",
+    "statusComposerAddPhotoLabel": "添加图片",
+    "statusComposerPreviewPhotoLabel": "查看图片",
+    "statusComposerClosePhotoPreviewLabel": "关闭图片预览",
+    "statusComposerReplacePhotoLabel": "更换图片",
+    "statusComposerRemovePhotoLabel": "移除图片",
+    "statusComposerPhotoPickFailure": "无法选择图片，请重试或检查相册权限。",
+    "statusComposerPhotoFormatFailure": "文件格式错误，仅支持 JPG、JPEG、GIF、PNG 格式的图片。",
+    "@statusComposerAddPhotoLabel": {
+        "description": "发布页面添加图片区域的无障碍标签"
+    },
+    "statusComposerFailure": "无法发布消息，请稍后重试。",
+    "searchPageTitle": "搜索",
+    "searchHint": "搜索消息",
+    "searchHintAll": "搜索全站消息",
+    "searchHintMine": "搜索我的消息",
+    "searchHintHis": "搜索他的消息",
+    "searchHintHers": "搜索她的消息",
+    "searchHintTheirs": "搜索 TA 的消息",
+    "searchEmpty": "没有找到相关消息",
+    "searchClearLabel": "清空搜索",
+    "searchScopeAll": "全站",
+    "searchScopeMine": "我的",
+    "searchScopeHis": "他的",
+    "searchScopeHers": "她的",
+    "searchScopeTheirs": "TA 的",
+    "browsePageTitle": "发现",
+    "favoritesPageTitle": "收藏",
+    "settingsPageTitle": "设置",
+    "settingsAboutLabel": "关于",
+    "settingsUserAgreementLabel": "用户协议",
+    "settingsPrivacyPolicyLabel": "隐私政策",
+    "accountSwitcherPageTitle": "切换账号",
+    "addAccountLabel": "添加账号",
+    "addAccountPageTitle": "添加账号",
+    "addAccountCloseLabel": "关闭添加账号页面",
+    "signOutLabel": "退出登录",
+    "signOutDialogTitle": "退出「{name}」？",
+    "@signOutDialogTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "confirmationDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure?",
+    "signOutDialogCancelLabel": "取消",
+    "signOutDialogConfirmLabel": "退出",
+    "userProfileAccountHandle": "{id}",
+    "@userProfileAccountHandle": {
+        "placeholders": {
+            "id": {
+                "type": "String"
+            }
+        }
+    },
+    "userProfileRegisteredAt": "注册于{date}",
+    "@userProfileRegisteredAt": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "userProfileRegistrationElapsedPrefix": "距今已经 ",
+    "@userProfileRegistrationElapsedPrefix": {
+        "description": "注册时长提示的开头，后接划掉的夸张年数和实际天数"
+    },
+    "userProfileRegistrationElapsedJoke": "3700 多年",
+    "@userProfileRegistrationElapsedJoke": {
+        "description": "注册时长提示中带删除线的幽默文案"
+    },
+    "userProfileRegistrationElapsedDays": "{days} 天",
+    "@userProfileRegistrationElapsedDays": {
+        "description": "从注册时间到现在已经过去的完整天数",
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "userProfileFavoritesLabel": "收藏",
+    "userProfileAccountManagementLabel": "账号管理",
+    "userProfileSettingsLabel": "设置",
+    "statusDetailPageTitle": "详情",
+    "userProfilePageTitle": "用户主页",
+    "userProfileTabLabel": "我的",
+    "userProfileLoadingLabel": "正在加载用户资料",
+    "userProfileMessagesLabel": "消息",
+    "userProfileSendMessageLabel": "私信",
+    "userProfilePhotosLabel": "照片",
+    "userProfileProtectedDialogTitle": "该用户已开启隐私保护",
+    "userProfileProtectedDialogContent": "关注对方后才能查看这些内容",
+    "userProfileProtectedDialogCancelLabel": "取消",
+    "userProfileProtectedDialogFollowMaleLabel": "关注他",
+    "userProfileProtectedDialogFollowFemaleLabel": "关注她",
+    "userProfileProtectedDialogFollowUnknownLabel": "关注 TA",
+    "userProfileSearchLabel": "搜索",
+    "userProfileBlacklistLabel": "黑名单",
+    "userProfileBlockLabel": "拉黑",
+    "userProfileUnblockLabel": "取消拉黑",
+    "userProfileBlockSuccess": "已拉黑",
+    "userProfileUnblockSuccess": "已取消拉黑",
+    "userProfileBlockFailure": "操作失败，请重试",
+    "blacklistEmptyLabel": "如果白痴都会飞\n我简直活在机场周围\n你是否也看到他们就会感觉反胃",
+    "blacklistRemoveLabel": "移出",
+    "blacklistRemoveLoadingLabel": "正在移出黑名单用户",
+    "blacklistRemoveDialogTitle": "移出黑名单？",
+    "blacklistRemoveDialogCancelLabel": "取消",
+    "blacklistRemoveDialogConfirmLabel": "移出",
+    "blacklistActionFailure": "移出失败，请重试",
+    "userProfileFollowSummary": "{following} 关注 · {followers} 粉丝",
+    "userProfileFollowingLabel": "关注",
+    "userProfileFollowersLabel": "粉丝",
+    "userProfileFollowRequestsCount": "{count} 申请关注",
+    "userProfileFollowRequestsLabel": "申请关注",
+    "@userProfileFollowRequestsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "@userProfileFollowSummary": {
+        "placeholders": {
+            "following": {
+                "type": "int"
+            },
+            "followers": {
+                "type": "int"
+            }
+        }
+    },
+    "followActionFollow": "关注",
+    "followActionUnfollow": "取关",
+    "followActionFollowing": "已关注",
+    "followActionMutual": "互相关注",
+    "followActionFollowBack": "回关",
+    "followActionLoading": "正在更新关注关系",
+    "followActionFailure": "操作失败，请重试",
+    "followActionRequestSent": "关注申请已发送",
+    "followListLoadingLabel": "正在加载用户列表",
+    "followListLoadingMoreLabel": "正在加载更多用户",
+    "followListFollowersEmpty": "暂无粉丝",
+    "followListFollowingEmpty": "暂无关注",
+    "followListPullUpLabel": "上拉加载更多",
+    "followRequestsEmpty": "暂无申请关注",
+    "followRequestAccept": "接受",
+    "followRequestIgnore": "忽略",
+    "appearanceFontSizeTitle": "字体大小",
+    "appearanceFontSizeStandard": "标准",
+    "appearanceFontSizeValue": "{size} 号",
+    "@appearanceFontSizeValue": {
+        "description": "当前应用字号",
+        "placeholders": {
+            "size": {
+                "type": "num",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "appearanceFontSizeHint": "拖动滑块调整字体大小，设置会自动保存",
+    "appearanceFontPreviewTitle": "预览",
+    "appearanceFontPreviewName": "拖延师",
+    "appearanceFontPreviewText": "早上和旦哥领证了，刚才我挣扎了半天对着她叫了声太太，她立马掐住我的脖子说太你妈。",
+    "appearanceFontSizeMinimum": "最小",
+    "appearanceFontSizeMaximum": "最大",
+    "appearanceThemeModeTitle": "外观模式",
+    "appearanceThemeModeSystem": "跟随系统",
+    "appearanceThemeModeLight": "浅色",
+    "appearanceThemeModeDark": "深色",
+    "appearanceStatusPhotoStyleTitle": "图片样式",
+    "appearanceStatusPhotoStyleWeChat": "小图",
+    "appearanceStatusPhotoStyleFullWidth": "大图",
+    "appearanceSaveFailure": "无法保存外观设置，请重试。",
+    "statusListLoadingLabel": "正在加载动态",
+    "statusListEmptyLabel": "这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪",
+    "statusListPersonalEmptyLabel": "你似季候风\n抵挡计划全也无用\n然后是场空",
+    "statusListFailure": "无法加载动态，请稍后重试。",
+    "statusFavoriteSuccess": "已收藏",
+    "statusUnfavoriteSuccess": "已取消收藏",
+    "statusFavoriteFailure": "收藏操作失败，请重试。",
+    "statusDetailLoadingLabel": "正在加载动态详情",
+    "statusContextLoadingLabel": "正在加载上下文",
+    "statusContextFailureLabel": "无法加载上下文，请重试。",
+    "statusOriginUnavailableLabel": "原消息已删除或不公开",
+    "statusUnknownAuthor": "未知用户",
+    "statusActionReplyLabel": "回复",
+    "statusActionFavoriteLabel": "收藏",
+    "statusActionRepostLabel": "转发",
+    "statusActionDeleteLabel": "删除",
+    "statusDeleteDialogTitle": "删除这条消息？",
+    "statusDeleteDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure?",
+    "statusDeleteDialogCancelLabel": "取消",
+    "statusDeleteDialogConfirmLabel": "删除",
+    "statusDeleteFailure": "删除失败，请重试。",
+    "statusImageViewerViewStatusLabel": "查看详情",
+    "@statusImageViewerViewStatusLabel": {
+        "description": "在相册大图预览中打开照片对应的动态详情。"
+    },
+    "statusImageViewerShareLabel": "分享",
+    "statusImageViewerSaveLabel": "保存",
+    "statusImageViewerSavedToGalleryLabel": "已保存到相册",
+    "statusImageViewerActionFailureLabel": "操作失败，请重试。",
+    "directMessagesPageTitle": "私信",
+    "directMessagesLoadingLabel": "正在加载私信",
+    "directMessagesLoadingMoreLabel": "正在加载更多私信",
+    "directMessagesEmptyLabel": "闻说你 时常在下午 来这里寄信件\n何以我 来回巡逻遍 仍然和你擦肩",
+    "directMessagesFailure": "无法加载私信，请稍后重试。",
+    "directMessageConversationLoadingLabel": "正在加载聊天记录",
+    "directMessageConversationEmptyLabel": "多少年 共对亦无言\n仿佛多少年 欲爱但忘言\n欲爱但忘言 让你走过眼前",
+    "directMessageConversationFallbackTitle": "聊天",
+    "directMessageComposerHint": "输入内容",
+    "sendButtonLabel": "发送"
+}

@@ -1,0 +1,9 @@
+name: status_draft_storage
+description: Local file storage for status drafts.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: ^3.12.0
+dev_dependencies:
+  test: ^1.31.1
+  very_good_analysis: ^10.3.0

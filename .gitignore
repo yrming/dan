@@ -115,3 +115,14 @@ app.*.map.json
 
 # Generated l10n files
 lib/l10n/gen/
+
+.agents/
+AGENTS.md
+
+# Local build-time Fanfou credentials
+config/fanfou.*.json
+!config/fanfou.example.json
+
+# Local store asset tooling and generated captures
+goldie/
+.argent/

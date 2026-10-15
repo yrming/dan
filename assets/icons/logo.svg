@@ -1,14 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <clipPath id="circleBoundary">
-      <circle cx="512" cy="512" r="342"/>
-    </clipPath>
-  </defs>
-  <!-- Background -->
-  <rect width="1024" height="1024" fill="#000000"/>
-  <!-- Sunrise Circle -->
-  <circle cx="512" cy="512" r="330" stroke="#FFFFFF" stroke-width="24"/>
-  <!-- Sunrise Line -->
-  <line x1="0" y1="634.791" x2="1024" y2="634.791" stroke="#FFFFFF" stroke-width="24" clip-path="url(#circleBoundary)"/>
+<g clip-path="url(#clip0_120_2)">
+<path d="M1024 0H0V1024H1024V0Z" fill="black"/>
+<path d="M512 842C694.254 842 842 694.254 842 512C842 329.746 694.254 182 512 182C329.746 182 182 329.746 182 512C182 694.254 329.746 842 512 842Z" stroke="white" stroke-width="40"/>
+<mask id="mask0_120_2" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="170" y="170" width="684" height="684">
+<path d="M512 854C700.881 854 854 700.881 854 512C854 323.119 700.881 170 512 170C323.119 170 170 323.119 170 512C170 700.881 323.119 854 512 854Z" fill="white"/>
+</mask>
+<g mask="url(#mask0_120_2)">
+<path d="M0 634.791H1024" stroke="white" stroke-width="40"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_120_2">
+<rect width="1024" height="1024" fill="white"/>
+</clipPath>
+</defs>
 </svg>
