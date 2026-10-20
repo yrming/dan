@@ -45,7 +45,6 @@ void main() {
       Stream<AppearanceState>? states,
       VoidCallback? onFontSizePressed,
       VoidCallback? onBlacklistPressed,
-      VoidCallback? onOpenSourceLicensesPressed,
       VoidCallback? onUserAgreementPressed,
       VoidCallback? onPrivacyPolicyPressed,
     }) async {
@@ -61,7 +60,6 @@ void main() {
             body: SettingsView(
               onFontSizePressed: onFontSizePressed,
               onBlacklistPressed: onBlacklistPressed,
-              onOpenSourceLicensesPressed: onOpenSourceLicensesPressed,
               onUserAgreementPressed: onUserAgreementPressed,
               onPrivacyPolicyPressed: onPrivacyPolicyPressed,
             ),
@@ -84,12 +82,13 @@ void main() {
         RemixIcons.logout_box_r_line,
         RemixIcons.forbid_line,
         RemixIcons.information_line,
-        RemixIcons.code_s_slash_line,
         RemixIcons.file_text_line,
         RemixIcons.file_lock_line,
       ]) {
         expect(find.byIcon(icon), findsOneWidget);
       }
+      expect(find.text('开源许可'), findsNothing);
+      expect(find.byIcon(RemixIcons.code_s_slash_line), findsNothing);
       expect(find.byType(Slider), findsNothing);
       expect(
         find.text(context.l10n.appearanceFontSizeValue(16)),
@@ -119,29 +118,6 @@ void main() {
         expect(opened, isTrue);
       },
     );
-
-    testWidgets('opens licenses from the row immediately below about', (
-      tester,
-    ) async {
-      var opened = false;
-      await pumpView(tester, onOpenSourceLicensesPressed: () => opened = true);
-
-      final about = tester.getRect(find.byKey(const Key('settings-about-row')));
-      final licenses = find.byKey(
-        const Key('settings-open-source-licenses-row'),
-      );
-      expect(find.text('开源许可'), findsOneWidget);
-      expect(tester.getTopLeft(licenses).dy, closeTo(about.bottom + 1, 0.001));
-      expect(
-        find.descendant(
-          of: licenses,
-          matching: find.byIcon(RemixIcons.code_s_slash_line),
-        ),
-        findsOneWidget,
-      );
-      await tester.tap(licenses);
-      expect(opened, isTrue);
-    });
 
     testWidgets('opens the legal entries from the about group', (tester) async {
       var agreementOpened = false;
@@ -352,7 +328,7 @@ void main() {
 
         expect(switchAccountPressed, isTrue);
         expect(signOutPressed, isTrue);
-        expect(find.byType(Divider), findsNWidgets(6));
+        expect(find.byType(Divider), findsNWidgets(5));
         expect(
           tester.widget<InkWell>(switchAccountRow).splashFactory ??
               Theme.of(tester.element(switchAccountRow)).splashFactory,

@@ -48,9 +48,6 @@ abstract final class AppRouteName {
   /// Appearance settings route.
   static const settings = 'settings';
 
-  /// Open-source licenses below settings.
-  static const openSourceLicenses = 'open-source-licenses';
-
   /// User agreement below settings.
   static const userAgreement = 'user-agreement';
 
@@ -131,9 +128,6 @@ abstract final class AppRoutePath {
 
   /// Appearance settings path relative to a user route.
   static const settings = 'settings';
-
-  /// Open-source licenses below settings.
-  static const openSourceLicenses = 'open-source-licenses';
 
   /// User agreement below settings.
   static const userAgreement = 'user-agreement';
