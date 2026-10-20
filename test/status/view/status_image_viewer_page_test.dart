@@ -125,6 +125,114 @@ void main() {
         },
       );
 
+      for (final dx in [-500.0, 500.0]) {
+        for (final cancel in [false, true]) {
+          testWidgets(
+            'keeps the current photo during a downward drag followed by '
+            '$dx horizontal movement and restores paging after '
+            '${cancel ? 'cancellation' : 'release'}',
+            (tester) async {
+              await loadImage(tester);
+              await pumpViewer(
+                tester,
+                imageProvider: imageProvider,
+                gallery: gallery,
+                statusId: 'b',
+              );
+              await tester.pump();
+              await tester.pump();
+              final pageController = tester
+                  .widget<PageView>(find.byType(PageView))
+                  .controller!;
+              final gesture = await tester.startGesture(
+                tester.getCenter(find.byType(PhotoView)),
+              );
+              await gesture.moveBy(const Offset(0, 10));
+              await tester.pump();
+              for (var move = 0; move < 5; move++) {
+                await gesture.moveBy(Offset(dx / 5, 0));
+                await tester.pump(const Duration(milliseconds: 16));
+              }
+              await tester.pump();
+
+              expect(pageController.page, 1);
+              expectPhoto(tester, 'b');
+
+              if (cancel) {
+                await gesture.cancel();
+              } else {
+                await tester.pump(const Duration(seconds: 1));
+                await gesture.up();
+              }
+              await tester.pumpAndSettle();
+              expectPhoto(tester, 'b');
+
+              await swipe(tester, dx < 0 ? -600 : 600);
+              expectPhoto(tester, dx < 0 ? 'c' : 'a');
+              expect(tester.takeException(), isNull);
+            },
+          );
+        }
+      }
+
+      testWidgets('floats date and details over the full photo viewport', (
+        tester,
+      ) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.padding = const FakeViewPadding(top: 44, bottom: 34);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPadding);
+        await loadImage(tester);
+        await pumpViewer(
+          tester,
+          imageProvider: imageProvider,
+          gallery: gallery,
+          statusId: 'b',
+        );
+        await tester.pump();
+        await tester.pump();
+
+        final viewport = Offset.zero & tester.view.physicalSize;
+        expect(tester.getRect(find.byType(PhotoView)), viewport);
+        final date = tester.getRect(find.text('2026年10月12日'));
+        final detailsLabel = tester
+            .element(find.byType(PhotoView))
+            .l10n
+            .statusImageViewerViewStatusLabel;
+        final details = tester.getRect(
+          find.widgetWithText(FilledButton, detailsLabel),
+        );
+        expect(date.center.dx, viewport.center.dx);
+        expect(date.top, greaterThanOrEqualTo(44));
+        expect(date.bottom, lessThan(viewport.height / 4));
+        expect(details.left, greaterThan(viewport.width / 2));
+        expect(details.top, greaterThan(viewport.height * 3 / 4));
+        expect(details.bottom, lessThanOrEqualTo(viewport.bottom - 34));
+        expect(details.right, lessThanOrEqualTo(viewport.right));
+      });
+
+      for (final date in ['2025-01-02', '', 'invalid']) {
+        testWidgets('handles single album photo date $date', (tester) async {
+          await loadImage(tester);
+          await pumpViewer(
+            tester,
+            imageProvider: imageProvider,
+            gallery: StatusImageGallery(
+              statuses: [_albumPhoto('a').copyWith(createdAt: date)],
+            ),
+            statusId: 'a',
+          );
+          await tester.pump();
+          expect(find.byType(PageView), findsNothing);
+          expect(
+            find.text('2025年1月2日'),
+            date == '2025-01-02' ? findsOneWidget : findsNothing,
+          );
+          expect(find.text('invalid'), findsNothing);
+          expect(tester.takeException(), isNull);
+        });
+      }
+
       testWidgets('pans a zoomed photo before switching pages', (tester) async {
         await loadImage(tester);
         await pumpViewer(
@@ -167,7 +275,11 @@ void main() {
         await swipe(tester, -600);
         expectPhoto(tester, 'c');
 
-        await tester.tap(find.text('查看详情'));
+        final detailsLabel = tester
+            .element(find.byType(PhotoView))
+            .l10n
+            .statusImageViewerViewStatusLabel;
+        await tester.tap(find.text(detailsLabel));
         await tester.pumpTransition();
         expect(find.text('status c'), findsOneWidget);
         expect(router.state.extra, same(gallery.statuses.last));
@@ -252,7 +364,7 @@ void main() {
       );
       expect(photoView.onTapUp, isNotNull);
       expect(find.byType(Dismissible), findsNothing);
-      expect(find.text('查看详情'), findsNothing);
+      expect(find.byType(FilledButton), findsNothing);
       expect(find.byType(PhotoViewGestureDetectorScope), findsNothing);
       expect(
         find.byKey(const Key('status-image-viewer-gesture-layer')),

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:appearance_repository/appearance_repository.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
+import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/status.dart';
 import 'package:dan/status/widgets/monthly_status_photos.dart';
 import 'package:flutter/foundation.dart';
@@ -164,6 +166,7 @@ void main() {
             tester.widget<PhotoView>(find.byType(PhotoView)).semanticLabel,
             'photo first',
           );
+          expect(find.text('2026年10月12日'), findsOneWidget);
 
           await tester.drag(find.byType(PageView), const Offset(-600, 0));
           await tester.pumpTransition();
@@ -171,6 +174,8 @@ void main() {
             tester.widget<PhotoView>(find.byType(PhotoView)).semanticLabel,
             'photo last',
           );
+          expect(find.text('2026年9月12日'), findsOneWidget);
+          expect(find.text('2026年10月12日'), findsNothing);
 
           router.pop();
           await tester.pumpTransition();
@@ -200,21 +205,28 @@ void main() {
             GoRoute(
               name: AppRouteName.statusImageViewer,
               path: '/status-image',
-              builder: (_, state) =>
-                  RepositoryProvider<StatusImageActionsService>(
-                    create: (_) => _MockStatusImageActionsService(),
-                    child: StatusImageViewerPage(
-                      imageUrl: state.uri.queryParameters['url']!,
-                      imageProvider: pendingImage,
-                      heroTag: state.uri.queryParameters['heroTag']!,
-                      semanticLabel: state.uri.queryParameters['semanticLabel'],
-                      userId: state.uri.queryParameters['userId'],
-                      statusId: state.uri.queryParameters['statusId'],
-                      gallery: state.extra! as StatusImageGallery,
-                      initialStatus: (state.extra! as StatusImageGallery)
-                          .statusFor(state.uri.queryParameters['statusId']),
-                    ),
+              pageBuilder: (_, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                opaque: false,
+                transitionsBuilder: (_, animation, _, child) => FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+                child: RepositoryProvider<StatusImageActionsService>(
+                  create: (_) => _MockStatusImageActionsService(),
+                  child: StatusImageViewerPage(
+                    imageUrl: state.uri.queryParameters['url']!,
+                    imageProvider: pendingImage,
+                    heroTag: state.uri.queryParameters['heroTag']!,
+                    semanticLabel: state.uri.queryParameters['semanticLabel'],
+                    userId: state.uri.queryParameters['userId'],
+                    statusId: state.uri.queryParameters['statusId'],
+                    gallery: state.extra! as StatusImageGallery,
+                    initialStatus: (state.extra! as StatusImageGallery)
+                        .statusFor(state.uri.queryParameters['statusId']),
                   ),
+                ),
+              ),
             ),
             GoRoute(
               name: AppRouteName.statusDetail,
@@ -250,7 +262,36 @@ void main() {
           greaterThan(thumbnailRect.width),
         );
         expect(tester.getRect(flyingImage).width, lessThan(800));
+        final albumThumbnail = find.descendant(
+          of: find.byType(MonthlyStatusPhotos),
+          matching: find.byType(CachedNetworkImage),
+        );
+        expect(albumThumbnail, findsOneWidget);
+        expect(tester.getRect(albumThumbnail), thumbnailRect);
+        final flyingElement = flyingImage.evaluate().single;
+        final decodedImage = await tester.runAsync(() async {
+          final recorder = ui.PictureRecorder();
+          Canvas(recorder).drawColor(Colors.red, BlendMode.src);
+          final picture = recorder.endRecording();
+          final image = await picture.toImage(1600, 900);
+          picture.dispose();
+          return image;
+        });
+        pendingImage.complete(decodedImage!);
+        addTearDown(() async => pendingImage.evict());
+        await tester.pump();
+
+        // Decoding during the flight must not paint the destination photo
+        // behind the moving preview, or restart the preview's own fade.
+        expect(flyingImage.evaluate().single, same(flyingElement));
+        final fullImage = find.byWidgetPredicate(
+          (widget) => widget is Image && widget.image == pendingImage,
+        );
+        expect(fullImage, findsNothing);
+        expect(find.byType(Hero, skipOffstage: false), findsNWidgets(2));
         await tester.pumpTransition();
+        await tester.pump();
+        expect(fullImage, findsOneWidget);
         expect(flyingImage, findsNothing);
         expect(
           router.state.uri.queryParameters['heroTag'],
@@ -264,9 +305,25 @@ void main() {
         );
         expect(find.byType(PhotoView), findsOneWidget);
         expect(find.text('status detail'), findsNothing);
-        expect(find.text('查看详情'), findsOneWidget);
+        final detailsLabel = tester
+            .element(find.byType(PhotoView))
+            .l10n
+            .statusImageViewerViewStatusLabel;
+        expect(find.text(detailsLabel), findsOneWidget);
+        expect(find.text('2026年10月12日'), findsOneWidget);
 
-        await tester.tap(find.text('查看详情'));
+        final imageCenter = tester.getCenter(fullImage);
+        final drag = await tester.startGesture(tester.getCenter(fullImage));
+        await drag.moveBy(const Offset(0, 100));
+        await tester.pump();
+        expect(tester.getCenter(fullImage).dy, greaterThan(imageCenter.dy));
+        expect(albumThumbnail, findsOneWidget);
+        expect(tester.getRect(albumThumbnail), thumbnailRect);
+        await tester.pump(const Duration(seconds: 1));
+        await drag.up();
+        await tester.pumpTransition();
+
+        await tester.tap(find.text(detailsLabel));
         await tester.pumpTransition();
 
         expect(router.state.uri.path, '/status/user-a/selected');
@@ -275,7 +332,7 @@ void main() {
         router.pop();
         await tester.pumpTransition();
         expect(find.byType(PhotoView), findsOneWidget);
-        expect(find.text('查看详情'), findsOneWidget);
+        expect(find.text(detailsLabel), findsOneWidget);
 
         router.pop();
         await tester.pump();
@@ -358,6 +415,8 @@ class _MockStatusImageActionsService extends Mock
 
 class _PendingImageProvider extends ImageProvider<_PendingImageProvider> {
   final _image = Completer<ImageInfo>();
+
+  void complete(ui.Image image) => _image.complete(ImageInfo(image: image));
 
   @override
   Future<_PendingImageProvider> obtainKey(ImageConfiguration configuration) =>

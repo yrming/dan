@@ -69,6 +69,7 @@ class StatusImageViewerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final photos = gallery?.statuses;
     final initialIndex = photos?.indexWhere((status) => status.id == statusId);
+    final selectedStatus = gallery?.statusFor(statusId) ?? initialStatus;
     return BlocProvider(
       create: (context) => StatusImageViewerCubit(
         imageActionsService: context.read<StatusImageActionsService>(),
@@ -89,6 +90,7 @@ class StatusImageViewerPage extends StatelessWidget {
               semanticLabel: semanticLabel,
               imageProvider: imageProvider,
               previewImageUrl: initialStatus?.photo?.displayUrl,
+              createdAt: gallery == null ? null : selectedStatus?.createdAt,
               onViewStatus:
                   userId != null &&
                       userId!.trim().isNotEmpty &&
@@ -129,6 +131,7 @@ class _StatusImageGalleryView extends StatefulWidget {
 class _StatusImageGalleryViewState extends State<_StatusImageGalleryView> {
   late final _controller = PageController(initialPage: widget.initialIndex);
   late int _index = widget.initialIndex;
+  bool _isDismissing = false;
 
   @override
   void dispose() {
@@ -142,6 +145,7 @@ class _StatusImageGalleryViewState extends State<_StatusImageGalleryView> {
       axis: Axis.horizontal,
       child: PageView.builder(
         controller: _controller,
+        physics: _isDismissing ? const NeverScrollableScrollPhysics() : null,
         itemCount: widget.photos.length,
         onPageChanged: (index) => setState(() => _index = index),
         itemBuilder: (context, index) {
@@ -153,6 +157,10 @@ class _StatusImageGalleryViewState extends State<_StatusImageGalleryView> {
               imageUrl: status.photo!.viewerUrl,
               imageProvider: widget.imageProvider,
               isActive: index == _index,
+              onDismissGestureChanged: (isDismissing) {
+                if (_isDismissing == isDismissing) return;
+                setState(() => _isDismissing = isDismissing);
+              },
               heroTag: statusPhotoHeroTag(
                 scope: 'monthly-photos',
                 statusId: status.id,
@@ -160,6 +168,7 @@ class _StatusImageGalleryViewState extends State<_StatusImageGalleryView> {
               ),
               semanticLabel: statusHtmlToPlainText(status.text),
               previewImageUrl: status.photo!.displayUrl,
+              createdAt: status.createdAt,
               onViewStatus: () => unawaited(
                 context.pushNamed<void>(
                   AppRouteName.statusDetail,
@@ -189,7 +198,9 @@ class StatusImageViewerView extends StatefulWidget {
     this.imageProvider,
     this.onViewStatus,
     this.previewImageUrl,
+    this.createdAt,
     this.isActive = true,
+    this.onDismissGestureChanged,
     super.key,
   }) : onClose = null;
 
@@ -202,7 +213,9 @@ class StatusImageViewerView extends StatefulWidget {
     super.key,
   }) : imageUrl = '',
        previewImageUrl = null,
+       createdAt = null,
        isActive = true,
+       onDismissGestureChanged = null,
        onViewStatus = null;
 
   /// Full-size image URL to display.
@@ -226,8 +239,14 @@ class StatusImageViewerView extends StatefulWidget {
   /// Album thumbnail used for the Hero flight while the full image loads.
   final String? previewImageUrl;
 
+  /// Posting time shown over a photo opened from the album.
+  final String? createdAt;
+
   /// Whether this photo is currently visible and should show action feedback.
   final bool isActive;
+
+  /// Prevents gallery paging while this photo is dragged out or returning.
+  final ValueChanged<bool>? onDismissGestureChanged;
 
   @override
   State<StatusImageViewerView> createState() => _StatusImageViewerViewState();
@@ -255,6 +274,8 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
   int _reloadCount = 0;
   Offset _photoPosition = Offset.zero;
   final _activePointers = <int>{};
+  Animation<double>? _openingPreviewAnimation;
+  bool _keepOpeningPreview = false;
   int? _slidePointer;
   Offset? _slideStartPosition;
   Offset? _lastSlidePointerPosition;
@@ -287,10 +308,33 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _resolveImageSizeIfNeeded();
+    final route = ModalRoute.of(context);
+    final animation = route?.animation;
+    // Hero measures the destination offstage with a completed proxy animation
+    // before the real entrance animation starts. Include that first frame.
+    if (_openingPreviewAnimation == null &&
+        _imageSize == null &&
+        widget.previewImageUrl != null &&
+        widget.heroTag.isNotEmpty &&
+        animation != null &&
+        (route!.offstage ||
+            animation.status == AnimationStatus.forward ||
+            animation.status == AnimationStatus.dismissed)) {
+      _openingPreviewAnimation = animation;
+      _keepOpeningPreview = true;
+      animation.addStatusListener(_handleOpeningPreviewStatus);
+    }
+  }
+
+  void _handleOpeningPreviewStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed || !mounted) return;
+    _openingPreviewAnimation?.removeStatusListener(_handleOpeningPreviewStatus);
+    setState(() => _keepOpeningPreview = false);
   }
 
   @override
   void dispose() {
+    _openingPreviewAnimation?.removeStatusListener(_handleOpeningPreviewStatus);
     _removeImageStreamListener();
     unawaited(_photoViewSubscription.cancel());
     _photoViewController.dispose();
@@ -315,6 +359,11 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
     final slideAnimationDuration = _isSlideResetAnimating
         ? Durations.medium2
         : Duration.zero;
+    final createdAt = widget.createdAt;
+    final dateLabel =
+        createdAt != null && tryParseFanfouCreatedAt(createdAt) != null
+        ? formatFanfouCalendarDate(createdAt)
+        : null;
 
     final viewer = AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(
@@ -420,47 +469,60 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
                                 child: child,
                               );
                             },
-                            child: PhotoView(
-                              key: ValueKey(
-                                'status-image-viewer-photo-$_reloadCount',
-                              ),
-                              imageProvider: imageProvider,
-                              controller: _photoViewController,
-                              scaleStateController: _scaleStateController,
-                              backgroundDecoration: const BoxDecoration(
-                                color: AppColors.transparent,
-                              ),
-                              semanticLabel: resolvedSemanticLabel,
-                              heroAttributes: heroTag.isEmpty
-                                  ? null
-                                  : PhotoViewHeroAttributes(
-                                      tag: heroTag,
-                                      transitionOnUserGestures: true,
-                                      flightShuttleBuilder: isDismissing
-                                          ? (_, _, _, _, toHeroContext) =>
-                                                _buildRoundedHeroShuttle(
-                                                  toHeroContext: toHeroContext,
-                                                  borderRadius:
-                                                      statusPhotoBorderRadius,
-                                                )
-                                          : null,
+                            // Keep the same Hero mounted for the entire flight.
+                            // Replacing the loading Hero when decoding finishes
+                            // would reveal a second image underneath it.
+                            child: _keepOpeningPreview
+                                ? _buildLoadingPreview(heroTag)
+                                : PhotoView(
+                                    key: ValueKey(
+                                      'status-image-viewer-photo-$_reloadCount',
                                     ),
-                              initialScale: initialScale,
-                              minScale: initialScale,
-                              maxScale: PhotoViewComputedScale.covered * 4,
-                              scaleStateCycle: _cycleScaleState,
-                              basePosition: basePosition,
-                              filterQuality: FilterQuality.medium,
-                              gestureDetectorBehavior: HitTestBehavior.opaque,
-                              disableGestures: isDismissing,
-                              loadingBuilder: (_, _) =>
-                                  _buildLoadingPreview(heroTag),
-                              errorBuilder: (_, _, _) =>
-                                  _ImageViewerFailureIcon(
-                                    onTap: () => _reloadImage(imageUrl),
+                                    imageProvider: imageProvider,
+                                    controller: _photoViewController,
+                                    scaleStateController: _scaleStateController,
+                                    backgroundDecoration: const BoxDecoration(
+                                      color: AppColors.transparent,
+                                    ),
+                                    semanticLabel: resolvedSemanticLabel,
+                                    heroAttributes: heroTag.isEmpty
+                                        ? null
+                                        : PhotoViewHeroAttributes(
+                                            tag: heroTag,
+                                            transitionOnUserGestures: true,
+                                            flightShuttleBuilder: isDismissing
+                                                ? (
+                                                    _,
+                                                    _,
+                                                    _,
+                                                    _,
+                                                    toHeroContext,
+                                                  ) => _buildRoundedHeroShuttle(
+                                                    toHeroContext:
+                                                        toHeroContext,
+                                                    borderRadius:
+                                                        statusPhotoBorderRadius,
+                                                  )
+                                                : null,
+                                          ),
+                                    initialScale: initialScale,
+                                    minScale: initialScale,
+                                    maxScale:
+                                        PhotoViewComputedScale.covered * 4,
+                                    scaleStateCycle: _cycleScaleState,
+                                    basePosition: basePosition,
+                                    filterQuality: FilterQuality.medium,
+                                    gestureDetectorBehavior:
+                                        HitTestBehavior.opaque,
+                                    disableGestures: isDismissing,
+                                    loadingBuilder: (_, _) =>
+                                        _buildLoadingPreview(heroTag),
+                                    errorBuilder: (_, _, _) =>
+                                        _ImageViewerFailureIcon(
+                                          onTap: () => _reloadImage(imageUrl),
+                                        ),
+                                    onTapUp: (_, _, _) => _close(),
                                   ),
-                              onTapUp: (_, _, _) => _close(),
-                            ),
                           ),
                         ),
                       ),
@@ -468,44 +530,64 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
                   },
                 ),
               ),
-            if (widget.onViewStatus != null)
+            if (dateLabel != null)
               PositionedDirectional(
                 start: AppSpacing.lg,
                 end: AppSpacing.lg,
+                top: AppSpacing.md,
+                child: IgnorePointer(
+                  child: SafeArea(
+                    bottom: false,
+                    child: AnimatedOpacity(
+                      opacity: isDismissing ? 0 : 1,
+                      duration: Durations.short2,
+                      child: Text(
+                        dateLabel,
+                        textAlign: TextAlign.center,
+                        style: context.appTypography.statusBody.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          shadows: const [
+                            Shadow(blurRadius: 8, color: Colors.black54),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (widget.onViewStatus != null)
+              PositionedDirectional(
+                end: AppSpacing.md,
                 bottom: AppSpacing.lg,
                 child: SafeArea(
                   top: false,
-                  child: Center(
-                    child: IgnorePointer(
-                      ignoring: isDismissing,
-                      child: AnimatedOpacity(
-                        opacity: isDismissing ? 0 : 1,
-                        duration: Durations.short2,
-                        child: FilledButton.icon(
-                          onPressed: widget.onViewStatus,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.black.withValues(
-                              alpha: 0.7,
-                            ),
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size(0, 40),
-                            tapTargetSize: MaterialTapTargetSize.padded,
-                            textStyle: Theme.of(context).textTheme.labelLarge,
-                            padding: const EdgeInsetsDirectional.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: AppSpacing.space6,
-                            ),
-                            side: const BorderSide(color: Colors.white24),
-                            shape: const StadiumBorder(),
+                  child: IgnorePointer(
+                    ignoring: isDismissing,
+                    child: AnimatedOpacity(
+                      opacity: isDismissing ? 0 : 1,
+                      duration: Durations.short2,
+                      child: FilledButton.icon(
+                        onPressed: widget.onViewStatus,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF737373).withValues(
+                            alpha: 0.6,
                           ),
-                          iconAlignment: IconAlignment.end,
-                          icon: const Icon(
-                            RemixIcons.arrow_right_line,
-                            size: 16,
+                          foregroundColor: Colors.white,
+                          tapTargetSize: MaterialTapTargetSize.padded,
+                          textStyle: context.appTypography.statusHandle,
+                          padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: AppSpacing.sm,
                           ),
-                          label: Text(
-                            context.l10n.statusImageViewerViewStatusLabel,
-                          ),
+                          shape: const StadiumBorder(),
+                        ),
+                        iconAlignment: IconAlignment.end,
+                        // icon: const Icon(
+                        //   RemixIcons.arrow_right_s_line,
+                        //   size: 14,
+                        // ),
+                        label: Text(
+                          context.l10n.statusImageViewerViewStatusLabel,
                         ),
                       ),
                     ),
@@ -557,6 +639,8 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
           imageUrl: previewImageUrl,
           memCacheHeight: (200 * MediaQuery.devicePixelRatioOf(context)).ceil(),
           fit: BoxFit.contain,
+          fadeInDuration: Duration.zero,
+          fadeOutDuration: Duration.zero,
           placeholder: (_, _) => const SizedBox.expand(),
           errorWidget: (_, _, _) => const SizedBox.expand(),
         ),
@@ -628,6 +712,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
     // safely interrupt it and start tracking immediately.
     if (_isSlideResetAnimating) {
       setState(() => _isSlideResetAnimating = false);
+      widget.onDismissGestureChanged?.call(false);
     }
 
     _slidePointer = event.pointer;
@@ -667,6 +752,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
         _slideOffset = slideOffset;
         _dismissProgress = slideOffset / viewportHeight;
       });
+      widget.onDismissGestureChanged?.call(true);
       return;
     }
 
@@ -745,6 +831,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
   void _handleSlideAnimationEnd() {
     if (!_isSlideResetAnimating || _dismissProgress != 0 || !mounted) return;
     setState(() => _isSlideResetAnimating = false);
+    widget.onDismissGestureChanged?.call(false);
   }
 
   Future<void> _reloadImage(String imageUrl) async {

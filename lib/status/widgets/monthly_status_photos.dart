@@ -203,6 +203,7 @@ class _Photo extends StatelessWidget {
           child: Hero(
             tag: heroTag,
             transitionOnUserGestures: true,
+            placeholderBuilder: (_, _, child) => child,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppLayout.albumPhotoRadius),
               child: CachedNetworkImage(
