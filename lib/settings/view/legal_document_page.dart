@@ -1,6 +1,5 @@
-import 'package:dan/app/configuration/app_links.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:dan/settings/view/web_content_view.dart';
+import 'package:dan/settings/view/markdown_document_view.dart';
 import 'package:flutter/material.dart';
 
 /// Route boundary for reading a legal document inside the application.
@@ -13,25 +12,13 @@ class LegalDocumentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorMode = Theme.of(context).brightness == Brightness.dark
-        ? 'dark'
-        : 'light';
-    final documentUri = privacyPolicy
-        ? AppLinks.privacyPolicy
-        : AppLinks.userAgreement;
-    final uri = documentUri.replace(
-      queryParameters: {
-        ...documentUri.queryParameters,
-        'source': 'dan',
-        'colorMode': colorMode,
-      },
-    );
-
-    return WebContentView(
+    return MarkdownDocumentView(
       title: privacyPolicy
           ? context.l10n.settingsPrivacyPolicyLabel
           : context.l10n.settingsUserAgreementLabel,
-      uri: uri,
+      assetPath: privacyPolicy
+          ? 'assets/privacy-policy.md'
+          : 'assets/user-agreement.md',
     );
   }
 }

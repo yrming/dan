@@ -8,12 +8,10 @@ import 'package:dan/l10n/l10n.dart';
 import 'package:dan/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-import '../../helpers/fake_webview_platform.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -62,13 +60,6 @@ void main() {
       testWidgets('reads both documents in app and returns to settings', (
         tester,
       ) async {
-        final platform = FakeWebViewPlatform();
-        final previousPlatform = WebViewPlatform.instance;
-        WebViewPlatform.instance = platform;
-        addTearDown(
-          () => WebViewPlatform.instance =
-              previousPlatform ?? FakeWebViewPlatform(),
-        );
         final router = GoRouter(
           initialLocation: '/account-id/settings',
           routes: [
@@ -104,15 +95,14 @@ void main() {
         for (final document in ['user-agreement', 'privacy-policy']) {
           await tester.tap(find.byKey(Key('settings-$document-row')));
           await tester.pumpTransition();
-          expect(find.byType(WebViewWidget), findsOneWidget);
+          await tester.pumpAndSettle();
+          expect(find.byType(MarkdownBody), findsOneWidget);
           expect(
-            platform.requests.last,
-            Uri.parse(
-              'https://dan.yrm.dev/$document?source=dan&colorMode=light',
+            find.text(
+              document == 'user-agreement' ? '「旦」用户协议' : '「旦」隐私政策',
             ),
+            findsOneWidget,
           );
-          platform.delegate.onFinished(platform.requests.last.toString());
-          await tester.pump();
           await tester.tap(find.byType(BackButton));
           await tester.pumpTransition();
           expect(find.byType(SettingsView), findsOneWidget);

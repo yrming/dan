@@ -123,6 +123,12 @@ final class AppColors extends ThemeExtension<AppColors> {
   /// Secondary text and content.
   final Color textSecondary;
 
+  /// Softer foreground for long-form document text.
+  Color get documentBody => Color.lerp(bgBase, textBase, 0.73)!;
+
+  /// Muted document metadata and list markers.
+  Color get documentMuted => Color.lerp(bgBase, textBase, 0.55)!;
+
   /// Background for an incoming direct-message bubble.
   final Color directMessageIncomingBubble;
 
