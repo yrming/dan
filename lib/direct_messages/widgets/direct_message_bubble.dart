@@ -40,7 +40,7 @@ class DirectMessageBubble extends StatelessWidget {
   /// Opens a URL when the message consists of an HTTP or HTTPS link.
   final DirectMessageExternalLinkLauncher externalLinkLauncher;
 
-  static const double _borderRadius = 18;
+  static const double _borderRadius = 10;
 
   @override
   Widget build(BuildContext context) {

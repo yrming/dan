@@ -257,7 +257,7 @@ void main() {
       );
 
       final borderRadius = (bubble.decoration! as BoxDecoration).borderRadius!;
-      expect(borderRadius, BorderRadius.circular(18));
+      expect(borderRadius, BorderRadius.circular(10));
     });
 
     testWidgets('sends a message from the composer', (tester) async {
@@ -476,7 +476,7 @@ void main() {
       );
       expect(
         (textField.decoration!.border! as OutlineInputBorder).borderRadius,
-        BorderRadius.circular(context.appSizing.scaled(22)),
+        BorderRadius.circular(context.appSizing.scaled(10)),
       );
     });
 
@@ -515,7 +515,7 @@ void main() {
       );
       expect(
         (textField.decoration!.border! as OutlineInputBorder).borderRadius,
-        BorderRadius.circular(context.appSizing.scaled(22)),
+        BorderRadius.circular(context.appSizing.scaled(10)),
       );
     });
 

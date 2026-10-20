@@ -193,7 +193,7 @@ class _MessageComposerState extends State<_MessageComposer> {
                                         context.l10n.directMessageComposerHint,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(
-                                        sizing.scaled(22),
+                                        sizing.scaled(10),
                                       ),
                                       borderSide: BorderSide.none,
                                     ),
