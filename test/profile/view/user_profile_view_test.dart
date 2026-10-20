@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
@@ -854,25 +856,65 @@ void main() {
       expect(find.byType(LinearProgressIndicator), findsNothing);
     });
 
-    testWidgets('shows a retry action when loading fails', (tester) async {
-      when(() => userProfileCubit.load()).thenAnswer((_) async {});
-      await pumpView(
-        tester,
-        const UserProfileLoadFailure(profile: _profile),
-      );
-      final context = tester.element(find.byType(UserProfileView));
+    group('load failure feedback', () {
+      for (final profile in [null, _profile]) {
+        testWidgets(
+          'shows a snackbar with retry when loading fails '
+          'with cached profile=${profile != null}',
+          (tester) async {
+            final states = StreamController<UserProfileState>();
+            addTearDown(states.close);
+            final loading = UserProfileLoadInProgress(profile: profile);
+            whenListen(userProfileCubit, states.stream, initialState: loading);
+            when(() => userProfileCubit.load()).thenAnswer((_) async {});
+            await tester.pumpApp(
+              Scaffold(
+                body: BlocProvider.value(
+                  value: userProfileCubit,
+                  child: const UserProfileView(userId: 'user-a'),
+                ),
+              ),
+            );
+            final context = tester.element(find.byType(UserProfileView));
+            expect(find.byType(SnackBar), findsNothing);
 
-      expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
+            states.add(UserProfileLoadFailure(profile: profile));
+            await tester.pump();
+            await tester.pump(const Duration(milliseconds: 300));
 
-      await tester.tap(
-        find.widgetWithText(
-          FilledButton,
-          context.l10n.retryButtonLabel,
-        ),
-      );
-      await tester.pump();
+            expect(
+              find.descendant(
+                of: find.byType(SnackBar),
+                matching: find.text(context.l10n.retryPageMessage),
+              ),
+              findsOneWidget,
+            );
+            expect(find.byType(AppRetryView), findsNothing);
+            if (profile != null) {
+              expect(find.text(profile.name), findsOneWidget);
+              expect(find.byType(ProfileMenuSection), findsOneWidget);
+            }
 
-      verify(() => userProfileCubit.load()).called(1);
+            await tester.tap(
+              find.widgetWithText(
+                SnackBarAction,
+                context.l10n.retryButtonLabel,
+              ),
+            );
+            await tester.pump();
+            verify(() => userProfileCubit.load()).called(1);
+            await tester.pump(const Duration(milliseconds: 300));
+            expect(find.byType(SnackBar), findsNothing);
+
+            states
+              ..add(loading)
+              ..add(UserProfileLoadFailure(profile: profile));
+            await tester.pump();
+            await tester.pump(const Duration(seconds: 1));
+            expect(find.byType(SnackBar), findsOneWidget);
+          },
+        );
+      }
     });
   });
 }

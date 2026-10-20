@@ -8,7 +8,6 @@ import 'package:dan/profile/cubit/user_profile_cubit.dart';
 import 'package:dan/profile/cubit/user_profile_state.dart';
 import 'package:dan/profile/widgets/profile_header.dart';
 import 'package:dan/profile/widgets/profile_menu_section.dart';
-import 'package:dan/profile/widgets/profile_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,6 +43,36 @@ class _UserProfileViewState extends State<UserProfileView> {
   GoRouterDelegate? _routerDelegate;
   ValueKey<String>? _pageKey;
   bool _isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // A cached or synchronously failed request can finish before the listener
+    // subscribes. Show its feedback once the scaffold is ready.
+    if (context.read<UserProfileCubit>().state is UserProfileLoadFailure) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted &&
+            context.read<UserProfileCubit>().state is UserProfileLoadFailure) {
+          _showLoadFailure(context);
+        }
+      });
+    }
+  }
+
+  void _showLoadFailure(BuildContext context) {
+    final cubit = context.read<UserProfileCubit>();
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.retryPageMessage),
+          action: AppSnackBarAction(
+            label: context.l10n.retryButtonLabel,
+            onPressed: () => unawaited(cubit.load()),
+          ),
+        ),
+      );
+  }
 
   @override
   void didChangeDependencies() {
@@ -84,7 +113,11 @@ class _UserProfileViewState extends State<UserProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileCubit, UserProfileState>(
+    return BlocConsumer<UserProfileCubit, UserProfileState>(
+      listenWhen: (previous, current) =>
+          previous is! UserProfileLoadFailure &&
+          current is UserProfileLoadFailure,
+      listener: (context, state) => _showLoadFailure(context),
       builder: (context, state) {
         final profile =
             state.profile ??
@@ -270,16 +303,6 @@ class _ProfileContent extends StatelessWidget {
                 ],
               ),
             ],
-            if (state is UserProfileLoadFailure) ...[
-              SizedBox(height: sizing.scaled(AppSpacing.xs)),
-              ProfileSection(
-                children: [
-                  _ProfileFailure(
-                    onRetry: context.read<UserProfileCubit>().load,
-                  ),
-                ],
-              ),
-            ],
             SizedBox(height: sizing.scaled(AppSpacing.xxl)),
           ],
         ),
@@ -334,13 +357,4 @@ class _ProfileContent extends StatelessWidget {
       ),
     );
   }
-}
-
-class _ProfileFailure extends StatelessWidget {
-  const _ProfileFailure({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) => AppRetryView(onRetry: onRetry);
 }
