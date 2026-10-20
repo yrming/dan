@@ -4,5 +4,6 @@ export 'view/font_size_page.dart';
 export 'view/font_size_view.dart';
 export 'view/legal_document_page.dart';
 export 'view/markdown_document_view.dart';
+export 'view/open_source_licenses_page.dart';
 export 'view/settings_page.dart';
 export 'view/settings_view.dart';

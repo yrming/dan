@@ -453,6 +453,14 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             ),
             routes: [
               GoRoute(
+                name: AppRouteName.openSourceLicenses,
+                path: AppRoutePath.openSourceLicenses,
+                pageBuilder: (context, state) => _buildCupertinoPage(
+                  state,
+                  const OpenSourceLicensesPage(),
+                ),
+              ),
+              GoRoute(
                 name: AppRouteName.userAgreement,
                 path: AppRoutePath.userAgreement,
                 pageBuilder: (context, state) => _buildCupertinoPage(

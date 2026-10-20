@@ -41,6 +41,10 @@ class SettingsPage extends StatelessWidget {
           context: context,
           applicationName: context.l10n.loginBrandLogoLabel,
         ),
+        onOpenSourceLicensesPressed: () => _openDocument(
+          context,
+          AppRouteName.openSourceLicenses,
+        ),
         onUserAgreementPressed: () => _openDocument(
           context,
           AppRouteName.userAgreement,

@@ -57,6 +57,53 @@ void main() {
     });
 
     group('legal links', () {
+      testWidgets('opens licenses on a separate page and returns to settings', (
+        tester,
+      ) async {
+        final router = GoRouter(
+          initialLocation: '/account-id/settings',
+          routes: [
+            GoRoute(
+              path: '/:userId/settings',
+              builder: (context, state) => const SettingsPage(),
+              routes: [
+                GoRoute(
+                  name: AppRouteName.openSourceLicenses,
+                  path: AppRoutePath.openSourceLicenses,
+                  builder: (context, state) => const OpenSourceLicensesPage(),
+                ),
+              ],
+            ),
+          ],
+        );
+        addTearDown(router.dispose);
+        await tester.pumpRouterApp(
+          router,
+          wrapper: (child) => BlocProvider.value(
+            value: appearanceCubit,
+            child: child,
+          ),
+        );
+
+        await tester.tap(
+          find.byKey(const Key('settings-open-source-licenses-row')),
+        );
+        await tester.pumpTransition();
+        expect(find.byType(OpenSourceLicensesPage), findsOneWidget);
+        expect(find.byType(LicensePage), findsOneWidget);
+        expect(find.byType(AboutDialog), findsNothing);
+        expect(
+          GoRouterState.of(
+            tester.element(find.byType(OpenSourceLicensesPage)),
+          ).uri.path,
+          '/account-id/settings/open-source-licenses',
+        );
+        await tester.tap(find.byType(BackButton));
+        await tester.pumpTransition();
+        expect(find.byType(SettingsView), findsOneWidget);
+        expect(find.byType(OpenSourceLicensesPage), findsNothing);
+      });
+
       testWidgets('reads both documents in app and returns to settings', (
         tester,
       ) async {
@@ -122,6 +169,8 @@ void main() {
       );
       final context = tester.element(find.byType(SettingsPage));
 
+      await tester.ensureVisible(find.text(context.l10n.signOutLabel).first);
+      await tester.pumpAndSettle();
       await tester.tap(find.text(context.l10n.signOutLabel).first);
       await tester.pump();
 

@@ -16,6 +16,7 @@ class SettingsView extends StatelessWidget {
     this.onFontSizePressed,
     this.onBlacklistPressed,
     this.onAboutPressed,
+    this.onOpenSourceLicensesPressed,
     this.onUserAgreementPressed,
     this.onPrivacyPolicyPressed,
     this.onSwitchAccountPressed,
@@ -31,6 +32,9 @@ class SettingsView extends StatelessWidget {
 
   /// Opens application information.
   final VoidCallback? onAboutPressed;
+
+  /// Opens the application's open-source licenses.
+  final VoidCallback? onOpenSourceLicensesPressed;
 
   /// Opens the user agreement.
   final VoidCallback? onUserAgreementPressed;
@@ -151,6 +155,14 @@ class SettingsView extends StatelessWidget {
                       icon: RemixIcons.information_line,
                       enabled: true,
                       onTap: onAboutPressed,
+                    ),
+                    const Divider(height: 1),
+                    _SettingsRow(
+                      key: const Key('settings-open-source-licenses-row'),
+                      title: context.l10n.settingsOpenSourceLicensesLabel,
+                      icon: RemixIcons.code_s_slash_line,
+                      enabled: true,
+                      onTap: onOpenSourceLicensesPressed,
                     ),
                     const Divider(height: 1),
                     _SettingsRow(
