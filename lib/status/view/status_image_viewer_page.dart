@@ -6,7 +6,9 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/cubit/status_image_viewer_cubit.dart';
+import 'package:dan/status/models/status_image_gallery.dart';
 import 'package:dan/status/services/status_image_actions_service.dart';
+import 'package:dan/status/widgets/status_body_text.dart';
 import 'package:dan/status/widgets/status_photo.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,7 @@ class StatusImageViewerPage extends StatelessWidget {
     this.userId,
     this.statusId,
     this.initialStatus,
+    this.gallery,
     super.key,
   });
 
@@ -55,35 +58,123 @@ class StatusImageViewerPage extends StatelessWidget {
   /// Existing status passed through to detail without fetching it again.
   final status_repository.Status? initialStatus;
 
+  /// Loaded album photos available for horizontal paging.
+  final StatusImageGallery? gallery;
+
   /// Overrides the network image provider in tests.
   @visibleForTesting
   final ImageProvider<Object>? imageProvider;
 
   @override
   Widget build(BuildContext context) {
+    final photos = gallery?.statuses;
+    final initialIndex = photos?.indexWhere((status) => status.id == statusId);
     return BlocProvider(
       create: (context) => StatusImageViewerCubit(
         imageActionsService: context.read<StatusImageActionsService>(),
       ),
-      child: StatusImageViewerView(
-        imageUrl: imageUrl,
-        heroTag: heroTag,
-        semanticLabel: semanticLabel,
-        imageProvider: imageProvider,
-        previewImageUrl: initialStatus?.photo?.displayUrl,
-        onViewStatus:
-            userId != null &&
-                userId!.trim().isNotEmpty &&
-                statusId != null &&
-                statusId!.trim().isNotEmpty
-            ? () => unawaited(
+      child:
+          photos != null &&
+              photos.length > 1 &&
+              initialIndex != null &&
+              initialIndex >= 0
+          ? _StatusImageGalleryView(
+              photos: photos,
+              initialIndex: initialIndex,
+              imageProvider: imageProvider,
+            )
+          : StatusImageViewerView(
+              imageUrl: imageUrl,
+              heroTag: heroTag,
+              semanticLabel: semanticLabel,
+              imageProvider: imageProvider,
+              previewImageUrl: initialStatus?.photo?.displayUrl,
+              onViewStatus:
+                  userId != null &&
+                      userId!.trim().isNotEmpty &&
+                      statusId != null &&
+                      statusId!.trim().isNotEmpty
+                  ? () => unawaited(
+                      context.pushNamed<void>(
+                        AppRouteName.statusDetail,
+                        pathParameters: {
+                          'userId': userId!,
+                          'statusId': statusId!,
+                        },
+                        extra: initialStatus,
+                      ),
+                    )
+                  : null,
+            ),
+    );
+  }
+}
+
+class _StatusImageGalleryView extends StatefulWidget {
+  const _StatusImageGalleryView({
+    required this.photos,
+    required this.initialIndex,
+    this.imageProvider,
+  });
+
+  final List<status_repository.Status> photos;
+  final int initialIndex;
+  final ImageProvider<Object>? imageProvider;
+
+  @override
+  State<_StatusImageGalleryView> createState() =>
+      _StatusImageGalleryViewState();
+}
+
+class _StatusImageGalleryViewState extends State<_StatusImageGalleryView> {
+  late final _controller = PageController(initialPage: widget.initialIndex);
+  late int _index = widget.initialIndex;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PhotoViewGestureDetectorScope(
+      axis: Axis.horizontal,
+      child: PageView.builder(
+        controller: _controller,
+        itemCount: widget.photos.length,
+        onPageChanged: (index) => setState(() => _index = index),
+        itemBuilder: (context, index) {
+          final status = widget.photos[index];
+          return HeroMode(
+            enabled: index == _index,
+            child: StatusImageViewerView(
+              key: ValueKey(status.id),
+              imageUrl: status.photo!.viewerUrl,
+              imageProvider: widget.imageProvider,
+              isActive: index == _index,
+              heroTag: statusPhotoHeroTag(
+                scope: 'monthly-photos',
+                statusId: status.id,
+                imageUrl: status.photo!.viewerUrl,
+              ),
+              semanticLabel: statusHtmlToPlainText(status.text),
+              previewImageUrl: status.photo!.displayUrl,
+              onViewStatus: () => unawaited(
                 context.pushNamed<void>(
                   AppRouteName.statusDetail,
-                  pathParameters: {'userId': userId!, 'statusId': statusId!},
-                  extra: initialStatus,
+                  pathParameters: {
+                    'userId': status.author.id.isEmpty
+                        ? 'unknown'
+                        : status.author.id,
+                    'statusId': status.id,
+                  },
+                  extra: status,
                 ),
-              )
-            : null,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -98,6 +189,7 @@ class StatusImageViewerView extends StatefulWidget {
     this.imageProvider,
     this.onViewStatus,
     this.previewImageUrl,
+    this.isActive = true,
     super.key,
   }) : onClose = null;
 
@@ -110,6 +202,7 @@ class StatusImageViewerView extends StatefulWidget {
     super.key,
   }) : imageUrl = '',
        previewImageUrl = null,
+       isActive = true,
        onViewStatus = null;
 
   /// Full-size image URL to display.
@@ -132,6 +225,9 @@ class StatusImageViewerView extends StatefulWidget {
 
   /// Album thumbnail used for the Hero flight while the full image loads.
   final String? previewImageUrl;
+
+  /// Whether this photo is currently visible and should show action feedback.
+  final bool isActive;
 
   @override
   State<StatusImageViewerView> createState() => _StatusImageViewerViewState();
@@ -423,6 +519,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
     if (widget.onClose != null) return viewer;
     return BlocListener<StatusImageViewerCubit, StatusImageViewerState>(
       listenWhen: (previous, current) =>
+          widget.isActive &&
           previous.status != current.status &&
           current.status != StatusImageViewerActionStatus.inProgress,
       listener: (context, state) {

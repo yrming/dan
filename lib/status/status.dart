@@ -5,6 +5,7 @@ export 'cubit/status_image_viewer_cubit.dart';
 export 'models/status_composer_mode.dart';
 export 'models/status_composer_photo.dart';
 export 'models/status_feed.dart';
+export 'models/status_image_gallery.dart';
 export 'models/status_list_layout.dart';
 export 'services/default_status_image_actions_service.dart';
 export 'services/default_status_photo_picker.dart';

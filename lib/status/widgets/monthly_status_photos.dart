@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
+import 'package:dan/status/models/status_image_gallery.dart';
 import 'package:dan/status/widgets/status_body_text.dart';
 import 'package:dan/status/widgets/status_list_item_tap_target.dart';
 import 'package:dan/status/widgets/status_photo.dart';
@@ -27,6 +28,9 @@ class MonthlyStatusPhotos extends StatelessWidget {
       groups.putIfAbsent((date?.year, date?.month), () => []).add(status);
     }
     final rows = <Widget>[];
+    final gallery = StatusImageGallery(
+      statuses: groups.values.expand((photos) => photos),
+    );
     int? previousYear;
     for (final entry in groups.entries) {
       final (year, month) = entry.key;
@@ -50,7 +54,7 @@ class MonthlyStatusPhotos extends StatelessWidget {
             endsMonth: offset + 3 >= photos.length,
             children: [
               for (final status in photos.skip(offset).take(3))
-                _Photo(status: status),
+                _Photo(status: status, gallery: gallery),
             ],
           ),
         );
@@ -160,9 +164,10 @@ class MonthlyPhotoRow extends StatelessWidget {
 }
 
 class _Photo extends StatelessWidget {
-  const _Photo({required this.status});
+  const _Photo({required this.status, required this.gallery});
 
   final status_repository.Status status;
+  final StatusImageGallery gallery;
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +192,7 @@ class _Photo extends StatelessWidget {
               'userId': status.author.id.isEmpty ? 'unknown' : status.author.id,
               'statusId': status.id,
             },
-            extra: status,
+            extra: gallery,
           ),
         ),
         child: Semantics(

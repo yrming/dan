@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/status.dart';
@@ -14,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:status_repository/status_repository.dart' as repository;
 
 import '../../helpers/helpers.dart';
 
@@ -36,6 +38,8 @@ void main() {
       WidgetTester tester, {
       ImageProvider<Object>? imageProvider,
       String imageUrl = _imageUrl,
+      StatusImageGallery? gallery,
+      String? statusId,
     }) {
       return tester.pumpApp(
         RepositoryProvider<StatusImageActionsService>.value(
@@ -45,10 +49,185 @@ void main() {
             heroTag: _heroTag,
             semanticLabel: _semanticLabel,
             imageProvider: imageProvider,
+            gallery: gallery,
+            statusId: statusId,
           ),
         ),
       );
     }
+
+    group('album paging', () {
+      late StatusImageGallery gallery;
+      late ImageProvider<Object> imageProvider;
+
+      setUp(() {
+        gallery = StatusImageGallery(
+          statuses: [
+            for (final id in ['a', 'b', 'c']) _albumPhoto(id),
+          ],
+        );
+      });
+
+      Future<void> loadImage(WidgetTester tester) async {
+        final image = await tester.runAsync(
+          () => _createTestImage(width: 1600, height: 900),
+        );
+        imageProvider = _TestImageProvider(image!);
+        addTearDown(() async => imageProvider.evict());
+      }
+
+      Future<void> swipe(WidgetTester tester, double dx) async {
+        await tester.drag(find.byType(PageView), Offset(dx, 0));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+      }
+
+      void expectPhoto(WidgetTester tester, String id) {
+        final photo = tester.widget<PhotoView>(find.byType(PhotoView));
+        expect(photo.semanticLabel, 'photo $id');
+        expect(
+          photo.heroAttributes!.tag,
+          statusPhotoHeroTag(
+            scope: 'monthly-photos',
+            statusId: id,
+            imageUrl: _albumPhoto(id).photo!.viewerUrl,
+          ),
+        );
+      }
+
+      testWidgets(
+        'starts at the selected photo and swipes in both directions',
+        (
+          tester,
+        ) async {
+          await loadImage(tester);
+          await pumpViewer(
+            tester,
+            imageProvider: imageProvider,
+            gallery: gallery,
+            statusId: 'b',
+          );
+          await tester.pump();
+          await tester.pump();
+          expectPhoto(tester, 'b');
+
+          await swipe(tester, -600);
+          expectPhoto(tester, 'c');
+          await swipe(tester, -600);
+          expectPhoto(tester, 'c');
+          await swipe(tester, 600);
+          expectPhoto(tester, 'b');
+          await swipe(tester, 600);
+          expectPhoto(tester, 'a');
+          await swipe(tester, 600);
+          expectPhoto(tester, 'a');
+          expect(tester.takeException(), isNull);
+        },
+      );
+
+      testWidgets('pans a zoomed photo before switching pages', (tester) async {
+        await loadImage(tester);
+        await pumpViewer(
+          tester,
+          imageProvider: imageProvider,
+          gallery: gallery,
+          statusId: 'b',
+        );
+        await tester.pump();
+        await tester.pump();
+        final controller =
+            tester
+                  .widget<PhotoView>(
+                    find.byType(PhotoView),
+                  )
+                  .controller!
+              ..scale = 2;
+        await tester.pump();
+
+        await swipe(tester, -100);
+        expectPhoto(tester, 'b');
+        expect(controller.position.dx, lessThan(0));
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('opens the current status and saves the current photo', (
+        tester,
+      ) async {
+        await loadImage(tester);
+        final router = _buildRouter(
+          imageActionsService: imageActionsService,
+          imageProvider: imageProvider,
+          gallery: gallery,
+        );
+        addTearDown(router.dispose);
+        await tester.pumpRouterApp(router);
+        unawaited(router.push<void>('/viewer'));
+        await tester.pump();
+        await tester.pump();
+        await swipe(tester, -600);
+        expectPhoto(tester, 'c');
+
+        await tester.tap(find.text('查看详情'));
+        await tester.pumpTransition();
+        expect(find.text('status c'), findsOneWidget);
+        expect(router.state.extra, same(gallery.statuses.last));
+        router.pop();
+        await tester.pumpTransition();
+
+        await tester.longPress(find.byType(PhotoView));
+        await tester.pumpTransition();
+        final context = tester.element(find.byType(PhotoView));
+        await tester.tap(find.text(context.l10n.statusImageViewerSaveLabel));
+        await tester.pumpTransition();
+        verify(
+          () => imageActionsService.saveToGallery(
+            _albumPhoto('c').photo!.viewerUrl,
+          ),
+        ).called(1);
+      });
+
+      testWidgets('dismisses the gallery after swiping to another photo', (
+        tester,
+      ) async {
+        await loadImage(tester);
+        final router = _buildRouter(
+          imageActionsService: imageActionsService,
+          imageProvider: imageProvider,
+          gallery: gallery,
+        );
+        addTearDown(router.dispose);
+        await tester.pumpRouterApp(router);
+        unawaited(router.push<void>('/viewer'));
+        await tester.pump();
+        await tester.pump();
+        await swipe(tester, -600);
+        await tester.drag(find.byType(PhotoView), const Offset(0, 500));
+        await tester.pumpTransition();
+        expect(find.text('timeline'), findsOneWidget);
+        expect(find.byType(StatusImageViewerPage), findsNothing);
+      });
+
+      testWidgets(
+        'falls back to the linked photo without a matching album item',
+        (
+          tester,
+        ) async {
+          await loadImage(tester);
+          await pumpViewer(
+            tester,
+            imageProvider: imageProvider,
+            gallery: gallery,
+            statusId: 'missing',
+          );
+          await tester.pump();
+          expect(find.byType(PageView), findsNothing);
+          expect(
+            tester.widget<PhotoView>(find.byType(PhotoView)).semanticLabel,
+            _semanticLabel,
+          );
+        },
+      );
+    });
 
     testWidgets('uses PhotoView for Hero, zoom, and vertical slide out', (
       tester,
@@ -751,6 +930,7 @@ void main() {
 GoRouter _buildRouter({
   required StatusImageActionsService imageActionsService,
   ImageProvider<Object>? imageProvider,
+  StatusImageGallery? gallery,
 }) {
   return GoRouter(
     initialLocation: '/timeline',
@@ -770,13 +950,37 @@ GoRouter _buildRouter({
               heroTag: _heroTag,
               semanticLabel: _semanticLabel,
               imageProvider: imageProvider,
+              gallery: gallery,
+              statusId: gallery == null ? null : 'b',
             ),
           ),
+        ),
+      ),
+      GoRoute(
+        name: AppRouteName.statusDetail,
+        path: '/status/:userId/:statusId',
+        builder: (_, state) => Scaffold(
+          body: Text('status ${state.pathParameters['statusId']}'),
         ),
       ),
     ],
   );
 }
+
+repository.Status _albumPhoto(String id) => repository.Status(
+  id: id,
+  text: 'photo $id',
+  createdAt: '2026-10-12',
+  author: const repository.StatusAuthor(
+    id: 'user-a',
+    name: 'User A',
+    screenName: 'user_a',
+  ),
+  photo: repository.StatusPhotoUrls(
+    imageUrl: 'https://example.com/$id.png',
+    largeUrl: 'https://example.com/$id-large.png',
+  ),
+);
 
 Future<void> _doubleTap(WidgetTester tester) async {
   await tester.tap(find.byType(PhotoView));

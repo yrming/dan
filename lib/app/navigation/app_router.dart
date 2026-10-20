@@ -150,7 +150,14 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
               semanticLabel: state.uri.queryParameters['semanticLabel'],
               userId: state.uri.queryParameters['userId'],
               statusId: state.uri.queryParameters['statusId'],
+              gallery: switch (state.extra) {
+                final StatusImageGallery gallery => gallery,
+                _ => null,
+              },
               initialStatus: switch (state.extra) {
+                final StatusImageGallery gallery => gallery.statusFor(
+                  state.uri.queryParameters['statusId'],
+                ),
                 final status_repository.Status status
                     when status.id == state.uri.queryParameters['statusId'] =>
                   status,

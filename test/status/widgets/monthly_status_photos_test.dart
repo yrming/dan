@@ -110,6 +110,76 @@ void main() {
     });
 
     group('navigation', () {
+      testWidgets(
+        'passes loaded photos in album order and swipes across months',
+        (
+          tester,
+        ) async {
+          final first = _photo('first', '2026-10-12');
+          final last = _photo('last', '2026-09-12');
+          final pendingImage = _PendingImageProvider();
+          final router = GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, _) => Scaffold(
+                  body: CustomScrollView(
+                    slivers: [
+                      MonthlyStatusPhotos(
+                        statuses: [
+                          first,
+                          _photo('text', '2026-10-01').copyWith(photo: null),
+                          last,
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GoRoute(
+                name: AppRouteName.statusImageViewer,
+                path: '/status-image',
+                builder: (_, state) {
+                  final gallery = state.extra! as StatusImageGallery;
+                  expect(gallery.statuses, [first, last]);
+                  return RepositoryProvider<StatusImageActionsService>(
+                    create: (_) => _MockStatusImageActionsService(),
+                    child: StatusImageViewerPage(
+                      imageUrl: state.uri.queryParameters['url']!,
+                      heroTag: state.uri.queryParameters['heroTag']!,
+                      statusId: state.uri.queryParameters['statusId'],
+                      gallery: gallery,
+                      imageProvider: pendingImage,
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+          addTearDown(router.dispose);
+          await tester.pumpRouterApp(router);
+          await tester.tap(find.byType(CachedNetworkImage).first);
+          await tester.pumpTransition();
+          expect(
+            tester.widget<PhotoView>(find.byType(PhotoView)).semanticLabel,
+            'photo first',
+          );
+
+          await tester.drag(find.byType(PageView), const Offset(-600, 0));
+          await tester.pumpTransition();
+          expect(
+            tester.widget<PhotoView>(find.byType(PhotoView)).semanticLabel,
+            'photo last',
+          );
+
+          router.pop();
+          await tester.pumpTransition();
+          expect(find.byType(MonthlyStatusPhotos), findsOneWidget);
+          expect(find.byType(StatusImageViewerPage), findsNothing);
+          expect(tester.takeException(), isNull);
+        },
+      );
+
       testWidgets('opens the photo before navigating to its status', (
         tester,
       ) async {
@@ -140,7 +210,9 @@ void main() {
                       semanticLabel: state.uri.queryParameters['semanticLabel'],
                       userId: state.uri.queryParameters['userId'],
                       statusId: state.uri.queryParameters['statusId'],
-                      initialStatus: state.extra! as repository.Status,
+                      gallery: state.extra! as StatusImageGallery,
+                      initialStatus: (state.extra! as StatusImageGallery)
+                          .statusFor(state.uri.queryParameters['statusId']),
                     ),
                   ),
             ),
