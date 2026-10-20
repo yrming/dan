@@ -56,7 +56,7 @@ class ConversationCubit extends Cubit<ConversationState> {
     if (state is! ConversationLoadSuccess ||
         !state.hasMore ||
         state.nextPage == null ||
-        state.historyLoadStatus != ConversationHistoryLoadStatus.idle) {
+        state.historyLoadStatus == ConversationHistoryLoadStatus.inProgress) {
       return;
     }
 

@@ -11,7 +11,7 @@ import 'package:dan/notifications/notifications.dart';
 import 'package:dan/profile/profile.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Badge;
+import 'package:flutter/material.dart' show Badge, SnackBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -562,7 +562,7 @@ void main() {
       ).called(1);
     });
 
-    testWidgets('offers a retry after a failed load-more request', (
+    testWidgets('shows a snackbar and retries pagination on the next drag', (
       tester,
     ) async {
       when(
@@ -591,8 +591,9 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.text(context.l10n.retryButtonLabel), findsOneWidget);
-      expect(find.text(context.l10n.retryLoadMoreMessage), findsOneWidget);
+      expect(find.text(context.l10n.retryButtonLabel), findsNothing);
+      expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
+      expect(tester.widget<SnackBar>(find.byType(SnackBar)).action, isNull);
 
       when(
         () => directMessageRepository.getConversationList(
@@ -606,11 +607,17 @@ void main() {
           nextPage: null,
         ),
       );
-      await tester.tap(find.text(context.l10n.retryButtonLabel));
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -300));
       await tester.pump();
       await tester.pump();
 
       expect(find.text('fanfou_b_${pageSize + 1}'), findsOneWidget);
+      verify(
+        () => directMessageRepository.getConversationList(
+          limit: pageSize,
+          page: 2,
+        ),
+      ).called(2);
     });
 
     testWidgets('shows one skeleton item while loading the next page', (

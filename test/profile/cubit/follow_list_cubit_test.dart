@@ -124,6 +124,47 @@ void main() {
         });
 
         group('loadMore', () {
+          group('pagination failure feedback', () {
+            for (final message in [null, '请求太频繁，请稍后再试']) {
+              blocTest<FollowListCubit, FollowListState>(
+                'preserves loaded users and retries the failed page '
+                'with message=$message',
+                setUp: () {
+                  when(() => fetch(1)).thenThrow(
+                    UserRepositoryApiFailure(statusCode: 403, message: message),
+                  );
+                },
+                build: build,
+                seed: () => FollowListState(users: fullPage, loading: false),
+                act: (cubit) async {
+                  await cubit.loadMore();
+                  when(() => fetch(1)).thenAnswer((_) async => []);
+                  await cubit.loadMore();
+                },
+                expect: () {
+                  final initial = FollowListState(
+                    users: fullPage,
+                    loading: false,
+                  );
+                  return [
+                    initial.copyWith(loadingMore: true),
+                    initial.copyWith(
+                      loadMoreError: true,
+                      requestFailureMessage: message,
+                    ),
+                    initial.copyWith(loadingMore: true),
+                    initial.copyWith(hasMore: false),
+                  ];
+                },
+                verify: (cubit) {
+                  expect(cubit.state.users, fullPage);
+                  expect(cubit.state.requestFailureMessage, isNull);
+                  verify(() => fetch(1)).called(2);
+                },
+              );
+            }
+          });
+
           blocTest<FollowListCubit, FollowListState>(
             'loads page two after the endpoint returns 60 users',
             setUp: () {

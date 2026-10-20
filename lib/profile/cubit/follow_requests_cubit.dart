@@ -11,6 +11,7 @@ class FollowRequestsState extends Equatable {
     this.error = false,
     this.loadingMore = false,
     this.loadMoreError = false,
+    this.requestFailureMessage,
     this.hasMore = true,
     Set<String> updatingIds = const {},
     Map<String, FollowRequestAction> updatingActions = const {},
@@ -26,6 +27,7 @@ class FollowRequestsState extends Equatable {
   final bool error;
   final bool loadingMore;
   final bool loadMoreError;
+  final String? requestFailureMessage;
   final bool hasMore;
   final Set<String> updatingIds;
   final Map<String, FollowRequestAction> updatingActions;
@@ -39,6 +41,7 @@ class FollowRequestsState extends Equatable {
     bool? error,
     bool? loadingMore,
     bool? loadMoreError,
+    String? requestFailureMessage,
     bool? hasMore,
     Set<String>? updatingIds,
     Map<String, FollowRequestAction>? updatingActions,
@@ -51,6 +54,7 @@ class FollowRequestsState extends Equatable {
     error: error ?? this.error,
     loadingMore: loadingMore ?? this.loadingMore,
     loadMoreError: loadMoreError ?? this.loadMoreError,
+    requestFailureMessage: requestFailureMessage,
     hasMore: hasMore ?? this.hasMore,
     updatingIds: updatingIds ?? this.updatingIds,
     updatingActions: updatingActions ?? this.updatingActions,
@@ -66,6 +70,7 @@ class FollowRequestsState extends Equatable {
     error,
     loadingMore,
     loadMoreError,
+    requestFailureMessage,
     hasMore,
     updatingIds,
     updatingActions,
@@ -177,7 +182,7 @@ class FollowRequestsCubit extends Cubit<FollowRequestsState> {
           hasMore: users.length >= UserRepository.relationPageSize,
         ),
       );
-    } on Object {
+    } on Object catch (error) {
       if (isClosed) return;
       emit(
         state.copyWith(
@@ -186,6 +191,9 @@ class FollowRequestsCubit extends Cubit<FollowRequestsState> {
           loadingMore: false,
           error: initial,
           loadMoreError: !initial,
+          requestFailureMessage: error is UserRepositoryApiFailure
+              ? error.message
+              : null,
           hasMore: previous.hasMore,
         ),
       );

@@ -15,6 +15,42 @@ void main() {
       subject = UserRepository(userApiClient: userApiClient);
     });
 
+    group('list API failures', () {
+      for (final endpoint in ['friends', 'followers', 'requests', 'blocked']) {
+        for (final message in [null, '请求太频繁，请稍后再试']) {
+          test(
+            'preserves API feedback from $endpoint with message=$message',
+            () async {
+              Future<List<UserResponse>> fetch() => switch (endpoint) {
+                'friends' => userApiClient.getFriends('owner', page: 2),
+                'followers' => userApiClient.getFollowers('owner', page: 2),
+                'requests' => userApiClient.getFollowRequests(page: 2),
+                _ => userApiClient.getBlockedUsers(page: 2),
+              };
+              when(fetch).thenThrow(
+                UserApiClientApiFailure(statusCode: 403, message: message),
+              );
+              final request = switch (endpoint) {
+                'friends' => subject.getFriends('owner', page: 2),
+                'followers' => subject.getFollowers('owner', page: 2),
+                'requests' => subject.getFollowRequests(page: 2),
+                _ => subject.getBlockedUsers(page: 2),
+              };
+              await expectLater(
+                request,
+                throwsA(
+                  isA<UserRepositoryApiFailure>()
+                      .having((error) => error.statusCode, 'statusCode', 403)
+                      .having((error) => error.message, 'message', message),
+                ),
+              );
+              verify(fetch).called(1);
+            },
+          );
+        }
+      }
+    });
+
     group('isFollowing', () {
       test('forwards both user identifiers', () async {
         when(

@@ -357,6 +357,72 @@ void main() {
       );
 
       blocTest<ConversationCubit, ConversationState>(
+        'retries the same history page after failure and preserves messages',
+        build: buildCubit,
+        seed: () => const ConversationLoadSuccess(
+          messages: [incomingMessage],
+          hasMore: true,
+          nextPage: 2,
+        ),
+        act: (cubit) async {
+          when(
+            () => directMessageRepository.getConversation(
+              'user-b',
+              limit: 20,
+              page: 2,
+            ),
+          ).thenThrow(
+            const DirectMessageRepositoryApiFailure(
+              statusCode: 403,
+              message: '请求太频繁',
+            ),
+          );
+          await cubit.loadMore();
+          when(
+            () => directMessageRepository.getConversation(
+              'user-b',
+              limit: 20,
+              page: 2,
+            ),
+          ).thenAnswer((_) async => page([olderMessage(1)]));
+          await cubit.loadMore();
+        },
+        expect: () => [
+          const ConversationLoadSuccess(
+            messages: [incomingMessage],
+            hasMore: true,
+            nextPage: 2,
+            historyLoadStatus: ConversationHistoryLoadStatus.inProgress,
+          ),
+          const ConversationLoadSuccess(
+            messages: [incomingMessage],
+            hasMore: true,
+            nextPage: 2,
+            historyLoadStatus: ConversationHistoryLoadStatus.failure,
+            failureMessage: '请求太频繁',
+          ),
+          const ConversationLoadSuccess(
+            messages: [incomingMessage],
+            hasMore: true,
+            nextPage: 2,
+            historyLoadStatus: ConversationHistoryLoadStatus.inProgress,
+            failureMessage: '请求太频繁',
+          ),
+          ConversationLoadSuccess(
+            messages: [incomingMessage, olderMessage(1)],
+            failureMessage: '请求太频繁',
+          ),
+        ],
+        verify: (_) => verify(
+          () => directMessageRepository.getConversation(
+            'user-b',
+            limit: 20,
+            page: 2,
+          ),
+        ).called(2),
+      );
+
+      blocTest<ConversationCubit, ConversationState>(
         'does nothing when no earlier page is available',
         build: buildCubit,
         seed: () => const ConversationLoadSuccess(messages: [incomingMessage]),

@@ -44,10 +44,11 @@ class _ConversationListViewState extends State<ConversationListView> {
 
   void _onScroll() => _requestMoreIfNearEnd();
 
-  void _requestMoreIfNearEnd() {
+  void _requestMoreIfNearEnd({bool retryAfterFailure = false}) {
     if (!mounted || !_scrollController.hasClients) return;
     if (context.read<ConversationListBloc>().state.loadMoreStatus ==
-        ConversationLoadMoreStatus.failure) {
+            ConversationLoadMoreStatus.failure &&
+        !retryAfterFailure) {
       return;
     }
     final position = _scrollController.position;
@@ -89,55 +90,64 @@ class _ConversationListViewState extends State<ConversationListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ConversationListBloc, ConversationListState>(
-      listenWhen: (previous, current) =>
-          previous.refreshStatus != current.refreshStatus &&
-          current.refreshStatus == ConversationRefreshStatus.failure,
-      listener: (context, state) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                state.failureMessage ?? context.l10n.directMessagesFailure,
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        final userScroll =
+            notification is ScrollUpdateNotification &&
+                notification.dragDetails != null &&
+                (notification.scrollDelta ?? 0) > 0 ||
+            notification is OverscrollNotification &&
+                notification.dragDetails != null &&
+                notification.overscroll > 0;
+        if (notification.depth == 0 &&
+            userScroll &&
+            context.read<ConversationListBloc>().state.loadMoreStatus ==
+                ConversationLoadMoreStatus.failure) {
+          _requestMoreIfNearEnd(retryAfterFailure: true);
+        }
+        return false;
+      },
+      child: BlocConsumer<ConversationListBloc, ConversationListState>(
+        listenWhen: (previous, current) =>
+            (previous.refreshStatus != current.refreshStatus &&
+                current.refreshStatus == ConversationRefreshStatus.failure) ||
+            (previous.loadMoreStatus != current.loadMoreStatus &&
+                current.loadMoreStatus == ConversationLoadMoreStatus.failure),
+        listener: (context, state) =>
+            showAppFailureSnackBar(context, message: state.failureMessage),
+        builder: (context, state) {
+          _scheduleLoadMoreIfNeeded(state);
+          return switch (state.status) {
+            ConversationListStatus.initial ||
+            ConversationListStatus.loading => ConversationListSkeleton(
+              semanticLabel: context.l10n.directMessagesLoadingLabel,
+            ),
+            ConversationListStatus.empty => _RefreshableConversationListMessage(
+              scrollController: _scrollController,
+              onRefresh: _refresh,
+              child: _ConversationListMessage(
+                text: context.l10n.directMessagesEmptyLabel,
               ),
             ),
-          );
-      },
-      builder: (context, state) {
-        _scheduleLoadMoreIfNeeded(state);
-        return switch (state.status) {
-          ConversationListStatus.initial ||
-          ConversationListStatus.loading => ConversationListSkeleton(
-            semanticLabel: context.l10n.directMessagesLoadingLabel,
-          ),
-          ConversationListStatus.empty => _RefreshableConversationListMessage(
-            scrollController: _scrollController,
-            onRefresh: _refresh,
-            child: _ConversationListMessage(
-              text: context.l10n.directMessagesEmptyLabel,
-            ),
-          ),
-          ConversationListStatus.failure => _RefreshableConversationListMessage(
-            scrollController: _scrollController,
-            onRefresh: _refresh,
-            child: _ConversationListFailure(
-              onRetry: () => context.read<ConversationListBloc>().add(
-                const ConversationListInitialLoadRequested(),
+            ConversationListStatus.failure =>
+              _RefreshableConversationListMessage(
+                scrollController: _scrollController,
+                onRefresh: _refresh,
+                child: _ConversationListFailure(
+                  onRetry: () => context.read<ConversationListBloc>().add(
+                    const ConversationListInitialLoadRequested(),
+                  ),
+                ),
               ),
+            ConversationListStatus.success => _ConversationListView(
+              scrollController: _scrollController,
+              conversations: state.conversations,
+              loadMoreStatus: state.loadMoreStatus,
+              onRefresh: _refresh,
             ),
-          ),
-          ConversationListStatus.success => _ConversationListView(
-            scrollController: _scrollController,
-            conversations: state.conversations,
-            loadMoreStatus: state.loadMoreStatus,
-            onRefresh: _refresh,
-            onLoadMoreRetry: () => context.read<ConversationListBloc>().add(
-              const ConversationListLoadMoreRequested(),
-            ),
-          ),
-        };
-      },
+          };
+        },
+      ),
     );
   }
 }
@@ -148,14 +158,12 @@ class _ConversationListView extends StatelessWidget {
     required this.conversations,
     required this.loadMoreStatus,
     required this.onRefresh,
-    required this.onLoadMoreRetry,
   });
 
   final ScrollController scrollController;
   final List<DirectMessageConversation> conversations;
   final ConversationLoadMoreStatus loadMoreStatus;
   final RefreshCallback onRefresh;
-  final VoidCallback onLoadMoreRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +192,6 @@ class _ConversationListView extends StatelessWidget {
         SliverToBoxAdapter(
           child: _ConversationListFooter(
             status: loadMoreStatus,
-            onRetry: onLoadMoreRetry,
           ),
         ),
       ],
@@ -324,11 +331,9 @@ class _ConversationListFailure extends StatelessWidget {
 class _ConversationListFooter extends StatelessWidget {
   const _ConversationListFooter({
     required this.status,
-    required this.onRetry,
   });
 
   final ConversationLoadMoreStatus status;
-  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -339,11 +344,7 @@ class _ConversationListFooter extends StatelessWidget {
         itemCount: 1,
         shrinkWrap: true,
       ),
-      ConversationLoadMoreStatus.failure => AppRetryView(
-        revealOnDisplay: true,
-        message: context.l10n.retryLoadMoreMessage,
-        onRetry: onRetry,
-      ),
+      ConversationLoadMoreStatus.failure => const SizedBox.shrink(),
     };
   }
 }

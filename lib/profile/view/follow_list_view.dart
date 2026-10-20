@@ -26,6 +26,14 @@ class FollowListView extends StatelessWidget {
       listeners: [
         BlocListener<FollowListCubit, FollowListState>(
           listenWhen: (previous, current) =>
+              !previous.loadMoreError && current.loadMoreError,
+          listener: (context, state) => showAppFailureSnackBar(
+            context,
+            message: state.requestFailureMessage,
+          ),
+        ),
+        BlocListener<FollowListCubit, FollowListState>(
+          listenWhen: (previous, current) =>
               previous.actionFailureCount != current.actionFailureCount,
           listener: (context, state) => _showFeedback(
             context,
@@ -77,7 +85,11 @@ class FollowListView extends StatelessWidget {
               if (notification.depth == 0 &&
                   scrollingDown &&
                   notification.metrics.extentAfter < 200 &&
-                  !current.loadMoreError &&
+                  (!current.loadMoreError ||
+                      notification is ScrollUpdateNotification &&
+                          notification.dragDetails != null ||
+                      notification is OverscrollNotification &&
+                          notification.dragDetails != null) &&
                   !current.loadingMore &&
                   current.hasMore) {
                 unawaited(cubit.loadMore());
@@ -183,14 +195,6 @@ class FollowListView extends StatelessWidget {
                             semanticLabel: l10n.followListLoadingMoreLabel,
                             itemCount: 1,
                             shrinkWrap: true,
-                          )
-                        : state.loadMoreError
-                        ? AppRetryView(
-                            revealOnDisplay: true,
-                            message: l10n.retryLoadMoreMessage,
-                            onRetry: () => unawaited(
-                              context.read<FollowListCubit>().loadMore(),
-                            ),
                           )
                         : Padding(
                             padding: const EdgeInsetsDirectional.all(16),

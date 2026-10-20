@@ -87,10 +87,14 @@ class _StatusListState extends State<StatusList> {
 
   void _onScroll() => _requestMoreIfNearEnd();
 
-  void _requestMoreIfNearEnd({bool fillViewportOnly = false}) {
+  void _requestMoreIfNearEnd({
+    bool fillViewportOnly = false,
+    bool retryAfterFailure = false,
+  }) {
     if (!mounted || !_scrollController.hasClients) return;
     if (context.read<StatusListBloc>().state.loadMoreStatus ==
-        StatusLoadMoreStatus.failure) {
+            StatusLoadMoreStatus.failure &&
+        !retryAfterFailure) {
       return;
     }
     final position = _scrollController.position;
@@ -112,6 +116,7 @@ class _StatusListState extends State<StatusList> {
   /// leave the viewport under-filled, warranting one automatic fill attempt.
   bool _shouldAutoFill(StatusListState previous, StatusListState current) {
     return current.status == StatusListStatus.success &&
+        current.refreshStatus == StatusRefreshStatus.idle &&
         current.loadMoreStatus == StatusLoadMoreStatus.idle &&
         current.hasMore &&
         (previous.status != current.status ||
@@ -140,77 +145,96 @@ class _StatusListState extends State<StatusList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<StatusListBloc, StatusListState>(
-      listenWhen: _shouldAutoFill,
-      listener: (context, state) {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _requestMoreIfNearEnd(fillViewportOnly: true),
-        );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        final userScroll =
+            notification is ScrollUpdateNotification &&
+                notification.dragDetails != null &&
+                (notification.scrollDelta ?? 0) > 0 ||
+            notification is OverscrollNotification &&
+                notification.dragDetails != null &&
+                notification.overscroll > 0;
+        if (notification.depth == 0 &&
+            userScroll &&
+            context.read<StatusListBloc>().state.loadMoreStatus ==
+                StatusLoadMoreStatus.failure) {
+          _requestMoreIfNearEnd(retryAfterFailure: true);
+        }
+        return false;
       },
-      child: BlocConsumer<StatusListBloc, StatusListState>(
-        listenWhen: (previous, current) =>
-            (previous.refreshStatus != current.refreshStatus &&
-                current.refreshStatus == StatusRefreshStatus.failure) ||
-            (previous.requestFailureMessage != current.requestFailureMessage &&
-                current.requestFailureMessage != null) ||
-            (previous.actionFailure != current.actionFailure &&
-                current.actionFailure != null &&
-                current.actionFailure!.action == StatusAction.favorite) ||
-            (previous.favoriteSuccess != current.favoriteSuccess &&
-                current.favoriteSuccess != null),
-        listener: (context, state) {
-          final message = state.refreshStatus == StatusRefreshStatus.failure
-              ? state.requestFailureMessage ?? context.l10n.statusListFailure
-              : state.actionFailure?.action == StatusAction.favorite
-              ? state.actionFailure?.message ??
-                    context.l10n.statusFavoriteFailure
-              : state.favoriteSuccess!.isFavorited
-              ? context.l10n.statusFavoriteSuccess
-              : context.l10n.statusUnfavoriteSuccess;
-          ScaffoldMessenger.maybeOf(context)
-            ?..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(message),
-              ),
-            );
-        },
-        builder: (context, state) {
-          return switch (state.status) {
-            StatusListStatus.initial ||
-            StatusListStatus.loading => StatusListSkeleton(
-              semanticLabel: context.l10n.statusListLoadingLabel,
-              layout: widget.layout,
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<StatusListBloc, StatusListState>(
+            listenWhen: _shouldAutoFill,
+            listener: (context, state) {
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) => _requestMoreIfNearEnd(fillViewportOnly: true),
+              );
+            },
+          ),
+          BlocListener<StatusListBloc, StatusListState>(
+            listenWhen: (previous, current) =>
+                (previous.refreshStatus != current.refreshStatus &&
+                    current.refreshStatus == StatusRefreshStatus.failure) ||
+                (previous.loadMoreStatus != current.loadMoreStatus &&
+                    current.loadMoreStatus == StatusLoadMoreStatus.failure),
+            listener: (context, state) => showAppFailureSnackBar(
+              context,
+              message: state.requestFailureMessage,
             ),
-            StatusListStatus.empty => _RefreshableStatusListMessage(
-              scrollController: _scrollController,
-              onRefresh: widget.enableRefresh ? _refresh : null,
-              child: _StatusListMessage(
-                text: widget.emptyLabel ?? context.l10n.statusListEmptyLabel,
+          ),
+        ],
+        child: BlocConsumer<StatusListBloc, StatusListState>(
+          listenWhen: (previous, current) =>
+              (previous.actionFailure != current.actionFailure &&
+                  current.actionFailure?.action == StatusAction.favorite) ||
+              (previous.favoriteSuccess != current.favoriteSuccess &&
+                  current.favoriteSuccess != null),
+          listener: (context, state) {
+            final message = state.actionFailure?.action == StatusAction.favorite
+                ? state.actionFailure?.message ??
+                      context.l10n.statusFavoriteFailure
+                : state.favoriteSuccess!.isFavorited
+                ? context.l10n.statusFavoriteSuccess
+                : context.l10n.statusUnfavoriteSuccess;
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text(message)));
+          },
+          builder: (context, state) {
+            return switch (state.status) {
+              StatusListStatus.initial ||
+              StatusListStatus.loading => StatusListSkeleton(
+                semanticLabel: context.l10n.statusListLoadingLabel,
+                layout: widget.layout,
               ),
-            ),
-            StatusListStatus.failure => _RefreshableStatusListMessage(
-              scrollController: _scrollController,
-              onRefresh: widget.enableRefresh ? _refresh : null,
-              child: _StatusListFailure(
-                message: state.requestFailureMessage,
-                onRetry: () => context.read<StatusListBloc>().add(
-                  const StatusListInitialLoadRequested(),
+              StatusListStatus.empty => _RefreshableStatusListMessage(
+                scrollController: _scrollController,
+                onRefresh: widget.enableRefresh ? _refresh : null,
+                child: _StatusListMessage(
+                  text: widget.emptyLabel ?? context.l10n.statusListEmptyLabel,
                 ),
               ),
-            ),
-            StatusListStatus.success => _StatusListView(
-              layout: widget.layout,
-              scrollController: _scrollController,
-              statuses: state.statuses,
-              loadMoreStatus: state.loadMoreStatus,
-              onRefresh: widget.enableRefresh ? _refresh : null,
-              onLoadMoreRetry: () => context.read<StatusListBloc>().add(
-                const StatusListLoadMoreRequested(),
+              StatusListStatus.failure => _RefreshableStatusListMessage(
+                scrollController: _scrollController,
+                onRefresh: widget.enableRefresh ? _refresh : null,
+                child: _StatusListFailure(
+                  message: state.requestFailureMessage,
+                  onRetry: () => context.read<StatusListBloc>().add(
+                    const StatusListInitialLoadRequested(),
+                  ),
+                ),
               ),
-            ),
-          };
-        },
+              StatusListStatus.success => _StatusListView(
+                layout: widget.layout,
+                scrollController: _scrollController,
+                statuses: state.statuses,
+                loadMoreStatus: state.loadMoreStatus,
+                onRefresh: widget.enableRefresh ? _refresh : null,
+              ),
+            };
+          },
+        ),
       ),
     );
   }
@@ -222,7 +246,6 @@ class _StatusListView extends StatelessWidget {
     required this.statuses,
     required this.loadMoreStatus,
     required this.onRefresh,
-    required this.onLoadMoreRetry,
     required this.layout,
   });
 
@@ -230,7 +253,6 @@ class _StatusListView extends StatelessWidget {
   final List<status_repository.Status> statuses;
   final StatusLoadMoreStatus loadMoreStatus;
   final RefreshCallback? onRefresh;
-  final VoidCallback onLoadMoreRetry;
   final StatusListLayout layout;
 
   @override
@@ -297,7 +319,6 @@ class _StatusListView extends StatelessWidget {
           child: _StatusListFooter(
             layout: layout,
             status: loadMoreStatus,
-            onRetry: onLoadMoreRetry,
           ),
         ),
       ],
@@ -397,12 +418,10 @@ class _StatusListFailure extends StatelessWidget {
 class _StatusListFooter extends StatelessWidget {
   const _StatusListFooter({
     required this.status,
-    required this.onRetry,
     required this.layout,
   });
 
   final StatusLoadMoreStatus status;
-  final VoidCallback onRetry;
   final StatusListLayout layout;
 
   @override
@@ -415,11 +434,7 @@ class _StatusListFooter extends StatelessWidget {
         itemCount: 1,
         shrinkWrap: true,
       ),
-      StatusLoadMoreStatus.failure => AppRetryView(
-        revealOnDisplay: true,
-        message: context.l10n.retryLoadMoreMessage,
-        onRetry: onRetry,
-      ),
+      StatusLoadMoreStatus.failure => const SizedBox.shrink(),
     };
   }
 }

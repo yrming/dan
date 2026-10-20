@@ -859,7 +859,7 @@ void main() {
     group('load failure feedback', () {
       for (final profile in [null, _profile]) {
         testWidgets(
-          'shows a snackbar with retry when loading fails '
+          'shows a snackbar without an action when loading fails '
           'with cached profile=${profile != null}',
           (tester) async {
             final states = StreamController<UserProfileState>();
@@ -895,14 +895,13 @@ void main() {
               expect(find.byType(ProfileMenuSection), findsOneWidget);
             }
 
-            await tester.tap(
-              find.widgetWithText(
-                SnackBarAction,
-                context.l10n.retryButtonLabel,
-              ),
+            expect(
+              tester.widget<SnackBar>(find.byType(SnackBar)).action,
+              isNull,
             );
-            await tester.pump();
-            verify(() => userProfileCubit.load()).called(1);
+            expect(find.byType(AppSnackBarAction), findsNothing);
+            verifyNever(() => userProfileCubit.load());
+            await tester.pump(const Duration(seconds: 5));
             await tester.pump(const Duration(milliseconds: 300));
             expect(find.byType(SnackBar), findsNothing);
 

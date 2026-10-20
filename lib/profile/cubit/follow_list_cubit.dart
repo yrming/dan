@@ -11,6 +11,7 @@ class FollowListState extends Equatable {
     this.error = false,
     this.loadingMore = false,
     this.loadMoreError = false,
+    this.requestFailureMessage,
     this.hasMore = true,
     Map<String, FollowListAction> actions = const {},
     Set<String> updatingIds = const {},
@@ -26,6 +27,7 @@ class FollowListState extends Equatable {
   final bool error;
   final bool loadingMore;
   final bool loadMoreError;
+  final String? requestFailureMessage;
   final bool hasMore;
   final Map<String, FollowListAction> actions;
   final Set<String> updatingIds;
@@ -42,6 +44,7 @@ class FollowListState extends Equatable {
     bool? error,
     bool? loadingMore,
     bool? loadMoreError,
+    String? requestFailureMessage,
     bool? hasMore,
     Map<String, FollowListAction>? actions,
     Set<String>? updatingIds,
@@ -54,6 +57,7 @@ class FollowListState extends Equatable {
     error: error ?? this.error,
     loadingMore: loadingMore ?? this.loadingMore,
     loadMoreError: loadMoreError ?? this.loadMoreError,
+    requestFailureMessage: requestFailureMessage,
     hasMore: hasMore ?? this.hasMore,
     actions: actions ?? this.actions,
     updatingIds: updatingIds ?? this.updatingIds,
@@ -69,6 +73,7 @@ class FollowListState extends Equatable {
     error,
     loadingMore,
     loadMoreError,
+    requestFailureMessage,
     hasMore,
     actions,
     updatingIds,
@@ -201,7 +206,7 @@ class FollowListCubit extends Cubit<FollowListState> {
           hasMore: users.length >= UserRepository.relationPageSize,
         ),
       );
-    } on Object {
+    } on Object catch (error) {
       if (isClosed) return;
       emit(
         state.copyWith(
@@ -210,6 +215,9 @@ class FollowListCubit extends Cubit<FollowListState> {
           loadingMore: false,
           error: initial,
           loadMoreError: !initial,
+          requestFailureMessage: error is UserRepositoryApiFailure
+              ? error.message
+              : null,
           hasMore: previous.hasMore,
         ),
       );

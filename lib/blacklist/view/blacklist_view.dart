@@ -59,21 +59,33 @@ class _BlacklistViewState extends State<BlacklistView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BlacklistCubit, BlacklistState>(
-      listenWhen: (previous, current) =>
-          previous.actionFailureCount != current.actionFailureCount,
-      listener: (context, state) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                state.actionFailureMessage ??
-                    context.l10n.blacklistActionFailure,
-              ),
-            ),
-          );
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<BlacklistCubit, BlacklistState>(
+          listenWhen: (previous, current) =>
+              !previous.loadMoreError && current.loadMoreError,
+          listener: (context, state) => showAppFailureSnackBar(
+            context,
+            message: state.requestFailureMessage,
+          ),
+        ),
+        BlocListener<BlacklistCubit, BlacklistState>(
+          listenWhen: (previous, current) =>
+              previous.actionFailureCount != current.actionFailureCount,
+          listener: (context, state) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.actionFailureMessage ??
+                        context.l10n.blacklistActionFailure,
+                  ),
+                ),
+              );
+          },
+        ),
+      ],
       child: BlocBuilder<BlacklistCubit, BlacklistState>(
         builder: (context, state) {
           final l10n = context.l10n;
@@ -114,7 +126,11 @@ class _BlacklistViewState extends State<BlacklistView> {
                   notification.metrics.extentAfter < 200 &&
                   state.hasMore &&
                   !state.loadingMore &&
-                  !state.loadMoreError) {
+                  (!state.loadMoreError ||
+                      notification is ScrollUpdateNotification &&
+                          notification.dragDetails != null ||
+                      notification is OverscrollNotification &&
+                          notification.dragDetails != null)) {
                 unawaited(cubit.loadMore());
               }
               return false;
@@ -130,14 +146,6 @@ class _BlacklistViewState extends State<BlacklistView> {
                       semanticLabel: l10n.followListLoadingMoreLabel,
                       itemCount: 1,
                       shrinkWrap: true,
-                    );
-                  }
-                  if (state.loadMoreError) {
-                    return AppRetryView(
-                      revealOnDisplay: true,
-                      message: l10n.retryLoadMoreMessage,
-                      onRetry: () =>
-                          unawaited(context.read<BlacklistCubit>().loadMore()),
                     );
                   }
                   if (!state.hasMore) return const SizedBox.shrink();

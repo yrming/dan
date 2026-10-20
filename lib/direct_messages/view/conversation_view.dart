@@ -33,7 +33,17 @@ class ConversationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ConversationCubit, ConversationState>(
+    return BlocConsumer<ConversationCubit, ConversationState>(
+      listenWhen: (previous, current) =>
+          current is ConversationLoadSuccess &&
+          current.historyLoadStatus == ConversationHistoryLoadStatus.failure &&
+          (previous is! ConversationLoadSuccess ||
+              previous.historyLoadStatus != current.historyLoadStatus),
+      listener: (context, state) {
+        if (state is ConversationLoadSuccess) {
+          showAppFailureSnackBar(context, message: state.failureMessage);
+        }
+      },
       builder: (context, state) {
         final peerScreenName = state.peerScreenName;
         final conversationBody = switch (state) {
@@ -296,7 +306,16 @@ class _MessageList extends StatelessWidget {
       key: const Key('conversation-message-list'),
       onNotification: (notification) {
         final metrics = notification.metrics;
-        if (historyLoadStatus != ConversationHistoryLoadStatus.failure &&
+        final userScroll =
+            notification is ScrollUpdateNotification &&
+                notification.dragDetails != null &&
+                (notification.scrollDelta ?? 0) > 0 ||
+            notification is OverscrollNotification &&
+                notification.dragDetails != null &&
+                notification.overscroll > 0;
+        if (notification.depth == 0 &&
+            (historyLoadStatus != ConversationHistoryLoadStatus.failure ||
+                userScroll) &&
             metrics.maxScrollExtent > 0 &&
             metrics.pixels >=
                 metrics.maxScrollExtent - metrics.viewportDimension * 0.5) {
@@ -315,8 +334,6 @@ class _MessageList extends StatelessWidget {
           if (index == messages.length) {
             return _HistoryLoadMoreFooter(
               status: historyLoadStatus,
-              onRetry: () =>
-                  unawaited(context.read<ConversationCubit>().loadMore()),
             );
           }
           final message = messages[index];
@@ -380,10 +397,9 @@ class _MessageList extends StatelessWidget {
 }
 
 class _HistoryLoadMoreFooter extends StatelessWidget {
-  const _HistoryLoadMoreFooter({required this.status, required this.onRetry});
+  const _HistoryLoadMoreFooter({required this.status});
 
   final ConversationHistoryLoadStatus status;
-  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -398,11 +414,7 @@ class _HistoryLoadMoreFooter extends StatelessWidget {
           child: const Center(child: CupertinoActivityIndicator()),
         ),
       ),
-      ConversationHistoryLoadStatus.failure => AppRetryView(
-        revealOnDisplay: true,
-        message: context.l10n.retryLoadMoreMessage,
-        onRetry: onRetry,
-      ),
+      ConversationHistoryLoadStatus.failure => const SizedBox.shrink(),
     };
   }
 }

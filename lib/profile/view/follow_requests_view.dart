@@ -20,6 +20,14 @@ class FollowRequestsView extends StatelessWidget {
       listeners: [
         BlocListener<FollowRequestsCubit, FollowRequestsState>(
           listenWhen: (previous, current) =>
+              !previous.loadMoreError && current.loadMoreError,
+          listener: (context, state) => showAppFailureSnackBar(
+            context,
+            message: state.requestFailureMessage,
+          ),
+        ),
+        BlocListener<FollowRequestsCubit, FollowRequestsState>(
+          listenWhen: (previous, current) =>
               previous.actionFailureCount != current.actionFailureCount,
           listener: (context, state) => ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -73,11 +81,17 @@ class FollowRequestsView extends StatelessWidget {
               final cubit = context.read<FollowRequestsCubit>();
               final scrollingDown =
                   notification is ScrollUpdateNotification &&
-                  (notification.scrollDelta ?? 0) > 0;
+                      (notification.scrollDelta ?? 0) > 0 ||
+                  notification is OverscrollNotification &&
+                      notification.overscroll > 0;
               if (notification.depth == 0 &&
                   scrollingDown &&
                   notification.metrics.extentAfter < 200 &&
-                  !state.loadMoreError &&
+                  (!state.loadMoreError ||
+                      notification is ScrollUpdateNotification &&
+                          notification.dragDetails != null ||
+                      notification is OverscrollNotification &&
+                          notification.dragDetails != null) &&
                   !state.loadingMore &&
                   state.hasMore) {
                 unawaited(cubit.loadMore());
@@ -184,14 +198,6 @@ class FollowRequestsView extends StatelessWidget {
                             shrinkWrap: true,
                             actionCount: 2,
                             actionWidth: _followRequestButtonWidth,
-                          )
-                        : state.loadMoreError
-                        ? AppRetryView(
-                            revealOnDisplay: true,
-                            message: l10n.retryLoadMoreMessage,
-                            onRetry: () => unawaited(
-                              context.read<FollowRequestsCubit>().loadMore(),
-                            ),
                           )
                         : Padding(
                             padding: const EdgeInsets.all(AppSpacing.md),

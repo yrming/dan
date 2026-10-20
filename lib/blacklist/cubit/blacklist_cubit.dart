@@ -10,6 +10,7 @@ final class BlacklistState extends Equatable {
     this.users = const [],
     this.loadingMore = false,
     this.loadMoreError = false,
+    this.requestFailureMessage,
     this.hasMore = true,
     this.removingIds = const {},
     this.actionFailureCount = 0,
@@ -20,6 +21,7 @@ final class BlacklistState extends Equatable {
   final List<UserProfile> users;
   final bool loadingMore;
   final bool loadMoreError;
+  final String? requestFailureMessage;
   final bool hasMore;
   final Set<String> removingIds;
   final int actionFailureCount;
@@ -30,6 +32,7 @@ final class BlacklistState extends Equatable {
     List<UserProfile>? users,
     bool? loadingMore,
     bool? loadMoreError,
+    String? requestFailureMessage,
     bool? hasMore,
     Set<String>? removingIds,
     int? actionFailureCount,
@@ -39,6 +42,7 @@ final class BlacklistState extends Equatable {
     users: users ?? this.users,
     loadingMore: loadingMore ?? this.loadingMore,
     loadMoreError: loadMoreError ?? this.loadMoreError,
+    requestFailureMessage: requestFailureMessage,
     hasMore: hasMore ?? this.hasMore,
     removingIds: removingIds ?? this.removingIds,
     actionFailureCount: actionFailureCount ?? this.actionFailureCount,
@@ -51,6 +55,7 @@ final class BlacklistState extends Equatable {
     users,
     loadingMore,
     loadMoreError,
+    requestFailureMessage,
     hasMore,
     removingIds,
     actionFailureCount,
@@ -136,13 +141,16 @@ class BlacklistCubit extends Cubit<BlacklistState> {
           hasMore: users.length == UserRepository.relationPageSize,
         ),
       );
-    } on Object {
+    } on Object catch (error) {
       if (isClosed) return;
       emit(
         state.copyWith(
           status: initial ? BlacklistStatus.failure : BlacklistStatus.success,
           loadingMore: false,
           loadMoreError: !initial,
+          requestFailureMessage: error is UserRepositoryApiFailure
+              ? error.message
+              : null,
         ),
       );
     } finally {

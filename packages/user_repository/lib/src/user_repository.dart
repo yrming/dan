@@ -1,6 +1,7 @@
 import 'package:user_api_client/user_api_client.dart';
 import 'package:user_repository/src/exceptions/block_action_failure.dart';
 import 'package:user_repository/src/exceptions/follow_action_failure.dart';
+import 'package:user_repository/src/exceptions/user_repository_api_failure.dart';
 import 'package:user_repository/src/models/models.dart';
 
 /// Repository for loading and temporarily caching Fanfou user profiles.
@@ -133,7 +134,7 @@ class UserRepository {
 
   /// Returns blocked users for the active account and caches their profiles.
   Future<List<UserProfile>> getBlockedUsers({int page = 1}) async =>
-      _mapUsers(await _userApiClient.getBlockedUsers(page: page));
+      _loadUsers(() => _userApiClient.getBlockedUsers(page: page));
 
   /// Removes [userId] from the active account's blacklist.
   Future<UserProfile> removeBlockedUser(String userId) async {
@@ -148,7 +149,7 @@ class UserRepository {
 
   /// Returns incoming follow requests for the active account.
   Future<List<UserProfile>> getFollowRequests({int page = 1}) async =>
-      _mapUsers(await _userApiClient.getFollowRequests(page: page));
+      _loadUsers(() => _userApiClient.getFollowRequests(page: page));
 
   /// Accepts an incoming follow request.
   Future<UserProfile> acceptFollowRequest(String userId) async {
@@ -176,11 +177,24 @@ class UserRepository {
 
   /// Returns accounts followed by [userId].
   Future<List<UserProfile>> getFriends(String userId, {int page = 1}) async =>
-      _mapUsers(await _userApiClient.getFriends(userId, page: page));
+      _loadUsers(() => _userApiClient.getFriends(userId, page: page));
 
   /// Returns accounts following [userId].
   Future<List<UserProfile>> getFollowers(String userId, {int page = 1}) async =>
-      _mapUsers(await _userApiClient.getFollowers(userId, page: page));
+      _loadUsers(() => _userApiClient.getFollowers(userId, page: page));
+
+  Future<List<UserProfile>> _loadUsers(
+    Future<List<UserResponse>> Function() fetch,
+  ) async {
+    try {
+      return _mapUsers(await fetch());
+    } on UserApiClientApiFailure catch (error) {
+      throw UserRepositoryApiFailure(
+        statusCode: error.statusCode,
+        message: error.message,
+      );
+    }
+  }
 
   UserProfile _mapUser(UserResponse response) => UserProfile(
     id: response.id,

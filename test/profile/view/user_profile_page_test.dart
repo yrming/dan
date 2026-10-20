@@ -103,7 +103,9 @@ void main() {
 
     group('profile load failure', () {
       for (final userId in [_account.id, 'another-user']) {
-        testWidgets('retries from the snackbar for $userId', (tester) async {
+        testWidgets('shows a snackbar without an action for $userId', (
+          tester,
+        ) async {
           when(
             () => userRepository.getUser(userId),
           ).thenThrow(Exception('Profile unavailable'));
@@ -119,17 +121,12 @@ void main() {
             findsOneWidget,
           );
 
-          when(
-            () => userRepository.getUser(userId),
-          ).thenAnswer((_) async => _otherProfile);
-          await tester.tap(
-            find.widgetWithText(SnackBarAction, context.l10n.retryButtonLabel),
-          );
-          await tester.pumpTransition();
-
-          expect(find.text(_otherProfile.name), findsOneWidget);
+          expect(tester.widget<SnackBar>(find.byType(SnackBar)).action, isNull);
+          expect(find.byType(SnackBarAction), findsNothing);
+          await tester.pump(const Duration(seconds: 5));
+          await tester.pump(const Duration(milliseconds: 300));
           expect(find.byType(SnackBar), findsNothing);
-          verify(() => userRepository.getUser(userId)).called(2);
+          verify(() => userRepository.getUser(userId)).called(1);
         });
       }
     });

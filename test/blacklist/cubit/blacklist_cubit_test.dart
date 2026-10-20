@@ -14,6 +14,52 @@ void main() {
       repository = _MockUserRepository();
     });
 
+    group('pagination failure feedback', () {
+      Future<List<UserProfile>> fetch(int page) =>
+          repository.getBlockedUsers(page: page);
+
+      for (final message in [null, '请求太频繁，请稍后再试']) {
+        blocTest<BlacklistCubit, BlacklistState>(
+          'preserves loaded users and retries the failed page '
+          'with message=$message',
+          setUp: () {
+            when(() => fetch(1)).thenThrow(
+              UserRepositoryApiFailure(statusCode: 403, message: message),
+            );
+          },
+          build: () => BlacklistCubit(repository: repository),
+          seed: () => const BlacklistState(
+            status: BlacklistStatus.success,
+            users: [_user],
+          ),
+          act: (cubit) async {
+            await cubit.loadMore();
+            when(() => fetch(1)).thenAnswer((_) async => []);
+            await cubit.loadMore();
+          },
+          expect: () {
+            const initial = BlacklistState(
+              status: BlacklistStatus.success,
+              users: [_user],
+            );
+            return [
+              initial.copyWith(loadingMore: true),
+              initial.copyWith(
+                loadMoreError: true,
+                requestFailureMessage: message,
+              ),
+              initial.copyWith(loadingMore: true),
+              initial.copyWith(hasMore: false),
+            ];
+          },
+          verify: (cubit) {
+            expect(cubit.state.users, const [_user]);
+            expect(cubit.state.requestFailureMessage, isNull);
+            verify(() => fetch(1)).called(2);
+          },
+        );
+      }
+    });
     blocTest<BlacklistCubit, BlacklistState>(
       'emits success with blocked users when loading succeeds',
       setUp: () {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dan/app/navigation/navigation.dart';
 import 'package:dan/app/widgets/widgets.dart';
@@ -51,6 +53,53 @@ void main() {
       );
     }
 
+    group('request failure feedback', () {
+      for (final message in [null, '', '   ', ' 请求太频繁，请稍后再试 ']) {
+        testWidgets('shows no-action feedback for message=$message ', (
+          tester,
+        ) async {
+          final initial = FollowListState(
+            loading: false,
+            users: users.take(2).toList(),
+          );
+          final states = StreamController<FollowListState>();
+          addTearDown(states.close);
+          whenListen(cubit, states.stream, initialState: initial);
+          await tester.pumpApp(
+            BlocProvider.value(
+              value: cubit,
+              child: const Scaffold(body: FollowListView(followers: false)),
+            ),
+          );
+          for (var attempt = 0; attempt < 2; attempt++) {
+            states.add(initial.copyWith(loadingMore: true));
+            await tester.pump();
+            states.add(
+              initial.copyWith(
+                loadMoreError: true,
+                requestFailureMessage: message,
+              ),
+            );
+            await tester.pump();
+            await tester.pump(const Duration(milliseconds: 300));
+            expect(
+              find.text(
+                message?.trim().isNotEmpty == true
+                    ? message!.trim()
+                    : '很抱歉，出错了，请重试。',
+              ),
+              findsOneWidget,
+            );
+            expect(
+              tester.widget<SnackBar>(find.byType(SnackBar)).action,
+              isNull,
+            );
+            expect(find.byType(AppRetryView), findsNothing);
+          }
+        });
+      }
+    });
+
     group('scroll', () {
       testWidgets('requests another page near the bottom', (tester) async {
         await pumpView(tester, FollowListState(users: users, loading: false));
@@ -72,7 +121,7 @@ void main() {
         await tester.pump();
         verify(() => cubit.loadMore()).called(greaterThan(0));
       });
-      for (final mode in ['loading', 'failed', 'finished']) {
+      for (final mode in ['loading', 'finished']) {
         testWidgets('does not load automatically while $mode', (tester) async {
           await pumpView(
             tester,
@@ -351,10 +400,10 @@ void main() {
           ),
         );
         expect(find.text('User 0'), findsOneWidget);
-        expect(find.text('很抱歉，出错了，请重试。'), findsOneWidget);
-        await tester.tap(find.widgetWithText(FilledButton, '重试'));
+        expect(find.byType(AppRetryView), findsNothing);
+        await tester.drag(find.byType(CustomScrollView), const Offset(0, -200));
         await tester.pump();
-        verify(() => cubit.loadMore()).called(1);
+        verify(() => cubit.loadMore()).called(greaterThan(0));
       });
       testWidgets('retries initial loading', (tester) async {
         await pumpView(tester, FollowListState(loading: false, error: true));

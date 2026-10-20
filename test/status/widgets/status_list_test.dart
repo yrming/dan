@@ -7,6 +7,7 @@ import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/status.dart';
 import 'package:dan/status/widgets/status_action_button.dart';
+import 'package:dan/status/widgets/status_list_item.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,6 +122,64 @@ void main() {
         }
       });
     }
+
+    group('request failure feedback', () {
+      for (final refresh in [true, false]) {
+        for (final message in [null, '', '   ', ' 请求太频繁，请稍后再试 ']) {
+          testWidgets(
+            'shows no-action feedback for refresh=$refresh, message=$message',
+            (tester) async {
+              final initial = StatusListState(
+                status: StatusListStatus.success,
+                statuses: const [_status],
+                hasMore: false,
+              );
+              await pumpStatusList(tester, initial);
+              for (var attempt = 0; attempt < 2; attempt++) {
+                states.add(
+                  initial.copyWith(
+                    refreshStatus: refresh
+                        ? StatusRefreshStatus.inProgress
+                        : StatusRefreshStatus.idle,
+                    loadMoreStatus: refresh
+                        ? StatusLoadMoreStatus.idle
+                        : StatusLoadMoreStatus.inProgress,
+                  ),
+                );
+                await tester.pump();
+                states.add(
+                  initial.copyWith(
+                    refreshStatus: refresh
+                        ? StatusRefreshStatus.failure
+                        : StatusRefreshStatus.idle,
+                    loadMoreStatus: refresh
+                        ? StatusLoadMoreStatus.idle
+                        : StatusLoadMoreStatus.failure,
+                    requestFailureMessage: message,
+                  ),
+                );
+                await tester.pump();
+                await tester.pump(const Duration(milliseconds: 300));
+                expect(
+                  find.text(
+                    message?.trim().isNotEmpty == true
+                        ? message!.trim()
+                        : '很抱歉，出错了，请重试。',
+                  ),
+                  findsOneWidget,
+                );
+                expect(
+                  tester.widget<SnackBar>(find.byType(SnackBar)).action,
+                  isNull,
+                );
+                expect(find.byType(StatusListItem), findsOneWidget);
+                expect(find.byType(AppRetryView), findsNothing);
+              }
+            },
+          );
+        }
+      }
+    });
 
     group('empty message', () {
       for (final personal in [true, false]) {
@@ -357,7 +416,9 @@ void main() {
       ).called(greaterThanOrEqualTo(1));
     });
 
-    testWidgets('retries pagination from the failure footer', (tester) async {
+    testWidgets('retries failed pagination on another upward drag', (
+      tester,
+    ) async {
       await pumpStatusList(
         tester,
         StatusListState(
@@ -368,48 +429,54 @@ void main() {
         ),
       );
 
-      expect(find.text('很抱歉，出错了，请重试。'), findsOneWidget);
-      await tester.tap(find.widgetWithText(FilledButton, '重试'));
+      expect(find.byType(AppRetryView), findsNothing);
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -200));
       await tester.pump();
 
       verify(
         () => statusListBloc.add(const StatusListLoadMoreRequested()),
-      ).called(1);
+      ).called(greaterThan(0));
     });
 
-    testWidgets('fully reveals the retry footer when pagination fails', (
-      tester,
-    ) async {
-      final loading = StatusListState(
-        status: StatusListStatus.success,
-        loadMoreStatus: StatusLoadMoreStatus.inProgress,
-        statuses: List.generate(20, (index) => _status.copyWith(id: '$index')),
-        nextCursor: 'cursor-a',
-      );
-      await pumpStatusList(tester, loading);
-      final scrollView = tester.widget<CustomScrollView>(
-        find.byType(CustomScrollView),
-      );
-      final controller = scrollView.controller!;
-      controller.jumpTo(controller.position.maxScrollExtent - 40);
-      await tester.pump();
-      clearInteractions(statusListBloc);
+    testWidgets(
+      'shows pagination failure without a footer or automatic retry',
+      (
+        tester,
+      ) async {
+        final loading = StatusListState(
+          status: StatusListStatus.success,
+          loadMoreStatus: StatusLoadMoreStatus.inProgress,
+          statuses: List.generate(
+            20,
+            (index) => _status.copyWith(id: '$index'),
+          ),
+          nextCursor: 'cursor-a',
+        );
+        await pumpStatusList(tester, loading);
+        final scrollView = tester.widget<CustomScrollView>(
+          find.byType(CustomScrollView),
+        );
+        final controller = scrollView.controller!;
+        controller.jumpTo(controller.position.maxScrollExtent - 40);
+        await tester.pump();
+        clearInteractions(statusListBloc);
 
-      final failure = loading.copyWith(
-        loadMoreStatus: StatusLoadMoreStatus.failure,
-      );
-      when(() => statusListBloc.state).thenReturn(failure);
-      states.add(failure);
-      await tester.pump();
-      await tester.pump();
+        final failure = loading.copyWith(
+          loadMoreStatus: StatusLoadMoreStatus.failure,
+        );
+        when(() => statusListBloc.state).thenReturn(failure);
+        states.add(failure);
+        await tester.pump();
+        await tester.pump();
 
-      final footer = tester.getRect(find.byType(AppRetryView));
-      final viewport = tester.getRect(find.byType(CustomScrollView));
-      expect(footer.bottom, lessThanOrEqualTo(viewport.bottom + 0.01));
-      verifyNever(
-        () => statusListBloc.add(const StatusListLoadMoreRequested()),
-      );
-    });
+        expect(find.byType(AppRetryView), findsNothing);
+        expect(find.text('很抱歉，出错了，请重试。'), findsOneWidget);
+        expect(tester.widget<SnackBar>(find.byType(SnackBar)).action, isNull);
+        verifyNever(
+          () => statusListBloc.add(const StatusListLoadMoreRequested()),
+        );
+      },
+    );
 
     testWidgets(
       'shows one skeleton item while loading more statuses',

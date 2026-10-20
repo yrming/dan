@@ -59,20 +59,8 @@ class _UserProfileViewState extends State<UserProfileView> {
     }
   }
 
-  void _showLoadFailure(BuildContext context) {
-    final cubit = context.read<UserProfileCubit>();
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.retryPageMessage),
-          action: AppSnackBarAction(
-            label: context.l10n.retryButtonLabel,
-            onPressed: () => unawaited(cubit.load()),
-          ),
-        ),
-      );
-  }
+  void _showLoadFailure(BuildContext context) =>
+      showAppFailureSnackBar(context);
 
   @override
   void didChangeDependencies() {

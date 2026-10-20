@@ -8,6 +8,9 @@ import '../../helpers/helpers.dart';
 
 void main() {
   group(MarkdownDocumentView, () {
+    // Keep cached asset futures from crossing widget test async scopes.
+    setUp(rootBundle.clear);
+
     testWidgets('parses headings, emphasis, lists, and links', (tester) async {
       await tester.pumpApp(
         const MarkdownDocumentView(
