@@ -222,6 +222,7 @@ class ProfileHeader extends StatelessWidget {
             ),
             Wrap(
               spacing: sizing.scaled(AppSpacing.sm),
+              runSpacing: sizing.scaled(AppSpacing.sm),
               children: [
                 if (hasRegisteredAt)
                   _ProfileRegistrationTag(

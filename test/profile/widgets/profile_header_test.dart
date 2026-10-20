@@ -312,6 +312,40 @@ void main() {
       },
     );
 
+    for (final width in [320.0, 390.0]) {
+      testWidgets('spaces wrapped profile tags 12 apart at width $width', (
+        tester,
+      ) async {
+        await tester.binding.setSurfaceSize(Size(width, 640));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        await tester.pumpApp(
+          const Scaffold(
+            body: SingleChildScrollView(
+              child: ProfileHeader(
+                id: 'user-a',
+                name: 'User A',
+                screenName: 'user_a',
+                location: '海外 波斯尼亚和黑塞哥维那',
+                registeredAt: '2008-07-04T12:00:00',
+              ),
+            ),
+          ),
+        );
+
+        final registeredRect = tester.getRect(
+          find.byKey(const Key('user-profile-registered-at')),
+        );
+        final locationRect = tester.getRect(
+          find.byKey(const Key('user-profile-location')),
+        );
+        expect(
+          locationRect.top - registeredRect.bottom,
+          closeTo(12, 0.000001),
+        );
+        expect(tester.takeException(), isNull);
+      });
+    }
+
     testWidgets('shows the registration tag without a location', (
       tester,
     ) async {
