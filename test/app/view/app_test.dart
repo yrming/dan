@@ -287,6 +287,147 @@ void main() {
       expect(find.text(context.l10n.userProfilePageTitle), findsNothing);
     });
 
+    group('dismisses snack bars on navigation', () {
+      Future<void> showSnackBar(WidgetTester tester) async {
+        ScaffoldMessenger.of(
+          tester.element(find.byType(HomePage)),
+        ).showSnackBar(
+          const SnackBar(
+            content: Text('Current page notice'),
+            duration: Duration(minutes: 1),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.text('Current page notice'), findsOneWidget);
+      }
+
+      testWidgets(
+        'removes the current and queued notices when pushing a page',
+        (
+          tester,
+        ) async {
+          await pumpAppView(tester, _authenticatedState);
+          await showSnackBar(tester);
+          final context = tester.element(find.byType(HomePage));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Queued notice')),
+          );
+
+          unawaited(context.pushNamed<void>(AppRouteName.search));
+          await pumpNavigation(tester);
+
+          expect(find.byType(SearchPage), findsOneWidget);
+          expect(find.byType(SnackBar), findsNothing);
+
+          await tester.tap(find.byType(BackButton));
+          await pumpNavigation(tester);
+
+          expect(find.byType(HomePage), findsOneWidget);
+          expect(find.byType(SnackBar), findsNothing);
+        },
+      );
+
+      testWidgets('removes the notice when returning to the previous page', (
+        tester,
+      ) async {
+        await pumpAppView(tester, _authenticatedState);
+        final router = GoRouter.of(tester.element(find.byType(HomePage)));
+        unawaited(router.pushNamed<void>(AppRouteName.search));
+        await pumpNavigation(tester);
+        ScaffoldMessenger.of(
+          tester.element(find.byType(SearchPage)),
+        ).showSnackBar(const SnackBar(content: Text('Search notice')));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.text('Search notice'), findsOneWidget);
+
+        await tester.tap(find.byType(BackButton));
+        await pumpNavigation(tester);
+
+        expect(find.byType(HomePage), findsOneWidget);
+        expect(find.byType(SnackBar), findsNothing);
+      });
+
+      testWidgets('removes the notice when switching shell tabs', (
+        tester,
+      ) async {
+        await pumpAppView(tester, _authenticatedState);
+        await showSnackBar(tester);
+
+        await tester.tap(
+          find.byKey(const Key('app-bottom-navigation-mentions')),
+        );
+        await pumpNavigation(tester);
+
+        expect(find.byType(MentionsPage), findsOneWidget);
+        expect(find.byType(SnackBar), findsNothing);
+      });
+
+      testWidgets('keeps the notice when the appearance changes', (
+        tester,
+      ) async {
+        final appearanceStates = StreamController<AppearanceState>();
+        addTearDown(appearanceStates.close);
+        whenListen(
+          appearanceCubit,
+          appearanceStates.stream,
+          initialState: const AppearanceState(
+            status: AppearanceStatus.success,
+            settings: AppearanceSettings(),
+          ),
+        );
+        await pumpAppView(tester, _authenticatedState);
+        await showSnackBar(tester);
+
+        appearanceStates.add(
+          const AppearanceState(
+            status: AppearanceStatus.success,
+            settings: AppearanceSettings(themeMode: AppThemeMode.dark),
+          ),
+        );
+        await pumpNavigation(tester);
+
+        expect(find.text('Current page notice'), findsOneWidget);
+      });
+
+      testWidgets(
+        'dismisses notices after replacing the router for an account',
+        (
+          tester,
+        ) async {
+          final authenticationStates = StreamController<AuthenticationState>();
+          addTearDown(authenticationStates.close);
+          whenListen(
+            authenticationBloc,
+            authenticationStates.stream,
+            initialState: _authenticatedState,
+          );
+          await pumpAppView(tester, _authenticatedState);
+          await showSnackBar(tester);
+
+          authenticationStates.add(_authenticatedStateFor(_secondAccount));
+          await pumpNavigation(tester);
+
+          expect(find.byType(HomePage), findsOneWidget);
+          expect(find.byType(SnackBar), findsNothing);
+
+          await showSnackBar(tester);
+          unawaited(
+            tester
+                .element(find.byType(HomePage))
+                .pushNamed<void>(
+                  AppRouteName.search,
+                ),
+          );
+          await pumpNavigation(tester);
+
+          expect(find.byType(SearchPage), findsOneWidget);
+          expect(find.byType(SnackBar), findsNothing);
+        },
+      );
+    });
+
     testWidgets('shows unread mentions from the global notification state', (
       tester,
     ) async {
