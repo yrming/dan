@@ -7,6 +7,7 @@ import 'package:dan/authentication/authentication.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/settings/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,6 +29,7 @@ void main() {
     late AuthenticationBloc authenticationBloc;
 
     setUp(() {
+      rootBundle.clear();
       appearanceCubit = _MockAppearanceCubit();
       authenticationBloc = _MockAuthenticationBloc();
       when(() => appearanceCubit.state).thenReturn(_appearanceState);
@@ -41,23 +43,8 @@ void main() {
       );
     });
 
-    testWidgets('opens application information from about', (tester) async {
-      await tester.pumpApp(
-        BlocProvider.value(
-          value: appearanceCubit,
-          child: const SettingsPage(),
-        ),
-      );
-
-      await tester.tap(find.text('关于'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AboutDialog), findsOneWidget);
-      expect(find.text('旦'), findsOneWidget);
-    });
-
-    group('legal links', () {
-      testWidgets('reads both documents in app and returns to settings', (
+    group('document links', () {
+      testWidgets('reads all documents in app and returns to settings', (
         tester,
       ) async {
         final router = GoRouter(
@@ -67,6 +54,11 @@ void main() {
               path: '/:userId/settings',
               builder: (context, state) => const SettingsPage(),
               routes: [
+                GoRoute(
+                  name: AppRouteName.about,
+                  path: AppRoutePath.about,
+                  builder: (context, state) => const AboutPage(),
+                ),
                 GoRoute(
                   name: AppRouteName.userAgreement,
                   path: AppRoutePath.userAgreement,
@@ -92,14 +84,18 @@ void main() {
         );
         await tester.pumpTransition();
 
-        for (final document in ['user-agreement', 'privacy-policy']) {
+        for (final document in ['about', 'user-agreement', 'privacy-policy']) {
           await tester.tap(find.byKey(Key('settings-$document-row')));
           await tester.pumpTransition();
           await tester.pumpAndSettle();
           expect(find.byType(MarkdownBody), findsOneWidget);
           expect(
             find.text(
-              document == 'user-agreement' ? '「旦」用户协议' : '「旦」隐私政策',
+              switch (document) {
+                'about' => '关于',
+                'user-agreement' => '一、协议范围与服务性质',
+                _ => '一、适用范围',
+              },
             ),
             findsOneWidget,
           );

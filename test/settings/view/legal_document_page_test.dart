@@ -1,6 +1,7 @@
 import 'package:dan/settings/view/legal_document_page.dart';
 import 'package:dan/settings/view/markdown_document_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,6 +9,9 @@ import '../../helpers/helpers.dart';
 
 void main() {
   group(LegalDocumentPage, () {
+    // Cached asset futures must not cross widget test async scopes.
+    setUp(rootBundle.clear);
+
     testWidgets('renders the bundled user agreement Markdown', (tester) async {
       await tester.pumpApp(const LegalDocumentPage());
       await tester.pumpAndSettle();
@@ -15,7 +19,7 @@ void main() {
       expect(find.byType(MarkdownDocumentView), findsOneWidget);
       expect(find.byType(MarkdownBody), findsOneWidget);
       expect(find.text('用户协议'), findsOneWidget);
-      expect(find.text('「旦」用户协议'), findsOneWidget);
+      expect(find.text('一、协议范围与服务性质'), findsOneWidget);
       expect(find.textContaining('title: 用户协议'), findsNothing);
       expect(find.textContaining('related:'), findsNothing);
     });
@@ -26,7 +30,7 @@ void main() {
 
       expect(find.byType(MarkdownDocumentView), findsOneWidget);
       expect(find.text('隐私政策'), findsOneWidget);
-      expect(find.text('「旦」隐私政策'), findsOneWidget);
+      expect(find.text('一、适用范围'), findsOneWidget);
       expect(find.textContaining('title: 隐私政策'), findsNothing);
     });
 

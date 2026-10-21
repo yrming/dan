@@ -1,3 +1,4 @@
+export 'view/about_page.dart';
 export 'view/account_switcher_sheet.dart';
 export 'view/add_account_page.dart';
 export 'view/font_size_page.dart';

@@ -48,6 +48,9 @@ abstract final class AppRouteName {
   /// Appearance settings route.
   static const settings = 'settings';
 
+  /// About document below settings.
+  static const about = 'about';
+
   /// User agreement below settings.
   static const userAgreement = 'user-agreement';
 
@@ -128,6 +131,9 @@ abstract final class AppRoutePath {
 
   /// Appearance settings path relative to a user route.
   static const settings = 'settings';
+
+  /// About document below settings.
+  static const about = 'about';
 
   /// User agreement below settings.
   static const userAgreement = 'user-agreement';

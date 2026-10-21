@@ -37,9 +37,9 @@ class SettingsPage extends StatelessWidget {
         onBlacklistPressed: () => context.pushNamed<void>(
           AppRouteName.blacklist,
         ),
-        onAboutPressed: () => showAboutDialog(
-          context: context,
-          applicationName: context.l10n.loginBrandLogoLabel,
+        onAboutPressed: () => _openDocument(
+          context,
+          AppRouteName.about,
         ),
         onUserAgreementPressed: () => _openDocument(
           context,

@@ -453,6 +453,14 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             ),
             routes: [
               GoRoute(
+                name: AppRouteName.about,
+                path: AppRoutePath.about,
+                pageBuilder: (context, state) => _buildCupertinoPage(
+                  state,
+                  const AboutPage(),
+                ),
+              ),
+              GoRoute(
                 name: AppRouteName.userAgreement,
                 path: AppRoutePath.userAgreement,
                 pageBuilder: (context, state) => _buildCupertinoPage(

@@ -63,6 +63,7 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
+    - assets/about.md
     - assets/user-agreement.md
     - assets/privacy-policy.md
 

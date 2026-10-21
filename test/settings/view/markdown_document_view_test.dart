@@ -20,7 +20,6 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('「旦」用户协议'), findsOneWidget);
       expect(find.text('一、协议范围与服务性质'), findsOneWidget);
       expect(find.text('饭否用户协议'), findsOneWidget);
       expect(find.byType(MarkdownBody), findsOneWidget);
