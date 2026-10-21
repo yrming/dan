@@ -106,13 +106,13 @@ class WeChatStatusListItem extends StatelessWidget {
                           ),
                         ),
                         if (status.text.isNotEmpty) ...[
-                          SizedBox(height: sizing.scaled(5)),
+                          SizedBox(height: sizing.scaled(6)),
                           StatusBodyText(
                             text: status.text,
                             linkColor: colors.wechatLinkText!,
                             onHashtagTap: onHashtagTap,
                           ),
-                          SizedBox(height: sizing.scaled(5)),
+                          SizedBox(height: sizing.scaled(6)),
                         ] else
                           SizedBox(height: sizing.scaled(10)),
                       ],

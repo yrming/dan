@@ -208,7 +208,6 @@ abstract final class _StatusSkeletonLayout {
   static const bodyLineGap = 6.0;
   static const metadataWidth = 80.0;
   static const metadataHeight = 12.0;
-  static const metadataTopGap = 14.0;
 }
 
 class _StatusListSkeletonItem extends StatelessWidget {
@@ -223,7 +222,7 @@ class _StatusListSkeletonItem extends StatelessWidget {
       padding: EdgeInsetsDirectional.only(
         start: sizing.scaled(AppSpacing.md),
         top: sizing.scaled(AppSpacing.sm),
-        end: sizing.scaled(AppSpacing.md),
+        end: AppSpacing.md,
         bottom: sizing.scaled(AppSpacing.sm),
       ),
       child: Row(
@@ -245,7 +244,7 @@ class _StatusListSkeletonItem extends StatelessWidget {
                     _StatusSkeletonLayout.bodyLineHeight,
                   ),
                 ),
-                SizedBox(height: sizing.scaled(AppSpacing.space10)),
+                SizedBox(height: sizing.scaled(AppSpacing.space6)),
                 _SkeletonShape.rounded(
                   color: color,
                   width: double.infinity,
@@ -268,7 +267,7 @@ class _StatusListSkeletonItem extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: sizing.scaled(_StatusSkeletonLayout.metadataTopGap),
+                  height: sizing.scaled(AppSpacing.space6),
                 ),
                 _SkeletonShape.rounded(
                   color: color,
