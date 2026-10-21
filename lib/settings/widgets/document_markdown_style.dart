@@ -12,12 +12,12 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
   final body = theme.textTheme.bodyMedium!.copyWith(
     color: colors.documentBody,
     fontSize: sizing.scaled(compact ? 15 : 16),
-    height: 1.9,
+    height: 1.5,
     letterSpacing: 0,
   );
   final heading = body.copyWith(
     color: colors.textBase,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
   );
 
   return MarkdownStyleSheet.fromTheme(theme).copyWith(
