@@ -134,7 +134,7 @@ void main() {
       verify(() => cubit.remove(_user.id)).called(1);
     });
 
-    testWidgets('shows the empty blacklist message when no users are blocked', (
+    testWidgets('shows the empty illustration when nobody is blocked', (
       tester,
     ) async {
       when(() => cubit.state).thenReturn(
@@ -148,22 +148,8 @@ void main() {
         ),
       );
 
-      expect(
-        find.text(
-          '如果白痴都会飞\n我简直活在机场周围\n你是否也看到他们就会感觉反胃',
-        ),
-        findsOneWidget,
-      );
-      expect(
-        tester
-            .widget<Text>(
-              find.text(
-                '如果白痴都会飞\n我简直活在机场周围\n你是否也看到他们就会感觉反胃',
-              ),
-            )
-            .textAlign,
-        TextAlign.center,
-      );
+      expect(find.byType(AppEmptyView), findsOneWidget);
+      expect(find.byType(Text), findsNothing);
     });
   });
 }

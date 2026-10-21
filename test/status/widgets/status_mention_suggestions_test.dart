@@ -1,3 +1,4 @@
+import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/status/status.dart';
 import 'package:dan/status/widgets/status_mention_suggestions.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,8 @@ void main() {
         );
         await tester.tap(find.text('重试'));
         await tester.pumpAndSettle();
-        expect(find.text('最近 @我的人中没有匹配用户'), findsOneWidget);
+        expect(find.byType(AppEmptyView), findsOneWidget);
+        expect(find.text('最近 @我的人中没有匹配用户'), findsNothing);
       });
     });
   });

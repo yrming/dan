@@ -4,6 +4,7 @@ library;
 export 'app_action_sheet.dart';
 export 'app_alert_dialog.dart';
 export 'app_bottom_navigation_bar.dart';
+export 'app_empty_view.dart';
 export 'app_failure_snack_bar.dart';
 export 'app_retry_view.dart';
 export 'app_shimmer.dart';

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dan/app/navigation/direct_message_navigation.dart';
 import 'package:dan/app/navigation/user_profile_navigation.dart';
-import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/direct_messages/bloc/conversation_list_bloc.dart';
 import 'package:dan/direct_messages/widgets/conversation_list_item.dart';
@@ -125,8 +124,8 @@ class _ConversationListViewState extends State<ConversationListView> {
             ConversationListStatus.empty => _RefreshableConversationListMessage(
               scrollController: _scrollController,
               onRefresh: _refresh,
-              child: _ConversationListMessage(
-                text: context.l10n.directMessagesEmptyLabel,
+              child: AppEmptyView(
+                semanticLabel: context.l10n.directMessagesEmptyLabel,
               ),
             ),
             ConversationListStatus.failure =>
@@ -293,29 +292,6 @@ class _PlatformRefreshableScrollView extends StatelessWidget {
     );
 
     return scrollView;
-  }
-}
-
-class _ConversationListMessage extends StatelessWidget {
-  const _ConversationListMessage({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final sizing = context.appSizing;
-    return Center(
-      child: Padding(
-        padding: EdgeInsetsDirectional.all(sizing.scaled(AppSpacing.lg)),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: context.appTypography.statusBody.copyWith(
-            color: context.appColors.textSecondary,
-          ),
-        ),
-      ),
-    );
   }
 }
 

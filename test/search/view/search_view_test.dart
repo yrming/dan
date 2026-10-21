@@ -76,6 +76,8 @@ void main() {
         tester.widget<InputDecorator>(find.byType(InputDecorator)).isFocused,
         isFalse,
       );
+      expect(find.byType(AppEmptyView), findsOneWidget);
+      expect(find.text('没有找到相关消息'), findsNothing);
       verify(() => statusRepository.searchStatuses(query: 'flutter')).called(1);
     });
 
@@ -299,7 +301,8 @@ void main() {
       await tester.tap(find.text('重试'));
       await tester.pump();
       await tester.pump();
-      expect(find.text('没有找到相关消息'), findsOneWidget);
+      expect(find.byType(AppEmptyView), findsOneWidget);
+      expect(find.text('没有找到相关消息'), findsNothing);
       expect(find.byType(CupertinoSliverRefreshControl), findsNothing);
       verify(() => statusRepository.searchStatuses(query: '猫')).called(2);
     });

@@ -198,6 +198,7 @@ void main() {
             ),
             findsOneWidget,
           );
+          expect(find.byType(AppEmptyView), findsNothing);
         });
       }
     });

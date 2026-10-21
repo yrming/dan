@@ -157,9 +157,8 @@ class _StatusMentionSuggestionsState extends State<StatusMentionSuggestions> {
                     );
                   }
                   if (state.users.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(context.l10n.statusMentionEmpty),
+                    return AppEmptyView(
+                      semanticLabel: context.l10n.statusMentionEmpty,
                     );
                   }
                   return ListView.separated(

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dan/app/navigation/routes.dart';
-import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/direct_messages/direct_messages.dart';
@@ -218,7 +217,7 @@ void main() {
       ).called(1);
     });
 
-    testWidgets('renders the empty label without conversations', (
+    testWidgets('renders the empty illustration without conversations', (
       tester,
     ) async {
       when(
@@ -237,18 +236,8 @@ void main() {
       await pumpPage(tester);
       final context = tester.element(find.byType(ConversationListView));
 
-      expect(find.text(context.l10n.directMessagesEmptyLabel), findsOneWidget);
-      final emptyText = tester.widget<Text>(
-        find.text(context.l10n.directMessagesEmptyLabel),
-      );
-      expect(
-        emptyText.style?.color,
-        context.appColors.textSecondary,
-      );
-      expect(
-        emptyText.style?.fontSize,
-        context.appTypography.statusBody.fontSize,
-      );
+      expect(find.byType(AppEmptyView), findsOneWidget);
+      expect(find.text(context.l10n.directMessagesEmptyLabel), findsNothing);
     });
 
     testWidgets('renders the failure label with a working retry action', (

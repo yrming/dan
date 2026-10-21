@@ -19,6 +19,7 @@ class StatusList extends StatefulWidget {
     this.scrollToTopKey,
     this.personalEmpty = false,
     this.emptyLabel,
+    this.showEmptyIllustration = false,
     this.enableRefresh = true,
     this.layout = StatusListLayout.timeline,
     super.key,
@@ -36,6 +37,9 @@ class StatusList extends StatefulWidget {
 
   /// Optional empty-state message for specialized feeds.
   final String? emptyLabel;
+
+  /// Whether to use the shared illustration instead of the empty label.
+  final bool showEmptyIllustration;
 
   @override
   State<StatusList> createState() => _StatusListState();
@@ -213,6 +217,7 @@ class _StatusListState extends State<StatusList> {
                 onRefresh: widget.enableRefresh ? _refresh : null,
                 child: _StatusListMessage(
                   text: widget.emptyLabel ?? context.l10n.statusListEmptyLabel,
+                  showEmptyIllustration: widget.showEmptyIllustration,
                 ),
               ),
               StatusListStatus.failure => _RefreshableStatusListMessage(
@@ -382,12 +387,19 @@ class _PlatformRefreshableScrollView extends StatelessWidget {
 }
 
 class _StatusListMessage extends StatelessWidget {
-  const _StatusListMessage({required this.text});
+  const _StatusListMessage({
+    required this.text,
+    required this.showEmptyIllustration,
+  });
 
   final String text;
+  final bool showEmptyIllustration;
 
   @override
   Widget build(BuildContext context) {
+    if (showEmptyIllustration) {
+      return AppEmptyView(semanticLabel: text);
+    }
     final sizing = context.appSizing;
     return Center(
       child: Padding(

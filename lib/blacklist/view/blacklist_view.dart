@@ -100,17 +100,8 @@ class _BlacklistViewState extends State<BlacklistView> {
             );
           }
           if (state.users.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-                child: Text(
-                  l10n.blacklistEmptyLabel,
-                  textAlign: TextAlign.center,
-                  style: context.appTypography.statusBody.copyWith(
-                    color: context.appColors.textSecondary,
-                  ),
-                ),
-              ),
+            return AppEmptyView(
+              semanticLabel: l10n.blacklistEmptyLabel,
             );
           }
           return NotificationListener<ScrollNotification>(
