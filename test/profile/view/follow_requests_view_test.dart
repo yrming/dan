@@ -105,7 +105,7 @@ void main() {
     });
 
     group('empty message', () {
-      testWidgets('shows the empty message when there are no requests', (
+      testWidgets('shows the empty illustration when there are no requests', (
         tester,
       ) async {
         when(() => cubit.state).thenReturn(
@@ -118,9 +118,10 @@ void main() {
           ),
         );
 
+        expect(find.byType(AppEmptyView), findsOneWidget);
         expect(
           find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'),
-          findsOneWidget,
+          findsNothing,
         );
       });
     });

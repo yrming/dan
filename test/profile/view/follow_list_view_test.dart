@@ -438,26 +438,23 @@ void main() {
         expect(find.text('User 0'), findsOneWidget);
       });
       for (final followers in [true, false]) {
-        for (final personal in [true, false]) {
-          testWidgets(
-            'shows the empty message for followers=$followers '
-            'and personal=$personal',
-            (tester) async {
-              await pumpView(
-                tester,
-                FollowListState(loading: false, hasMore: false),
-                followers: followers,
-                personal: personal,
-              );
-              expect(
-                find.text(
-                  '这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪',
-                ),
-                findsOneWidget,
-              );
-            },
-          );
-        }
+        testWidgets(
+          'shows the empty illustration for followers=$followers',
+          (tester) async {
+            await pumpView(
+              tester,
+              FollowListState(loading: false, hasMore: false),
+              followers: followers,
+            );
+            expect(find.byType(AppEmptyView), findsOneWidget);
+            expect(
+              find.text(
+                '这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪',
+              ),
+              findsNothing,
+            );
+          },
+        );
       }
       testWidgets('ends the list without a footer or pagination prompt', (
         tester,

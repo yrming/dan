@@ -43,7 +43,7 @@ void main() {
       TargetPlatform platform = TargetPlatform.android,
       ThemeMode themeMode = ThemeMode.light,
       String routePath = '/home',
-      bool personalEmpty = false,
+      String? emptyLabel,
     }) async {
       when(() => statusListBloc.state).thenReturn(state);
       final router = GoRouter(
@@ -54,7 +54,9 @@ void main() {
             builder: (_, _) => Scaffold(
               body: BlocProvider.value(
                 value: statusListBloc,
-                child: StatusList(personalEmpty: personalEmpty),
+                child: StatusList(
+                  emptyLabel: emptyLabel,
+                ),
               ),
             ),
           ),
@@ -182,24 +184,56 @@ void main() {
     });
 
     group('empty message', () {
-      for (final personal in [true, false]) {
-        testWidgets('shows the empty message for personal=$personal', (
+      testWidgets('uses the empty illustration by default', (tester) async {
+        await pumpStatusList(
           tester,
-        ) async {
-          await pumpStatusList(
-            tester,
-            StatusListState(status: StatusListStatus.empty),
-            personalEmpty: personal,
-          );
+          StatusListState(status: StatusListStatus.empty),
+        );
 
-          expect(
-            find.text(
-              '这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪',
-            ),
-            findsOneWidget,
-          );
-          expect(find.byType(AppEmptyView), findsNothing);
-        });
+        expect(find.byType(AppEmptyView), findsOneWidget);
+        expect(
+          find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'),
+          findsNothing,
+        );
+      });
+
+      testWidgets('uses the explicit empty label for illustration semantics', (
+        tester,
+      ) async {
+        await pumpStatusList(
+          tester,
+          StatusListState(status: StatusListStatus.empty),
+          emptyLabel: '列表数据异常',
+        );
+
+        expect(find.byType(AppEmptyView), findsOneWidget);
+        expect(find.text('列表数据异常'), findsNothing);
+      });
+
+      for (final hasMismatch in [true, false]) {
+        testWidgets(
+          'shows the profile count mismatch message only for '
+          'hasMismatch=$hasMismatch',
+          (tester) async {
+            await pumpStatusList(
+              tester,
+              StatusListState(
+                status: StatusListStatus.empty,
+                hasProfileCountMismatch: hasMismatch,
+              ),
+            );
+            final context = tester.element(find.byType(StatusList));
+
+            expect(
+              find.text(context.l10n.statusListEmptyLabel),
+              hasMismatch ? findsOneWidget : findsNothing,
+            );
+            expect(
+              find.byType(AppEmptyView),
+              hasMismatch ? findsNothing : findsOneWidget,
+            );
+          },
+        );
       }
     });
 

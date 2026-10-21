@@ -285,7 +285,6 @@ class _SearchViewState extends State<SearchView> {
                 child: StatusList(
                   key: ValueKey((_scope, state.searchQuery)),
                   emptyLabel: l10n.searchEmpty,
-                  showEmptyIllustration: true,
                   enableRefresh: false,
                 ),
               );

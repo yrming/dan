@@ -11,10 +11,17 @@ import 'package:status_repository/status_repository.dart';
 /// Photo statuses posted by one user.
 class UserPhotosPage extends StatelessWidget {
   /// Creates a user photos page.
-  const UserPhotosPage({required this.userId, super.key});
+  const UserPhotosPage({
+    required this.userId,
+    this.profileItemCount,
+    super.key,
+  });
 
   /// Identifier of the user whose photo statuses are displayed.
   final String userId;
+
+  /// Count shown on the profile entry used to open this list.
+  final int? profileItemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +48,9 @@ class UserPhotosPage extends StatelessWidget {
             feed: StatusFeed.photos,
             accountId: accountId,
             userId: userId,
+            profileItemCount: profileItemCount,
           )..add(const StatusListInitialLoadRequested()),
-          child: StatusList(
-            personalEmpty: userId == accountId,
+          child: const StatusList(
             layout: StatusListLayout.monthlyPhotos,
           ),
         ),

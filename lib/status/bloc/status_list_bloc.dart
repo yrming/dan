@@ -17,12 +17,14 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
     required StatusFeed feed,
     required String accountId,
     String? userId,
+    int? profileItemCount,
   }) {
     return StatusListBloc._(
       statusRepository,
       feed,
       accountId,
       userId ?? accountId,
+      profileItemCount,
     );
   }
 
@@ -31,6 +33,7 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
     this._feed,
     this._accountId,
     this._userId,
+    this._profileItemCount,
   ) : super(StatusListState()) {
     on<StatusListSearchSubmitted>(
       _onSearchSubmitted,
@@ -67,6 +70,7 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
   final StatusFeed _feed;
   final String _accountId;
   final String _userId;
+  final int? _profileItemCount;
   late final StreamSubscription<StatusChange> _statusChangesSubscription;
 
   int _requestVersion = 0;
@@ -149,6 +153,8 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
           status: statuses.isEmpty
               ? StatusListStatus.empty
               : StatusListStatus.success,
+          hasProfileCountMismatch:
+              statuses.isEmpty && state.hasProfileCountMismatch,
           refreshStatus: StatusRefreshStatus.idle,
           statuses: statuses,
           hasMore: preservePaginationFrontier ? state.hasMore : page.hasMore,
@@ -237,6 +243,8 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
     if (identical(statuses, state.statuses)) return;
     emit(
       state.copyWith(
+        hasProfileCountMismatch:
+            statuses.isEmpty && state.hasProfileCountMismatch,
         status: statuses.isEmpty
             ? StatusListStatus.empty
             : StatusListStatus.success,
@@ -386,6 +394,12 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
       status: page.statuses.isEmpty
           ? StatusListStatus.empty
           : StatusListStatus.success,
+      hasProfileCountMismatch:
+          (_feed == StatusFeed.user ||
+              _feed == StatusFeed.photos ||
+              _feed == StatusFeed.favorites) &&
+          (_profileItemCount ?? 0) > 0 &&
+          page.statuses.isEmpty,
       searchQuery: state.searchQuery,
       statuses: page.statuses,
       hasMore: page.hasMore,

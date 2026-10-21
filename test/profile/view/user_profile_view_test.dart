@@ -777,9 +777,9 @@ void main() {
     group('returning from status lists', () {
       for (final isCurrentUser in [true, false]) {
         for (final entry in [
-          (label: '消息', destination: 'statuses-user-a'),
-          (label: '收藏', destination: 'favorites-user-a'),
-          (label: '照片', destination: 'photos-user-a'),
+          (label: '消息', destination: 'statuses-user-a', count: 42),
+          (label: '收藏', destination: 'favorites-user-a', count: 5),
+          (label: '照片', destination: 'photos-user-a', count: 7),
         ]) {
           testWidgets(
             'refreshes after ${entry.label} only for '
@@ -795,6 +795,10 @@ void main() {
               await tester.tap(find.text(entry.label));
               await tester.pumpAndSettle();
               expect(find.text(entry.destination), findsOneWidget);
+              expect(
+                router.state.uri.queryParameters['profileItemCount'],
+                '${entry.count}',
+              );
               verifyNever(() => userProfileCubit.load());
 
               router.pop();

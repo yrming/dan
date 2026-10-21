@@ -17,15 +17,11 @@ class StatusList extends StatefulWidget {
   /// Creates a status list.
   const StatusList({
     this.scrollToTopKey,
-    this.personalEmpty = false,
     this.emptyLabel,
-    this.showEmptyIllustration = false,
     this.enableRefresh = true,
     this.layout = StatusListLayout.timeline,
     super.key,
   });
-
-  final bool personalEmpty;
 
   /// Layout used for statuses and their loading placeholders.
   final StatusListLayout layout;
@@ -35,11 +31,8 @@ class StatusList extends StatefulWidget {
   /// Whether pulling down requests the newest statuses.
   final bool enableRefresh;
 
-  /// Optional empty-state message for specialized feeds.
+  /// Optional accessible description for the empty-state illustration.
   final String? emptyLabel;
-
-  /// Whether to use the shared illustration instead of the empty label.
-  final bool showEmptyIllustration;
 
   @override
   State<StatusList> createState() => _StatusListState();
@@ -215,10 +208,11 @@ class _StatusListState extends State<StatusList> {
               StatusListStatus.empty => _RefreshableStatusListMessage(
                 scrollController: _scrollController,
                 onRefresh: widget.enableRefresh ? _refresh : null,
-                child: _StatusListMessage(
-                  text: widget.emptyLabel ?? context.l10n.statusListEmptyLabel,
-                  showEmptyIllustration: widget.showEmptyIllustration,
-                ),
+                child: state.hasProfileCountMismatch
+                    ? _StatusListMessage(
+                        text: context.l10n.statusListEmptyLabel,
+                      )
+                    : AppEmptyView(semanticLabel: widget.emptyLabel),
               ),
               StatusListStatus.failure => _RefreshableStatusListMessage(
                 scrollController: _scrollController,
@@ -389,17 +383,12 @@ class _PlatformRefreshableScrollView extends StatelessWidget {
 class _StatusListMessage extends StatelessWidget {
   const _StatusListMessage({
     required this.text,
-    required this.showEmptyIllustration,
   });
 
   final String text;
-  final bool showEmptyIllustration;
 
   @override
   Widget build(BuildContext context) {
-    if (showEmptyIllustration) {
-      return AppEmptyView(semanticLabel: text);
-    }
     final sizing = context.appSizing;
     return Center(
       child: Padding(

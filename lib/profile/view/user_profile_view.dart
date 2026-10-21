@@ -252,6 +252,7 @@ class _ProfileContent extends StatelessWidget {
                           context,
                           routeName: AppRouteName.userStatuses,
                           userId: profile.id,
+                          profileItemCount: profile.statusesCount ?? 0,
                         ),
                       );
                     }),
@@ -268,6 +269,7 @@ class _ProfileContent extends StatelessWidget {
                           context,
                           routeName: AppRouteName.userPhotos,
                           userId: profile.id,
+                          profileItemCount: profile.photoCount ?? 0,
                         ),
                       );
                     }),
@@ -284,6 +286,7 @@ class _ProfileContent extends StatelessWidget {
                           context,
                           routeName: AppRouteName.favorites,
                           userId: profile.id,
+                          profileItemCount: profile.favoritesCount ?? 0,
                         ),
                       );
                     }),
@@ -310,10 +313,14 @@ class _ProfileContent extends StatelessWidget {
     BuildContext context, {
     required String routeName,
     required String userId,
+    int? profileItemCount,
   }) async {
     await context.pushNamed<void>(
       routeName,
       pathParameters: {'userId': userId},
+      queryParameters: {
+        if (profileItemCount != null) 'profileItemCount': '$profileItemCount',
+      },
     );
   }
 

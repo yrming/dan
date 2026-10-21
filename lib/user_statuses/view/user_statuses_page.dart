@@ -11,10 +11,17 @@ import 'package:status_repository/status_repository.dart';
 /// Statuses posted by one user.
 class UserStatusesPage extends StatelessWidget {
   /// Creates a user statuses page.
-  const UserStatusesPage({required this.userId, super.key});
+  const UserStatusesPage({
+    required this.userId,
+    this.profileItemCount,
+    super.key,
+  });
 
   /// Identifier of the user whose statuses are displayed.
   final String userId;
+
+  /// Count shown on the profile entry used to open this list.
+  final int? profileItemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +48,9 @@ class UserStatusesPage extends StatelessWidget {
             feed: StatusFeed.user,
             accountId: accountId,
             userId: userId,
+            profileItemCount: profileItemCount,
           )..add(const StatusListInitialLoadRequested()),
-          child: StatusList(
-            personalEmpty: userId == accountId,
+          child: const StatusList(
             layout: StatusListLayout.moments,
           ),
         ),

@@ -92,6 +92,7 @@ final class StatusListState extends Equatable {
   StatusListState({
     this.status = StatusListStatus.initial,
     this.searchQuery = '',
+    this.hasProfileCountMismatch = false,
     this.refreshStatus = StatusRefreshStatus.idle,
     this.loadMoreStatus = StatusLoadMoreStatus.idle,
     Iterable<Status> statuses = const [],
@@ -113,6 +114,9 @@ final class StatusListState extends Equatable {
 
   /// Submitted keyword for a search feed.
   final String searchQuery;
+
+  /// Whether a positive profile count conflicts with an empty first page.
+  final bool hasProfileCountMismatch;
 
   /// Pull-to-refresh status.
   final StatusRefreshStatus refreshStatus;
@@ -144,6 +148,7 @@ final class StatusListState extends Equatable {
   /// Returns a copy with selected fields replaced.
   StatusListState copyWith({
     StatusListStatus? status,
+    bool? hasProfileCountMismatch,
     StatusRefreshStatus? refreshStatus,
     StatusLoadMoreStatus? loadMoreStatus,
     Iterable<Status>? statuses,
@@ -157,6 +162,8 @@ final class StatusListState extends Equatable {
   }) {
     return StatusListState(
       status: status ?? this.status,
+      hasProfileCountMismatch:
+          hasProfileCountMismatch ?? this.hasProfileCountMismatch,
       searchQuery: searchQuery,
       refreshStatus: refreshStatus ?? this.refreshStatus,
       loadMoreStatus: loadMoreStatus ?? this.loadMoreStatus,
@@ -183,6 +190,7 @@ final class StatusListState extends Equatable {
   @override
   List<Object?> get props => [
     status,
+    hasProfileCountMismatch,
     searchQuery,
     refreshStatus,
     loadMoreStatus,

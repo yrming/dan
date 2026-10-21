@@ -289,6 +289,9 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             state: state,
             child: FavoritesPage(
               userId: state.pathParameters['userId']!,
+              profileItemCount: int.tryParse(
+                state.uri.queryParameters['profileItemCount'] ?? '',
+              ),
             ),
           ),
         ),
@@ -303,6 +306,9 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             state: state,
             child: UserStatusesPage(
               userId: state.pathParameters['userId']!,
+              profileItemCount: int.tryParse(
+                state.uri.queryParameters['profileItemCount'] ?? '',
+              ),
             ),
           ),
         ),
@@ -317,6 +323,9 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             state: state,
             child: UserPhotosPage(
               userId: state.pathParameters['userId']!,
+              profileItemCount: int.tryParse(
+                state.uri.queryParameters['profileItemCount'] ?? '',
+              ),
             ),
           ),
         ),

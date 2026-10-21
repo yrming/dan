@@ -1420,6 +1420,97 @@ void main() {
       expect(find.byType(BackButton), findsOneWidget);
     });
 
+    group('profile list empty states', () {
+      for (final entry in [
+        (label: '消息', route: AppRouteName.userStatuses),
+        (label: '照片', route: AppRouteName.userPhotos),
+        (label: '收藏', route: AppRouteName.favorites),
+      ]) {
+        for (final count in [null, 0, 42]) {
+          testWidgets(
+            'shows the matching empty state for '
+            '$entry with profile count=$count',
+            (tester) async {
+              when(() => userRepository.getUser(_author.id)).thenAnswer(
+                (_) async => UserProfile(
+                  id: _author.id,
+                  name: _author.name,
+                  screenName: _author.screenName,
+                  statusesCount: count,
+                  photoCount: count,
+                  favoritesCount: count,
+                ),
+              );
+              final emptyPage = status_repository.StatusPage(
+                statuses: const [],
+                hasMore: false,
+              );
+              when(
+                () => statusRepository.getUserTimeline(userId: _author.id),
+              ).thenAnswer((_) async => emptyPage);
+              when(
+                () => statusRepository.getPhotoTimeline(userId: _author.id),
+              ).thenAnswer((_) async => emptyPage);
+              when(
+                () => statusRepository.getFavorites(userId: _author.id),
+              ).thenAnswer((_) async => emptyPage);
+              await pumpAppView(tester, _authenticatedState);
+              final context = tester.element(find.byType(AppShell));
+
+              await tester.tap(find.text(_author.name));
+              await pumpNavigation(tester);
+              await tester.tap(find.text(entry.label));
+              await pumpNavigation(tester);
+
+              expect(
+                find.text(context.l10n.statusListEmptyLabel),
+                (count ?? 0) > 0 ? findsOneWidget : findsNothing,
+              );
+              expect(
+                find.byType(AppEmptyView),
+                (count ?? 0) > 0 ? findsNothing : findsOneWidget,
+              );
+            },
+          );
+        }
+
+        testWidgets(
+          'shows the illustration when opening $entry without a profile count',
+          (tester) async {
+            final emptyPage = status_repository.StatusPage(
+              statuses: const [],
+              hasMore: false,
+            );
+            when(
+              () => statusRepository.getUserTimeline(userId: _author.id),
+            ).thenAnswer((_) async => emptyPage);
+            when(
+              () => statusRepository.getPhotoTimeline(userId: _author.id),
+            ).thenAnswer((_) async => emptyPage);
+            when(
+              () => statusRepository.getFavorites(userId: _author.id),
+            ).thenAnswer((_) async => emptyPage);
+            await pumpAppView(tester, _authenticatedState);
+            final context = tester.element(find.byType(AppShell));
+
+            unawaited(
+              context.pushNamed<void>(
+                entry.route,
+                pathParameters: {'userId': _author.id},
+              ),
+            );
+            await pumpNavigation(tester);
+
+            expect(find.byType(AppEmptyView), findsOneWidget);
+            expect(
+              find.text(context.l10n.statusListEmptyLabel),
+              findsNothing,
+            );
+          },
+        );
+      }
+    });
+
     testWidgets('opens another user favorites from their profile', (
       tester,
     ) async {

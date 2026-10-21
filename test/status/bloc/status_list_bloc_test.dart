@@ -30,12 +30,14 @@ void main() {
     StatusListBloc buildSubject([
       StatusFeed feed = StatusFeed.home,
       String? userId,
+      int? profileItemCount,
     ]) {
       return StatusListBloc(
         statusRepository: statusRepository,
         feed: feed,
         accountId: 'account-a',
         userId: userId,
+        profileItemCount: profileItemCount,
       );
     }
 
@@ -45,6 +47,154 @@ void main() {
 
       expect(bloc.state, StatusListState());
       expect(() => bloc.state.statuses.clear(), throwsUnsupportedError);
+    });
+
+    group('profile count mismatch', () {
+      for (final feed in [
+        StatusFeed.user,
+        StatusFeed.photos,
+        StatusFeed.favorites,
+        StatusFeed.home,
+      ]) {
+        for (final count in [null, -1, 0, 42]) {
+          for (final isEmpty in [true, false]) {
+            blocTest<StatusListBloc, StatusListState>(
+              'flags an empty profile response for '
+              'feed=$feed, count=$count, isEmpty=$isEmpty',
+              setUp: () {
+                final page = status_repository.StatusPage(
+                  statuses: isEmpty ? const [] : const [_statusA],
+                  hasMore: false,
+                );
+                switch (feed) {
+                  case StatusFeed.user:
+                    when(
+                      () => statusRepository.getUserTimeline(userId: 'user-b'),
+                    ).thenAnswer((_) async => page);
+                  case StatusFeed.photos:
+                    when(
+                      () => statusRepository.getPhotoTimeline(userId: 'user-b'),
+                    ).thenAnswer((_) async => page);
+                  case StatusFeed.favorites:
+                    when(
+                      () => statusRepository.getFavorites(userId: 'user-b'),
+                    ).thenAnswer((_) async => page);
+                  case StatusFeed.home:
+                    when(
+                      () => statusRepository.getHomeTimeline(),
+                    ).thenAnswer((_) async => page);
+                  case StatusFeed.public ||
+                      StatusFeed.search ||
+                      StatusFeed.searchMine ||
+                      StatusFeed.searchUser ||
+                      StatusFeed.mentions:
+                    throw StateError('Unexpected test feed: $feed');
+                }
+              },
+              build: () => buildSubject(feed, 'user-b', count),
+              act: (bloc) => bloc.add(const StatusListInitialLoadRequested()),
+              expect: () => [
+                StatusListState(status: StatusListStatus.loading),
+                StatusListState(
+                  status: isEmpty
+                      ? StatusListStatus.empty
+                      : StatusListStatus.success,
+                  statuses: isEmpty ? const [] : const [_statusA],
+                  hasMore: false,
+                  hasProfileCountMismatch:
+                      feed != StatusFeed.home && (count ?? 0) > 0 && isEmpty,
+                ),
+              ],
+              verify: (_) {
+                switch (feed) {
+                  case StatusFeed.user:
+                    verify(
+                      () => statusRepository.getUserTimeline(userId: 'user-b'),
+                    ).called(1);
+                  case StatusFeed.photos:
+                    verify(
+                      () => statusRepository.getPhotoTimeline(userId: 'user-b'),
+                    ).called(1);
+                  case StatusFeed.favorites:
+                    verify(
+                      () => statusRepository.getFavorites(userId: 'user-b'),
+                    ).called(1);
+                  case StatusFeed.home:
+                    verify(
+                      () => statusRepository.getHomeTimeline(),
+                    ).called(1);
+                  case StatusFeed.public ||
+                      StatusFeed.search ||
+                      StatusFeed.searchMine ||
+                      StatusFeed.searchUser ||
+                      StatusFeed.mentions:
+                    throw StateError('Unexpected test feed: $feed');
+                }
+              },
+            );
+          }
+        }
+      }
+
+      for (final isEmpty in [true, false]) {
+        blocTest<StatusListBloc, StatusListState>(
+          'preserves the mismatch only while refresh stays empty=$isEmpty',
+          setUp: () {
+            when(
+              () => statusRepository.getUserTimeline(userId: 'user-b'),
+            ).thenAnswer(
+              (_) async => status_repository.StatusPage(
+                statuses: isEmpty ? const [] : const [_statusA],
+                hasMore: false,
+              ),
+            );
+          },
+          build: () => buildSubject(StatusFeed.user, 'user-b', 42),
+          seed: () => StatusListState(
+            status: StatusListStatus.empty,
+            hasProfileCountMismatch: true,
+            hasMore: false,
+          ),
+          act: (bloc) => bloc.add(const StatusListRefreshRequested()),
+          expect: () => [
+            StatusListState(
+              status: StatusListStatus.empty,
+              hasProfileCountMismatch: true,
+              hasMore: false,
+              refreshStatus: StatusRefreshStatus.inProgress,
+            ),
+            StatusListState(
+              status: isEmpty
+                  ? StatusListStatus.empty
+                  : StatusListStatus.success,
+              hasProfileCountMismatch: isEmpty,
+              statuses: isEmpty ? const [] : const [_statusA],
+              hasMore: false,
+            ),
+          ],
+        );
+      }
+
+      blocTest<StatusListBloc, StatusListState>(
+        'does not flag a mismatch when the last loaded status is deleted',
+        build: () => buildSubject(StatusFeed.user, 'user-b', 42),
+        seed: () => StatusListState(
+          status: StatusListStatus.success,
+          statuses: const [_statusA],
+          hasMore: false,
+        ),
+        act: (bloc) => bloc.add(
+          StatusListStatusChanged(
+            status_repository.StatusDeleted(
+              accountId: 'account-a',
+              statusId: _statusA.id,
+            ),
+          ),
+        ),
+        expect: () => [
+          StatusListState(status: StatusListStatus.empty, hasMore: false),
+        ],
+      );
     });
 
     group('search', () {

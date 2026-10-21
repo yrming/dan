@@ -11,10 +11,17 @@ import 'package:status_repository/status_repository.dart';
 /// Favorite statuses page.
 class FavoritesPage extends StatelessWidget {
   /// Creates a favorites page.
-  const FavoritesPage({required this.userId, super.key});
+  const FavoritesPage({
+    required this.userId,
+    this.profileItemCount,
+    super.key,
+  });
 
   /// Identifier of the user whose favorites are displayed.
   final String userId;
+
+  /// Count shown on the profile entry used to open this list.
+  final int? profileItemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +48,9 @@ class FavoritesPage extends StatelessWidget {
             feed: StatusFeed.favorites,
             accountId: accountId,
             userId: userId,
+            profileItemCount: profileItemCount,
           )..add(const StatusListInitialLoadRequested()),
-          child: StatusList(personalEmpty: userId == accountId),
+          child: const StatusList(),
         ),
       ),
     );
