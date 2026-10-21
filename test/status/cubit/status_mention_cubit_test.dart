@@ -46,7 +46,10 @@ void main() {
         act: (cubit) => cubit.load(),
         expect: () => [
           StatusMentionState(loading: true),
-          StatusMentionState(users: const [_author, _other]),
+          StatusMentionState(
+            users: const [_author, _other],
+            hasRecentUsers: true,
+          ),
         ],
         verify: (_) =>
             verify(() => repository.getMentions(limit: 60)).called(1),
@@ -78,7 +81,7 @@ void main() {
           StatusMentionState(loading: true),
           StatusMentionState(failed: true),
           StatusMentionState(loading: true),
-          StatusMentionState(users: const [_author]),
+          StatusMentionState(users: const [_author], hasRecentUsers: true),
         ],
       );
     });
@@ -96,10 +99,14 @@ void main() {
           },
           expect: () => [
             StatusMentionState(loading: true),
-            StatusMentionState(users: const [_author]),
-            StatusMentionState(query: query, users: const [_author]),
-            StatusMentionState(query: 'missing'),
-            StatusMentionState(users: const [_author]),
+            StatusMentionState(users: const [_author], hasRecentUsers: true),
+            StatusMentionState(
+              query: query,
+              users: const [_author],
+              hasRecentUsers: true,
+            ),
+            StatusMentionState(query: 'missing', hasRecentUsers: true),
+            StatusMentionState(users: const [_author], hasRecentUsers: true),
           ],
           verify: (_) {
             verify(() => repository.getMentions(limit: 60)).called(1);
@@ -125,7 +132,11 @@ void main() {
         expect: () => [
           StatusMentionState(loading: true),
           StatusMentionState(query: '饭友', loading: true),
-          StatusMentionState(query: '饭友', users: const [_author]),
+          StatusMentionState(
+            query: '饭友',
+            users: const [_author],
+            hasRecentUsers: true,
+          ),
         ],
       );
     });

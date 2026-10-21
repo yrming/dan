@@ -7,17 +7,21 @@ final class StatusMentionState extends Equatable {
   StatusMentionState({
     this.query = '',
     List<StatusAuthor> users = const [],
+    this.hasRecentUsers = false,
     this.loading = false,
     this.failed = false,
   }) : users = List.unmodifiable(users);
 
   final String query;
   final List<StatusAuthor> users;
+
+  /// Whether the unfiltered recent-mention author list contains any users.
+  final bool hasRecentUsers;
   final bool loading;
   final bool failed;
 
   @override
-  List<Object> get props => [query, users, loading, failed];
+  List<Object> get props => [query, users, hasRecentUsers, loading, failed];
 }
 
 /// Suggests distinct authors from the latest messages mentioning this account.
@@ -67,6 +71,7 @@ class StatusMentionCubit extends Cubit<StatusMentionState> {
                   user.id.toLowerCase().contains(keyword),
             )
             .toList(),
+        hasRecentUsers: _authors.isNotEmpty,
         loading: loading,
         failed: failed,
       ),

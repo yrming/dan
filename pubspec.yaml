@@ -68,6 +68,7 @@ flutter:
     - assets/about.md
     - assets/icons/empty.svg
     - assets/icons/logo.png
+    - assets/icons/logo.svg
     - assets/user-agreement.md
     - assets/privacy-policy.md
 

@@ -8,11 +8,10 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
   final theme = Theme.of(context);
   final colors = context.appColors;
   final sizing = context.appSizing;
-  final compact = MediaQuery.sizeOf(context).width <= 600;
   final body = theme.textTheme.bodyMedium!.copyWith(
     color: colors.documentBody,
-    fontSize: sizing.scaled(compact ? 15 : 16),
-    height: 1.5,
+    fontSize: sizing.scaled(16),
+    height: 1.6,
     letterSpacing: 0,
   );
   final heading = body.copyWith(
@@ -26,12 +25,12 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
     blockSpacing: sizing.scaled(AppSpacing.space10),
     pPadding: EdgeInsets.only(bottom: sizing.scaled(AppSpacing.space6)),
     h1: heading.copyWith(
-      fontSize: sizing.scaled(compact ? 27 : 32),
+      fontSize: sizing.scaled(26),
       height: 1.4,
     ),
     h1Padding: EdgeInsets.only(bottom: sizing.scaled(18)),
     h2: heading.copyWith(
-      fontSize: sizing.scaled(compact ? 19 : 21),
+      fontSize: sizing.scaled(20),
       height: 1.5,
     ),
     h2Padding: EdgeInsets.only(

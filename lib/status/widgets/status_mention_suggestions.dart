@@ -68,7 +68,7 @@ class _StatusMentionSuggestionsState extends State<StatusMentionSuggestions> {
         _cubit = StatusMentionCubit(
           statusRepository: context.read<StatusRepository>(),
         );
-        unawaited(_cubit!.load());
+        unawaited(_loadRecentUsers(_cubit!));
       }
       _cubit!.queryChanged(
         widget.controller.text.substring(
@@ -76,10 +76,30 @@ class _StatusMentionSuggestionsState extends State<StatusMentionSuggestions> {
           widget.controller.selection.end,
         ),
       );
+      final state = _cubit!.state;
+      if (!state.loading && !state.failed && !state.hasRecentUsers) {
+        _portal.hide();
+        return;
+      }
       _editor = _editable();
       _portal.show();
       setState(() {});
     });
+  }
+
+  Future<void> _loadRecentUsers(StatusMentionCubit cubit) async {
+    await cubit.load();
+    if (!mounted ||
+        !identical(_cubit, cubit) ||
+        !widget.enabled ||
+        !widget.focusNode.hasFocus ||
+        widget.controller.activeMention == null) {
+      return;
+    }
+    final state = cubit.state;
+    if (!state.loading && !state.failed && !state.hasRecentUsers) {
+      _portal.hide();
+    }
   }
 
   RenderEditable? _editable() {
@@ -152,7 +172,7 @@ class _StatusMentionSuggestionsState extends State<StatusMentionSuggestions> {
                   }
                   if (state.failed) {
                     return TextButton(
-                      onPressed: () => unawaited(_cubit!.load()),
+                      onPressed: () => unawaited(_loadRecentUsers(_cubit!)),
                       child: Text(context.l10n.retryButtonLabel),
                     );
                   }

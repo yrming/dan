@@ -67,7 +67,7 @@
     "favoritesPageTitle": "收藏",
     "settingsPageTitle": "设置",
     "settingsAboutLabel": "关于",
-    "aboutWhyLabel": "为什么",
+    "aboutWhyLabel": "一些说明",
     "aboutVersion": "版本 {version}",
     "@aboutVersion": {
         "description": "关于页中的应用版本号",

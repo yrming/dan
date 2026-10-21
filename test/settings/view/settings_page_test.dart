@@ -103,7 +103,7 @@ void main() {
           expect(
             find.text(
               switch (document) {
-                'why' => '为什么',
+                'why' => '一些说明',
                 'user-agreement' => '一、协议范围与服务性质',
                 _ => '一、适用范围',
               },

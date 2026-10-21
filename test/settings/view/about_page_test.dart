@@ -39,7 +39,7 @@ void main() {
             tester.getTopLeft(copyright).dy,
             greaterThan(tester.getBottomLeft(version).dy),
           );
-          expect(find.text('为什么').hitTestable(), findsOneWidget);
+          expect(find.text('一些说明').hitTestable(), findsOneWidget);
           expect(
             find.byKey(const Key('about-user-agreement-row')),
             findsOneWidget,

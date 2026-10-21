@@ -18,7 +18,7 @@ void main() {
           const Duration(seconds: 10),
         );
 
-        expect(find.text('为什么'), findsOneWidget);
+        expect(find.text('一些说明'), findsOneWidget);
         final source = await rootBundle.loadString('assets/about.md');
         expect(
           tester.widget<MarkdownBody>(find.byType(MarkdownBody)).data,

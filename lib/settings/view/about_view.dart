@@ -3,6 +3,7 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:remixicon/remixicon.dart';
 
 /// Displays the app identity, its story, and legal document links.
@@ -74,8 +75,8 @@ class AboutView extends StatelessWidget {
                                     AppLayout.actionSheetGroupRadius,
                                   ),
                                 ),
-                                child: Image.asset(
-                                  'assets/icons/logo.png',
+                                child: SvgPicture.asset(
+                                  'assets/icons/logo.svg',
                                   width: sizing.scaled(80),
                                   height: sizing.scaled(80),
                                   excludeFromSemantics: true,

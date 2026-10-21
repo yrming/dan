@@ -111,7 +111,7 @@ void main() {
           expect(popup, findsNothing);
         },
       );
-      testWidgets('shows empty matching results and supports retry', (
+      testWidgets('closes after retry when there are no recent users', (
         tester,
       ) async {
         when(
@@ -125,8 +125,29 @@ void main() {
         );
         await tester.tap(find.text('重试'));
         await tester.pumpAndSettle();
+        expect(popup, findsNothing);
+        expect(find.byType(AppEmptyView), findsNothing);
+      });
+      testWidgets('keeps suggestions open when no recent user matches', (
+        tester,
+      ) async {
+        await pump(tester);
+        await tester.enterText(editor, '@missing');
+        await tester.pumpAndSettle();
+        expect(popup, findsOneWidget);
         expect(find.byType(AppEmptyView), findsOneWidget);
-        expect(find.text('最近 @我的人中没有匹配用户'), findsNothing);
+      });
+      testWidgets('closes suggestions when there are no recent users', (
+        tester,
+      ) async {
+        when(() => statuses.getMentions(limit: 60)).thenAnswer(
+          (_) async => StatusPage(statuses: const [], hasMore: false),
+        );
+        await pump(tester);
+        await tester.enterText(editor, '@');
+        await tester.pumpAndSettle();
+        expect(popup, findsNothing);
+        verify(() => statuses.getMentions(limit: 60)).called(1);
       });
     });
   });
