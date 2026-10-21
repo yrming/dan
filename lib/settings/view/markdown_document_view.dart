@@ -107,6 +107,7 @@ class _MarkdownDocumentViewState extends State<MarkdownDocumentView> {
 
             return SafeArea(
               top: false,
+              bottom: false,
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(
                   horizontal: sizing.scaled(AppSpacing.md),
