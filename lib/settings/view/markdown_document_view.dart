@@ -109,8 +109,8 @@ class _MarkdownDocumentViewState extends State<MarkdownDocumentView> {
               top: false,
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(
-                  horizontal: sizing.scaled(AppSpacing.lg),
-                  vertical: sizing.scaled(AppSpacing.xl),
+                  horizontal: sizing.scaled(AppSpacing.md),
+                  vertical: sizing.scaled(AppSpacing.sm),
                 ),
                 child: Center(
                   child: ConstrainedBox(
