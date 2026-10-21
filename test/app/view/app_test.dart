@@ -36,7 +36,9 @@ import 'package:direct_message_repository/direct_message_repository.dart'
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
@@ -252,6 +254,76 @@ void main() {
       );
 
       expect(find.byType(LoginPage), findsOneWidget);
+    });
+
+    group('login legal documents', () {
+      // Cached asset futures must not cross widget test async scopes.
+      setUp(rootBundle.clear);
+
+      for (final isAddingAccount in [false, true]) {
+        testWidgets(
+          'reads agreements in app and returns to login '
+          'when adding an account=$isAddingAccount',
+          (tester) async {
+            await pumpAppView(
+              tester,
+              isAddingAccount
+                  ? _authenticatedState
+                  : AuthenticationUnauthenticated(
+                      AuthenticationSnapshot.unauthenticated(),
+                    ),
+            );
+            if (isAddingAccount) {
+              final context = tester.element(find.byType(AppShell));
+              unawaited(
+                context.pushNamed<void>(
+                  AppRouteName.addAccount,
+                  pathParameters: {'userId': _account.id},
+                ),
+              );
+              await pumpNavigation(tester);
+            }
+            final context = tester.element(find.byType(LoginView));
+
+            for (final document in [
+              (
+                label: context.l10n.settingsUserAgreementLabel,
+                content: '一、协议范围与服务性质',
+                path: AppRoutePath.publicUserAgreement,
+              ),
+              (
+                label: context.l10n.settingsPrivacyPolicyLabel,
+                content: '一、适用范围',
+                path: AppRoutePath.publicPrivacyPolicy,
+              ),
+            ]) {
+              await tester.tapOnText(
+                find.textRange.ofSubstring(document.label),
+              );
+              await pumpNavigation(tester);
+              await tester.pumpAndSettle();
+
+              expect(find.byType(LegalDocumentPage), findsOneWidget);
+              expect(find.byType(MarkdownBody), findsOneWidget);
+              expect(find.text(document.content), findsOneWidget);
+              expect(
+                GoRouter.of(
+                  tester.element(find.byType(LegalDocumentPage)),
+                ).state.uri.path,
+                document.path,
+              );
+
+              await tester.tap(find.byType(BackButton));
+              await pumpNavigation(tester);
+              expect(find.byType(LoginView), findsOneWidget);
+              expect(
+                find.byType(isAddingAccount ? AddAccountPage : LoginPage),
+                findsOneWidget,
+              );
+            }
+          },
+        );
+      }
     });
 
     testWidgets('renders the authenticated home shell', (tester) async {

@@ -36,6 +36,9 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
 
       final isLoadingRoute = path == AppRoutePath.loading;
       final isLoginRoute = path == AppRoutePath.login;
+      final isPublicLegalRoute =
+          path == AppRoutePath.publicUserAgreement ||
+          path == AppRoutePath.publicPrivacyPolicy;
       final isFailureRoute = path == AppRoutePath.authenticationFailure;
 
       return switch (authenticationState) {
@@ -44,7 +47,7 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
         AuthenticationRestoreFailure() =>
           isFailureRoute ? null : AppRoutePath.authenticationFailure,
         AuthenticationUnauthenticated() =>
-          isLoginRoute ? null : AppRoutePath.login,
+          isLoginRoute || isPublicLegalRoute ? null : AppRoutePath.login,
         AuthenticationAuthenticated() =>
           isLoadingRoute || isLoginRoute || isFailureRoute
               ? AppRoutePath.home
@@ -78,6 +81,22 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             state: state,
             child: const LoginPage(),
           ),
+        ),
+      ),
+      GoRoute(
+        name: AppRouteName.publicUserAgreement,
+        path: AppRoutePath.publicUserAgreement,
+        pageBuilder: (context, state) => _buildCupertinoPage(
+          state,
+          const LegalDocumentPage(),
+        ),
+      ),
+      GoRoute(
+        name: AppRouteName.publicPrivacyPolicy,
+        path: AppRoutePath.publicPrivacyPolicy,
+        pageBuilder: (context, state) => _buildCupertinoPage(
+          state,
+          const LegalDocumentPage(privacyPolicy: true),
         ),
       ),
       GoRoute(

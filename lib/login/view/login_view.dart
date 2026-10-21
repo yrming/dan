@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dan/app/configuration/app_links.dart';
+import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/app/widgets/widgets.dart';
@@ -9,21 +9,16 @@ import 'package:dan/login/bloc/login_bloc.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:remixicon/remixicon.dart';
-
-/// Opens an external link from the login page.
-typedef LoginExternalLinkLauncher = Future<bool> Function(Uri uri);
 
 /// Renders the login experience and dispatches user actions.
 class LoginView extends StatelessWidget {
   /// Creates a login view.
-  const LoginView({this.onClose, this.externalLinkLauncher, super.key});
+  const LoginView({this.onClose, super.key});
 
   /// Optional callback used by a full-screen add-account presentation.
   final VoidCallback? onClose;
-
-  /// Opens a legal document when its link is tapped.
-  final LoginExternalLinkLauncher? externalLinkLauncher;
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +70,7 @@ class LoginView extends StatelessWidget {
                               tagline: context.l10n.loginTagline,
                             ),
                             const Spacer(),
-                            _OAuthOptions(
-                              state: state,
-                              externalLinkLauncher:
-                                  externalLinkLauncher ?? AppLinks.openExternal,
-                            ),
+                            _OAuthOptions(state: state),
                           ],
                         ),
                       ),
@@ -128,13 +119,9 @@ class _Brand extends StatelessWidget {
 }
 
 class _OAuthOptions extends StatelessWidget {
-  const _OAuthOptions({
-    required this.state,
-    required this.externalLinkLauncher,
-  });
+  const _OAuthOptions({required this.state});
 
   final LoginState state;
-  final LoginExternalLinkLauncher externalLinkLauncher;
 
   @override
   Widget build(BuildContext context) {
@@ -164,18 +151,14 @@ class _OAuthOptions extends StatelessWidget {
           label: Text(context.l10n.loginOAuthButtonLabel),
         ),
         SizedBox(height: sizing.scaled(AppSpacing.sm)),
-        _LoginConsent(
-          externalLinkLauncher: externalLinkLauncher,
-        ),
+        const _LoginConsent(),
       ],
     );
   }
 }
 
 class _LoginConsent extends StatefulWidget {
-  const _LoginConsent({required this.externalLinkLauncher});
-
-  final LoginExternalLinkLauncher externalLinkLauncher;
+  const _LoginConsent();
 
   @override
   State<_LoginConsent> createState() => _LoginConsentState();
@@ -223,11 +206,11 @@ class _LoginConsentState extends State<_LoginConsent> {
     );
     final agreementRecognizer = TapGestureRecognizer()
       ..onTap = () => unawaited(
-        widget.externalLinkLauncher(AppLinks.userAgreement),
+        context.pushNamed<void>(AppRouteName.publicUserAgreement),
       );
     final privacyRecognizer = TapGestureRecognizer()
       ..onTap = () => unawaited(
-        widget.externalLinkLauncher(AppLinks.privacyPolicy),
+        context.pushNamed<void>(AppRouteName.publicPrivacyPolicy),
       );
     _recognizers
       ..add(agreementRecognizer)

@@ -6,6 +6,12 @@ abstract final class AppRouteName {
   /// Login route.
   static const login = 'login';
 
+  /// User agreement available before signing in.
+  static const publicUserAgreement = 'public-user-agreement';
+
+  /// Privacy policy available before signing in.
+  static const publicPrivacyPolicy = 'public-privacy-policy';
+
   /// Authentication failure route.
   static const authenticationFailure = 'authentication-failure';
 
@@ -89,6 +95,12 @@ abstract final class AppRoutePath {
 
   /// Login path.
   static const login = '/login';
+
+  /// User agreement available before signing in.
+  static const publicUserAgreement = '/user-agreement';
+
+  /// Privacy policy available before signing in.
+  static const publicPrivacyPolicy = '/privacy-policy';
 
   /// Authentication failure path.
   static const authenticationFailure = '/authentication-failure';

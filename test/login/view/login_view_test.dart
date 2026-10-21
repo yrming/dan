@@ -1,13 +1,18 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/login/login.dart';
+import 'package:dan/settings/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/helpers.dart';
@@ -31,7 +36,6 @@ void main() {
       ThemeMode themeMode = ThemeMode.system,
       Locale? locale,
       Stream<LoginState>? states,
-      LoginExternalLinkLauncher? externalLinkLauncher,
     }) async {
       if (states == null) {
         when(() => loginBloc.state).thenReturn(state);
@@ -41,7 +45,7 @@ void main() {
       await tester.pumpApp(
         BlocProvider.value(
           value: loginBloc,
-          child: LoginView(externalLinkLauncher: externalLinkLauncher),
+          child: const LoginView(),
         ),
         theme: theme,
         darkTheme: darkTheme,
@@ -108,32 +112,61 @@ void main() {
     });
 
     group('legal links', () {
+      // Cached asset futures must not cross widget test async scopes.
+      setUp(rootBundle.clear);
+
       for (final themeMode in [ThemeMode.light, ThemeMode.dark]) {
-        testWidgets('opens both legal documents in $themeMode', (tester) async {
-          final launchedUris = <Uri>[];
-          await pumpLoginView(
-            tester,
-            themeMode: themeMode,
-            externalLinkLauncher: (uri) async {
-              launchedUris.add(uri);
-              return true;
-            },
+        testWidgets('reads both legal documents in app in $themeMode', (
+          tester,
+        ) async {
+          when(() => loginBloc.state).thenReturn(const LoginState());
+          final router = GoRouter(
+            initialLocation: AppRoutePath.login,
+            routes: [
+              GoRoute(
+                path: AppRoutePath.login,
+                builder: (_, _) => BlocProvider.value(
+                  value: loginBloc,
+                  child: const LoginView(),
+                ),
+              ),
+              GoRoute(
+                name: AppRouteName.publicUserAgreement,
+                path: AppRoutePath.publicUserAgreement,
+                builder: (_, _) => const LegalDocumentPage(),
+              ),
+              GoRoute(
+                name: AppRouteName.publicPrivacyPolicy,
+                path: AppRoutePath.publicPrivacyPolicy,
+                builder: (_, _) => const LegalDocumentPage(privacyPolicy: true),
+              ),
+            ],
           );
+          addTearDown(router.dispose);
+          await tester.pumpRouterApp(router, themeMode: themeMode);
           final context = tester.element(find.byType(LoginView));
 
-          await tester.tapOnText(
-            find.textRange.ofSubstring(context.l10n.settingsUserAgreementLabel),
-          );
-          await tester.pump();
-          await tester.tapOnText(
-            find.textRange.ofSubstring(context.l10n.settingsPrivacyPolicyLabel),
-          );
-          await tester.pump();
+          for (final document in [
+            (
+              label: context.l10n.settingsUserAgreementLabel,
+              content: '一、协议范围与服务性质',
+            ),
+            (
+              label: context.l10n.settingsPrivacyPolicyLabel,
+              content: '一、适用范围',
+            ),
+          ]) {
+            await tester.tapOnText(find.textRange.ofSubstring(document.label));
+            await tester.pumpAndSettle();
 
-          expect(launchedUris, [
-            Uri.parse('https://dan.yrm.dev/user-agreement'),
-            Uri.parse('https://dan.yrm.dev/privacy-policy'),
-          ]);
+            expect(find.byType(LegalDocumentPage), findsOneWidget);
+            expect(find.byType(MarkdownBody), findsOneWidget);
+            expect(find.text(document.content), findsOneWidget);
+
+            await tester.tap(find.byType(BackButton));
+            await tester.pumpAndSettle();
+            expect(find.byType(LoginView), findsOneWidget);
+          }
           verifyNever(() => loginBloc.add(const LoginOAuthRequested()));
         });
 
