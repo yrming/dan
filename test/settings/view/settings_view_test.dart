@@ -45,8 +45,7 @@ void main() {
       Stream<AppearanceState>? states,
       VoidCallback? onFontSizePressed,
       VoidCallback? onBlacklistPressed,
-      VoidCallback? onUserAgreementPressed,
-      VoidCallback? onPrivacyPolicyPressed,
+      VoidCallback? onAboutPressed,
     }) async {
       if (states == null) {
         when(() => appearanceCubit.state).thenReturn(state);
@@ -60,8 +59,7 @@ void main() {
             body: SettingsView(
               onFontSizePressed: onFontSizePressed,
               onBlacklistPressed: onBlacklistPressed,
-              onUserAgreementPressed: onUserAgreementPressed,
-              onPrivacyPolicyPressed: onPrivacyPolicyPressed,
+              onAboutPressed: onAboutPressed,
             ),
           ),
         ),
@@ -82,8 +80,6 @@ void main() {
         RemixIcons.logout_box_r_line,
         RemixIcons.forbid_line,
         RemixIcons.information_line,
-        RemixIcons.file_text_line,
-        RemixIcons.file_lock_line,
       ]) {
         expect(find.byIcon(icon), findsOneWidget);
       }
@@ -119,21 +115,18 @@ void main() {
       },
     );
 
-    testWidgets('opens the legal entries from the about group', (tester) async {
-      var agreementOpened = false;
-      var privacyOpened = false;
-      await pumpView(
-        tester,
-        onUserAgreementPressed: () => agreementOpened = true,
-        onPrivacyPolicyPressed: () => privacyOpened = true,
-      );
+    testWidgets('opens About and hides the legal entries in settings', (
+      tester,
+    ) async {
+      var opened = false;
+      await pumpView(tester, onAboutPressed: () => opened = true);
+      expect(find.text('用户协议'), findsNothing);
+      expect(find.text('隐私政策'), findsNothing);
 
-      await tester.tap(find.byKey(const Key('settings-user-agreement-row')));
-      await tester.tap(find.byKey(const Key('settings-privacy-policy-row')));
+      await tester.tap(find.byKey(const Key('settings-about-row')));
       await tester.pump();
 
-      expect(agreementOpened, isTrue);
-      expect(privacyOpened, isTrue);
+      expect(opened, isTrue);
     });
 
     testWidgets('dismisses either panel without saving a change', (
@@ -328,7 +321,7 @@ void main() {
 
         expect(switchAccountPressed, isTrue);
         expect(signOutPressed, isTrue);
-        expect(find.byType(Divider), findsNWidgets(5));
+        expect(find.byType(Divider), findsNWidgets(3));
         expect(
           tester.widget<InkWell>(switchAccountRow).splashFactory ??
               Theme.of(tester.element(switchAccountRow)).splashFactory,

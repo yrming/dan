@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:appearance_repository/appearance_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:dan/app/configuration/configuration.dart';
 import 'package:dan/app/navigation/navigation.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/appearance/appearance.dart';
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
     required this.statusDraftRepository,
     required this.directMessageRepository,
     required this.userRepository,
+    this.appBuildInfo = const AppBuildInfo(),
     super.key,
   });
 
@@ -42,11 +44,13 @@ class App extends StatelessWidget {
   final StatusDraftRepository statusDraftRepository;
   final DirectMessageRepository directMessageRepository;
   final UserRepository userRepository;
+  final AppBuildInfo appBuildInfo;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider.value(value: appBuildInfo),
         RepositoryProvider.value(value: appearanceRepository),
         RepositoryProvider.value(value: authenticationRepository),
         RepositoryProvider.value(value: oauthAuthorizationService),

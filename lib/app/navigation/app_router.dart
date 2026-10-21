@@ -487,22 +487,32 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
                   state,
                   const AboutPage(),
                 ),
-              ),
-              GoRoute(
-                name: AppRouteName.userAgreement,
-                path: AppRoutePath.userAgreement,
-                pageBuilder: (context, state) => _buildCupertinoPage(
-                  state,
-                  const LegalDocumentPage(),
-                ),
-              ),
-              GoRoute(
-                name: AppRouteName.privacyPolicy,
-                path: AppRoutePath.privacyPolicy,
-                pageBuilder: (context, state) => _buildCupertinoPage(
-                  state,
-                  const LegalDocumentPage(privacyPolicy: true),
-                ),
+                routes: [
+                  GoRoute(
+                    name: AppRouteName.aboutStory,
+                    path: AppRoutePath.aboutStory,
+                    pageBuilder: (context, state) => _buildCupertinoPage(
+                      state,
+                      const AboutStoryPage(),
+                    ),
+                  ),
+                  GoRoute(
+                    name: AppRouteName.userAgreement,
+                    path: AppRoutePath.userAgreement,
+                    pageBuilder: (context, state) => _buildCupertinoPage(
+                      state,
+                      const LegalDocumentPage(),
+                    ),
+                  ),
+                  GoRoute(
+                    name: AppRouteName.privacyPolicy,
+                    path: AppRoutePath.privacyPolicy,
+                    pageBuilder: (context, state) => _buildCupertinoPage(
+                      state,
+                      const LegalDocumentPage(privacyPolicy: true),
+                    ),
+                  ),
+                ],
               ),
               GoRoute(
                 name: AppRouteName.fontSize,

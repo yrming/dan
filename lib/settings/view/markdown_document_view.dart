@@ -15,6 +15,7 @@ class MarkdownDocumentView extends StatefulWidget {
   const MarkdownDocumentView({
     required this.title,
     required this.assetPath,
+    this.footer,
     super.key,
   });
 
@@ -23,6 +24,9 @@ class MarkdownDocumentView extends StatefulWidget {
 
   /// Asset bundle path for the Markdown document.
   final String assetPath;
+
+  /// Optional content displayed after the document in the same scroll view.
+  final Widget? footer;
 
   @override
   State<MarkdownDocumentView> createState() => _MarkdownDocumentViewState();
@@ -116,16 +120,22 @@ class _MarkdownDocumentViewState extends State<MarkdownDocumentView> {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 680),
-                    child: MarkdownBody(
-                      data: snapshot.data!,
-                      selectable: true,
-                      fitContent: false,
-                      onTapLink: (_, href, _) => unawaited(_openLink(href)),
-                      styleSheet: documentMarkdownStyle(context),
-                      blockSyntaxes: const [DocumentMetadataSyntax()],
-                      builders: {
-                        'document-metadata': DocumentMetadataBuilder(),
-                      },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        MarkdownBody(
+                          data: snapshot.data!,
+                          selectable: true,
+                          fitContent: false,
+                          onTapLink: (_, href, _) => unawaited(_openLink(href)),
+                          styleSheet: documentMarkdownStyle(context),
+                          blockSyntaxes: const [DocumentMetadataSyntax()],
+                          builders: {
+                            'document-metadata': DocumentMetadataBuilder(),
+                          },
+                        ),
+                        ?widget.footer,
+                      ],
                     ),
                   ),
                 ),

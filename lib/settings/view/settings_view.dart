@@ -16,8 +16,6 @@ class SettingsView extends StatelessWidget {
     this.onFontSizePressed,
     this.onBlacklistPressed,
     this.onAboutPressed,
-    this.onUserAgreementPressed,
-    this.onPrivacyPolicyPressed,
     this.onSwitchAccountPressed,
     this.onSignOutPressed,
     super.key,
@@ -31,12 +29,6 @@ class SettingsView extends StatelessWidget {
 
   /// Opens application information.
   final VoidCallback? onAboutPressed;
-
-  /// Opens the user agreement.
-  final VoidCallback? onUserAgreementPressed;
-
-  /// Opens the privacy policy.
-  final VoidCallback? onPrivacyPolicyPressed;
 
   /// Called when the switch-account action is pressed.
   final VoidCallback? onSwitchAccountPressed;
@@ -143,32 +135,12 @@ class SettingsView extends StatelessWidget {
                 color: Theme.of(context).colorScheme.surface,
                 margin: EdgeInsets.zero,
                 clipBehavior: Clip.antiAlias,
-                child: Column(
-                  children: [
-                    _SettingsRow(
-                      key: const Key('settings-about-row'),
-                      title: context.l10n.settingsAboutLabel,
-                      icon: RemixIcons.information_line,
-                      enabled: true,
-                      onTap: onAboutPressed,
-                    ),
-                    const Divider(height: 1),
-                    _SettingsRow(
-                      key: const Key('settings-user-agreement-row'),
-                      title: context.l10n.settingsUserAgreementLabel,
-                      icon: RemixIcons.file_text_line,
-                      enabled: true,
-                      onTap: onUserAgreementPressed,
-                    ),
-                    const Divider(height: 1),
-                    _SettingsRow(
-                      key: const Key('settings-privacy-policy-row'),
-                      title: context.l10n.settingsPrivacyPolicyLabel,
-                      icon: RemixIcons.file_lock_line,
-                      enabled: true,
-                      onTap: onPrivacyPolicyPressed,
-                    ),
-                  ],
+                child: _SettingsRow(
+                  key: const Key('settings-about-row'),
+                  title: context.l10n.settingsAboutLabel,
+                  icon: RemixIcons.information_line,
+                  enabled: true,
+                  onTap: onAboutPressed,
                 ),
               ),
               SizedBox(height: sizing.scaled(AppSpacing.md)),

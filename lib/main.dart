@@ -17,6 +17,7 @@ import 'package:user_repository/user_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final appBuildInfo = await AppBuildInfo.load();
 
   final configuration = FanfouConfiguration.fromEnvironment();
   final clientFactory = FanfouAuthenticationClientFactory(
@@ -60,6 +61,7 @@ Future<void> main() async {
 
   await bootstrap(
     () => App(
+      appBuildInfo: appBuildInfo,
       appearanceRepository: appearanceRepository,
       authenticationRepository: authenticationRepository,
       initialAppearanceSettings: initialAppearanceSettings,

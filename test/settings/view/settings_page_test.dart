@@ -44,7 +44,7 @@ void main() {
     });
 
     group('document links', () {
-      testWidgets('reads all documents in app and returns to settings', (
+      testWidgets('opens documents from About and returns through About', (
         tester,
       ) async {
         final router = GoRouter(
@@ -58,17 +58,24 @@ void main() {
                   name: AppRouteName.about,
                   path: AppRoutePath.about,
                   builder: (context, state) => const AboutPage(),
-                ),
-                GoRoute(
-                  name: AppRouteName.userAgreement,
-                  path: AppRoutePath.userAgreement,
-                  builder: (context, state) => const LegalDocumentPage(),
-                ),
-                GoRoute(
-                  name: AppRouteName.privacyPolicy,
-                  path: AppRoutePath.privacyPolicy,
-                  builder: (context, state) =>
-                      const LegalDocumentPage(privacyPolicy: true),
+                  routes: [
+                    GoRoute(
+                      name: AppRouteName.aboutStory,
+                      path: AppRoutePath.aboutStory,
+                      builder: (context, state) => const AboutStoryPage(),
+                    ),
+                    GoRoute(
+                      name: AppRouteName.userAgreement,
+                      path: AppRoutePath.userAgreement,
+                      builder: (context, state) => const LegalDocumentPage(),
+                    ),
+                    GoRoute(
+                      name: AppRouteName.privacyPolicy,
+                      path: AppRoutePath.privacyPolicy,
+                      builder: (context, state) =>
+                          const LegalDocumentPage(privacyPolicy: true),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -83,16 +90,20 @@ void main() {
           ),
         );
         await tester.pumpTransition();
+        await tester.tap(find.byKey(const Key('settings-about-row')));
+        await tester.pumpAndSettle();
+        expect(find.byType(AboutView), findsOneWidget);
 
-        for (final document in ['about', 'user-agreement', 'privacy-policy']) {
-          await tester.tap(find.byKey(Key('settings-$document-row')));
-          await tester.pumpTransition();
+        for (final document in ['why', 'user-agreement', 'privacy-policy']) {
+          final link = find.byKey(Key('about-$document-row'));
+          await tester.ensureVisible(link);
+          await tester.tap(link);
           await tester.pumpAndSettle();
           expect(find.byType(MarkdownBody), findsOneWidget);
           expect(
             find.text(
               switch (document) {
-                'about' => '关于',
+                'why' => '为什么',
                 'user-agreement' => '一、协议范围与服务性质',
                 _ => '一、适用范围',
               },
@@ -100,9 +111,12 @@ void main() {
             findsOneWidget,
           );
           await tester.tap(find.byType(BackButton));
-          await tester.pumpTransition();
-          expect(find.byType(SettingsView), findsOneWidget);
+          await tester.pumpAndSettle();
+          expect(find.byType(AboutView), findsOneWidget);
         }
+        await tester.tap(find.byType(BackButton));
+        await tester.pumpAndSettle();
+        expect(find.byType(SettingsView), findsOneWidget);
       });
     });
 

@@ -41,14 +41,6 @@ class SettingsPage extends StatelessWidget {
           context,
           AppRouteName.about,
         ),
-        onUserAgreementPressed: () => _openDocument(
-          context,
-          AppRouteName.userAgreement,
-        ),
-        onPrivacyPolicyPressed: () => _openDocument(
-          context,
-          AppRouteName.privacyPolicy,
-        ),
         onSwitchAccountPressed: () => showAccountSwitcherSheet(
           context,
           onAddAccountPressed: () => context.pushNamed<void>(

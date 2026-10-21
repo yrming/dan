@@ -34,6 +34,7 @@ dependencies:
   image_picker: ^1.2.3
   intl: ^0.20.2
   markdown: ^7.3.1
+  package_info_plus: ^10.2.2
   path_provider: ^2.1.5
   photo_view: ^0.15.0
   remixicon: ^4.9.3
@@ -66,6 +67,7 @@ flutter:
   assets:
     - assets/about.md
     - assets/icons/empty.svg
+    - assets/icons/logo.png
     - assets/user-agreement.md
     - assets/privacy-policy.md
 

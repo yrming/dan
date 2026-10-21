@@ -54,13 +54,16 @@ abstract final class AppRouteName {
   /// Appearance settings route.
   static const settings = 'settings';
 
-  /// About document below settings.
+  /// Application information below settings.
   static const about = 'about';
 
-  /// User agreement below settings.
+  /// Story behind the application, below About.
+  static const aboutStory = 'story';
+
+  /// User agreement below About.
   static const userAgreement = 'user-agreement';
 
-  /// Privacy policy below settings.
+  /// Privacy policy below About.
   static const privacyPolicy = 'privacy-policy';
 
   /// Font-size adjustment below settings.
@@ -144,13 +147,16 @@ abstract final class AppRoutePath {
   /// Appearance settings path relative to a user route.
   static const settings = 'settings';
 
-  /// About document below settings.
+  /// Application information below settings.
   static const about = 'about';
 
-  /// User agreement below settings.
+  /// Story behind the application, below About.
+  static const aboutStory = 'story';
+
+  /// User agreement below About.
   static const userAgreement = 'user-agreement';
 
-  /// Privacy policy below settings.
+  /// Privacy policy below About.
   static const privacyPolicy = 'privacy-policy';
 
   /// Font-size adjustment below settings.
