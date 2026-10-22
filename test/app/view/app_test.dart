@@ -1756,6 +1756,49 @@ void main() {
       verifyNever(() => statusRepository.getStatus(_homeStatus.id));
     });
 
+    group('iOS back navigation', () {
+      for (final completesSwipe in [false, true]) {
+        testWidgets(
+          completesSwipe
+              ? 'returns to the home timeline after an edge swipe'
+              : 'keeps status detail open after an incomplete edge swipe',
+          (tester) async {
+            await pumpAppView(tester, _authenticatedState);
+            await tester.tap(find.text(_homeStatus.text));
+            await pumpNavigation(tester);
+
+            final detail = find.byType(StatusDetailPage);
+            final bounds = tester.getRect(detail);
+            final gesture = await tester.startGesture(
+              Offset(bounds.left + 1, bounds.center.dy),
+            );
+            await gesture.moveBy(const Offset(20, 0));
+            await gesture.moveBy(
+              Offset(bounds.width * (completesSwipe ? 0.8 : 0.2), 0),
+              timeStamp: const Duration(seconds: 1),
+            );
+            await tester.pump();
+
+            expect(tester.getTopLeft(detail).dx, greaterThan(bounds.left));
+
+            await gesture.up(timeStamp: const Duration(seconds: 2));
+            await pumpNavigation(tester);
+
+            expect(
+              detail,
+              completesSwipe ? findsNothing : findsOneWidget,
+            );
+            expect(
+              find.byType(AppShell),
+              completesSwipe ? findsOneWidget : findsNothing,
+            );
+            expect(find.text(_homeStatus.text), findsOneWidget);
+          },
+          variant: TargetPlatformVariant.only(TargetPlatform.iOS),
+        );
+      }
+    });
+
     testWidgets('opens the author profile from status detail', (tester) async {
       await pumpAppView(tester, _authenticatedState);
 

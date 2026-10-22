@@ -583,17 +583,9 @@ Page<void> _buildNoTransitionPage(GoRouterState state, Widget child) {
 }
 
 Page<void> _buildCupertinoPage(GoRouterState state, Widget child) {
-  return CustomTransitionPage<void>(
+  return CupertinoPage<void>(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return CupertinoPageTransition(
-        primaryRouteAnimation: animation,
-        secondaryRouteAnimation: secondaryAnimation,
-        linearTransition: false,
-        child: child,
-      );
-    },
   );
 }
 
