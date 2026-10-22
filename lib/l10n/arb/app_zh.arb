@@ -72,15 +72,21 @@
     "@aboutVersion": {
         "description": "关于页中的应用版本号",
         "placeholders": {
-            "version": {"type": "String"}
+            "version": {
+                "type": "String"
+            }
         }
     },
     "aboutVersionWithBuild": "版本 {version}（Build {buildNumber}）",
     "@aboutVersionWithBuild": {
         "description": "关于页中的应用版本号和构建号",
         "placeholders": {
-            "version": {"type": "String"},
-            "buildNumber": {"type": "String"}
+            "version": {
+                "type": "String"
+            },
+            "buildNumber": {
+                "type": "String"
+            }
         }
     },
     "aboutCopyright": "© 2026 YRM",
@@ -99,7 +105,7 @@
             }
         }
     },
-    "confirmationDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure?",
+    "confirmationDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure ?",
     "signOutDialogCancelLabel": "取消",
     "signOutDialogConfirmLabel": "退出",
     "userProfileAccountHandle": "{id}",
@@ -245,7 +251,7 @@
     "statusActionRepostLabel": "转发",
     "statusActionDeleteLabel": "删除",
     "statusDeleteDialogTitle": "删除这条消息？",
-    "statusDeleteDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure?",
+    "statusDeleteDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure ?",
     "statusDeleteDialogCancelLabel": "取消",
     "statusDeleteDialogConfirmLabel": "删除",
     "statusDeleteFailure": "删除失败，请重试。",
