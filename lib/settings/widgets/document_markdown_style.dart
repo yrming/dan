@@ -11,7 +11,7 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
   final body = theme.textTheme.bodyMedium!.copyWith(
     color: colors.documentBody,
     fontSize: sizing.scaled(16),
-    height: 1.6,
+    height: 1.7,
     letterSpacing: 0,
   );
   final heading = body.copyWith(
