@@ -567,7 +567,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
                     child: AnimatedOpacity(
                       opacity: isDismissing ? 0 : 1,
                       duration: Durations.short2,
-                      child: FilledButton.icon(
+                      child: FilledButton(
                         onPressed: widget.onViewStatus,
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF737373).withValues(
@@ -575,19 +575,32 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
                           ),
                           foregroundColor: Colors.white,
                           tapTargetSize: MaterialTapTargetSize.padded,
-                          textStyle: context.appTypography.statusHandle,
+                          textStyle: context.appTypography.statusHandle
+                              .copyWith(
+                                leadingDistribution:
+                                    TextLeadingDistribution.even,
+                              ),
                           padding: const EdgeInsetsDirectional.symmetric(
                             horizontal: AppSpacing.sm,
                           ),
                           shape: const StadiumBorder(),
                         ),
-                        iconAlignment: IconAlignment.end,
-                        // icon: const Icon(
-                        //   RemixIcons.arrow_right_s_line,
-                        //   size: 14,
-                        // ),
-                        label: Text(
-                          context.l10n.statusImageViewerViewStatusLabel,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: context.appSizing.scaled(AppSpacing.xxs),
+                          children: [
+                            Text(
+                              context.l10n.statusImageViewerViewStatusLabel,
+                            ),
+                            Image.asset(
+                              'assets/icons/arrow-right.png',
+                              height: context.appSizing.scaled(8),
+                              fit: BoxFit.fitHeight,
+                              color: Colors.white,
+                              colorBlendMode: BlendMode.srcIn,
+                              excludeFromSemantics: true,
+                            ),
+                          ],
                         ),
                       ),
                     ),

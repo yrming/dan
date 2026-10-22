@@ -249,7 +249,7 @@
     "statusDeleteDialogCancelLabel": "取消",
     "statusDeleteDialogConfirmLabel": "删除",
     "statusDeleteFailure": "删除失败，请重试。",
-    "statusImageViewerViewStatusLabel": "详情 >",
+    "statusImageViewerViewStatusLabel": "详情",
     "@statusImageViewerViewStatusLabel": {
         "description": "在相册大图预览中打开照片对应的动态详情。"
     },
