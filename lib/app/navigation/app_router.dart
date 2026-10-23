@@ -213,7 +213,7 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
           final activeAccountId = _activeAccount(
             authenticationBloc.state,
           )!.id;
-          return NoTransitionPage<void>(
+          return CupertinoPage<void>(
             key: ValueKey((state.pageKey, activeAccountId)),
             child: AppShell(
               key: ValueKey(activeAccountId),

@@ -1757,6 +1757,14 @@ void main() {
     });
 
     group('iOS back navigation', () {
+      testWidgets('uses a Cupertino route for the tab root', (tester) async {
+        await pumpAppView(tester, _authenticatedState);
+        final route = ModalRoute.of(tester.element(find.byType(AppShell)))!;
+
+        expect(route.settings, isA<CupertinoPage<void>>());
+        expect(route.delegatedTransition, isNotNull);
+      }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
+
       for (final completesSwipe in [false, true]) {
         testWidgets(
           completesSwipe
