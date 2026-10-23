@@ -44,31 +44,35 @@ class AboutView extends StatelessWidget {
         backgroundColor: colors.groupedBackground,
         toolbarHeight: sizing.appBarToolbarHeight,
       ),
-      body: ColoredBox(
-        color: colors.groupedBackground,
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
+      body: SafeArea(
+        bottom: false,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return _AboutPullReveal(
+              imageExtent: constraints.maxWidth,
+              viewportHeight: constraints.maxHeight,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: ClampingScrollPhysics(),
+                ),
                 child: Center(
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: 480,
                       minHeight: constraints.maxHeight,
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: sizing.scaled(AppSpacing.md),
-                        vertical: sizing.scaled(AppSpacing.lg),
+                        vertical: sizing.scaled(AppSpacing.md),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             children: [
-                              SizedBox(height: sizing.scaled(AppSpacing.xxl)),
+                              SizedBox(
+                                height: sizing.scaled(AppSpacing.xxl),
+                              ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(
                                   sizing.scaled(
@@ -82,14 +86,18 @@ class AboutView extends StatelessWidget {
                                   excludeFromSemantics: true,
                                 ),
                               ),
-                              SizedBox(height: sizing.scaled(AppSpacing.lg)),
+                              SizedBox(
+                                height: sizing.scaled(AppSpacing.lg),
+                              ),
                               Text(
                                 l10n.loginBrandLogoLabel,
                                 style: typography.brandTagline,
                                 textAlign: TextAlign.center,
                               ),
                               if (buildInfo.version.isNotEmpty) ...[
-                                SizedBox(height: sizing.scaled(AppSpacing.sm)),
+                                SizedBox(
+                                  height: sizing.scaled(AppSpacing.sm),
+                                ),
                                 Text(
                                   buildInfo.buildNumber.isEmpty
                                       ? l10n.aboutVersion(buildInfo.version)
@@ -101,10 +109,14 @@ class AboutView extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                               ],
-                              SizedBox(height: sizing.scaled(AppSpacing.xxl)),
+                              SizedBox(
+                                height: sizing.scaled(AppSpacing.xxl),
+                              ),
                               Card(
                                 elevation: 0,
-                                color: Theme.of(context).colorScheme.surface,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surface,
                                 margin: EdgeInsets.zero,
                                 clipBehavior: Clip.antiAlias,
                                 child: Column(
@@ -142,14 +154,10 @@ class AboutView extends StatelessWidget {
                             padding: EdgeInsets.only(
                               top: sizing.scaled(AppSpacing.xxl),
                             ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  l10n.aboutCopyright,
-                                  style: typography.statusHandle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                            child: Text(
+                              l10n.aboutCopyright,
+                              style: typography.statusHandle,
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ],
@@ -157,10 +165,131 @@ class AboutView extends StatelessWidget {
                     ),
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
+      ),
+    );
+  }
+}
+
+class _AboutPullReveal extends StatefulWidget {
+  const _AboutPullReveal({
+    required this.imageExtent,
+    required this.viewportHeight,
+    required this.child,
+  });
+
+  final double imageExtent;
+  final double viewportHeight;
+  final Widget child;
+
+  @override
+  State<_AboutPullReveal> createState() => _AboutPullRevealState();
+}
+
+class _AboutPullRevealState extends State<_AboutPullReveal> {
+  static const _settleDuration = Duration(milliseconds: 240);
+  static const double _captionExtent = AppSpacing.xxxl + AppSpacing.sm;
+  static const double _imageInset = AppSpacing.md;
+
+  double get _revealExtent => widget.imageExtent + _captionExtent;
+
+  double get _imageExtent =>
+      (widget.imageExtent - _imageInset * 2).clamp(0, widget.imageExtent);
+
+  double _pullExtent = 0;
+  bool _isDragging = false;
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification.depth != 0 || notification.metrics.axis != Axis.vertical) {
+      return false;
+    }
+
+    if (notification is OverscrollNotification &&
+        notification.metrics.extentAfter == 0 &&
+        notification.overscroll > 0) {
+      setState(() {
+        _isDragging = true;
+        _pullExtent = (_pullExtent + notification.overscroll.abs()).clamp(
+          0,
+          _revealExtent,
+        );
+      });
+    } else if (notification is ScrollEndNotification && _pullExtent > 0) {
+      setState(() {
+        _isDragging = false;
+        _pullExtent = 0;
+      });
+    } else if (notification is ScrollUpdateNotification &&
+        notification.metrics.extentAfter > 0 &&
+        _pullExtent > 0) {
+      setState(() {
+        _isDragging = true;
+        _pullExtent = 0;
+      });
+    }
+
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: _handleScrollNotification,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(end: -_pullExtent),
+              duration: _isDragging ? Duration.zero : _settleDuration,
+              curve: Curves.easeOut,
+              builder: (context, offset, child) {
+                return Transform.translate(
+                  offset: Offset(0, offset),
+                  child: child,
+                );
+              },
+              child: widget.child,
+            ),
+          ),
+          AnimatedPositioned(
+            duration: _isDragging ? Duration.zero : _settleDuration,
+            curve: Curves.easeOut,
+            left: 0,
+            right: 0,
+            top: widget.viewportHeight - _pullExtent,
+            child: IgnorePointer(
+              child: ColoredBox(
+                color: context.appColors.bgBase,
+                child: Padding(
+                  padding: const EdgeInsets.all(_imageInset),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        key: const Key('about-bottom-image'),
+                        'assets/images/dan.jpg',
+                        width: _imageExtent,
+                        height: _imageExtent,
+                        fit: BoxFit.cover,
+                        excludeFromSemantics: true,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        '2014年夏',
+                        key: const Key('about-bottom-image-caption'),
+                        style: context.appTypography.statusHandle,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

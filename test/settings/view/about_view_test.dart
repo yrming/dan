@@ -9,6 +9,66 @@ import '../../helpers/helpers.dart';
 
 void main() {
   group(AboutView, () {
+    group('bottom image', () {
+      testWidgets(
+        'reveals the image and caption while pulling past the bottom',
+        (
+          tester,
+        ) async {
+          await tester.binding.setSurfaceSize(const Size(320, 480));
+          addTearDown(() => tester.binding.setSurfaceSize(null));
+          await tester.pumpApp(
+            AboutView(
+              buildInfo: const AppBuildInfo(
+                version: '2.3.4',
+                buildNumber: '56',
+              ),
+              onStoryPressed: () {},
+              onUserAgreementPressed: () {},
+              onPrivacyPolicyPressed: () {},
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          final image = find.byKey(const Key('about-bottom-image'));
+          final caption = find.byKey(const Key('about-bottom-image-caption'));
+          final scrollView = find.byType(SingleChildScrollView);
+          final viewport = tester.getRect(scrollView);
+          expect(tester.getTopLeft(image).dy, greaterThan(viewport.bottom));
+          expect(
+            tester
+                .state<ScrollableState>(find.byType(Scrollable))
+                .position
+                .maxScrollExtent,
+            greaterThan(0),
+          );
+
+          await tester.ensureVisible(find.text('© 2026 YRM'));
+          await tester.pumpAndSettle();
+          expect(tester.getTopLeft(image).dy, greaterThan(viewport.bottom));
+
+          final gesture = await tester.startGesture(viewport.center);
+          for (var i = 0; i < 10; i++) {
+            await gesture.moveBy(const Offset(0, -40));
+            await tester.pump();
+          }
+
+          final imageRect = tester.getRect(image);
+          expect(imageRect.top, lessThan(viewport.bottom));
+          expect(imageRect.left, viewport.left + AppSpacing.md);
+          expect(imageRect.width, viewport.width - AppSpacing.md * 2);
+          expect(imageRect.bottom, lessThan(tester.getTopLeft(caption).dy));
+          expect(tester.getRect(caption).bottom, lessThan(viewport.bottom));
+          expect(find.text('2014年夏'), findsOneWidget);
+
+          await gesture.up();
+          await tester.pumpAndSettle();
+          expect(tester.getTopLeft(image).dy, greaterThan(viewport.bottom));
+          expect(tester.takeException(), isNull);
+        },
+      );
+    });
+
     group('document actions', () {
       testWidgets(
         'keeps all links reachable on a small screen with large text',

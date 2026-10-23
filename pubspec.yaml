@@ -1,7 +1,7 @@
 name: dan
 description: "A nimble Fanfou client."
 publish_to: 'none'
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ^3.12.2
@@ -67,6 +67,7 @@ flutter:
   assets:
     - assets/about.md
     - assets/icons/
+    - assets/images/
     - assets/user-agreement.md
     - assets/privacy-policy.md
 
