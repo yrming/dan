@@ -11,7 +11,7 @@ void main() {
   group(AboutView, () {
     group('bottom image', () {
       testWidgets(
-        'reveals the image and caption while pulling past the bottom',
+        'reveals the image while pulling past the bottom',
         (
           tester,
         ) async {
@@ -31,7 +31,6 @@ void main() {
           await tester.pumpAndSettle();
 
           final image = find.byKey(const Key('about-bottom-image'));
-          final caption = find.byKey(const Key('about-bottom-image-caption'));
           final scrollView = find.byType(SingleChildScrollView);
           final viewport = tester.getRect(scrollView);
           expect(tester.getTopLeft(image).dy, greaterThan(viewport.bottom));
@@ -57,9 +56,7 @@ void main() {
           expect(imageRect.top, lessThan(viewport.bottom));
           expect(imageRect.left, viewport.left + AppSpacing.md);
           expect(imageRect.width, viewport.width - AppSpacing.md * 2);
-          expect(imageRect.bottom, lessThan(tester.getTopLeft(caption).dy));
-          expect(tester.getRect(caption).bottom, lessThan(viewport.bottom));
-          expect(find.text('2014年夏'), findsOneWidget);
+          expect(imageRect.bottom, viewport.bottom - AppSpacing.md);
 
           await gesture.up();
           await tester.pumpAndSettle();

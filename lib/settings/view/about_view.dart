@@ -45,7 +45,7 @@ class AboutView extends StatelessWidget {
         toolbarHeight: sizing.appBarToolbarHeight,
       ),
       body: SafeArea(
-        bottom: false,
+        // bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             return _AboutPullReveal(
@@ -191,10 +191,9 @@ class _AboutPullReveal extends StatefulWidget {
 
 class _AboutPullRevealState extends State<_AboutPullReveal> {
   static const _settleDuration = Duration(milliseconds: 240);
-  static const double _captionExtent = AppSpacing.xxxl + AppSpacing.sm;
   static const double _imageInset = AppSpacing.md;
 
-  double get _revealExtent => widget.imageExtent + _captionExtent;
+  double get _revealExtent => _imageExtent + _imageInset * 2;
 
   double get _imageExtent =>
       (widget.imageExtent - _imageInset * 2).clamp(0, widget.imageExtent);
@@ -266,24 +265,13 @@ class _AboutPullRevealState extends State<_AboutPullReveal> {
                 color: context.appColors.bgBase,
                 child: Padding(
                   padding: const EdgeInsets.all(_imageInset),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        key: const Key('about-bottom-image'),
-                        'assets/images/dan.jpg',
-                        width: _imageExtent,
-                        height: _imageExtent,
-                        fit: BoxFit.cover,
-                        excludeFromSemantics: true,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        '2014年夏',
-                        key: const Key('about-bottom-image-caption'),
-                        style: context.appTypography.statusHandle,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                  child: Image.asset(
+                    key: const Key('about-bottom-image'),
+                    'assets/images/dan.jpg',
+                    width: _imageExtent,
+                    height: _imageExtent,
+                    fit: BoxFit.cover,
+                    excludeFromSemantics: true,
                   ),
                 ),
               ),
