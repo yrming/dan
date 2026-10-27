@@ -551,7 +551,7 @@ void main() {
       ).called(1);
     });
 
-    testWidgets('shows a snackbar and retries pagination on the next drag', (
+    testWidgets('shows a toast and retries pagination on the next drag', (
       tester,
     ) async {
       when(

@@ -659,7 +659,7 @@ void main() {
       ).called(1);
     });
 
-    testWidgets('shows a snackbar after a favorite succeeds', (tester) async {
+    testWidgets('shows a toast after a favorite succeeds', (tester) async {
       final initial = StatusListState(
         status: StatusListStatus.success,
         statuses: const [_status],
