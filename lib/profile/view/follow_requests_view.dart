@@ -21,7 +21,7 @@ class FollowRequestsView extends StatelessWidget {
         BlocListener<FollowRequestsCubit, FollowRequestsState>(
           listenWhen: (previous, current) =>
               !previous.loadMoreError && current.loadMoreError,
-          listener: (context, state) => showAppFailureSnackBar(
+          listener: (context, state) => showAppFailureToast(
             context,
             message: state.requestFailureMessage,
           ),
@@ -29,16 +29,10 @@ class FollowRequestsView extends StatelessWidget {
         BlocListener<FollowRequestsCubit, FollowRequestsState>(
           listenWhen: (previous, current) =>
               previous.actionFailureCount != current.actionFailureCount,
-          listener: (context, state) => ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.actionFailureMessage ??
-                      context.l10n.followActionFailure,
-                ),
-              ),
-            ),
+          listener: (context, state) => showAppToast(
+            context,
+            state.actionFailureMessage ?? context.l10n.followActionFailure,
+          ),
         ),
         BlocListener<FollowRequestsCubit, FollowRequestsState>(
           listenWhen: (previous, current) =>

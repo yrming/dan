@@ -206,46 +206,36 @@ class _StatusComposerViewState extends State<StatusComposerView> {
             );
           }
           if (state.draftStatus == StatusDraftStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.statusComposerDraftLoadFailure),
-              ),
-            );
+            showAppToast(context, context.l10n.statusComposerDraftLoadFailure);
           }
           if (state.photoSelectionStatus ==
               StatusPhotoSelectionStatus.unsupportedFormat) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.statusComposerPhotoFormatFailure),
-              ),
+            showAppToast(
+              context,
+              context.l10n.statusComposerPhotoFormatFailure,
             );
             return;
           }
           if (state.photoSelectionStatus ==
               StatusPhotoSelectionStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.statusComposerPhotoPickFailure),
-              ),
+            showAppToast(
+              context,
+              context.l10n.statusComposerPhotoPickFailure,
             );
             return;
           }
           switch (state.submissionStatus) {
             case StatusComposerSubmissionStatus.unsupportedPhotoFormat:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(context.l10n.statusComposerPhotoFormatFailure),
-                ),
+              showAppToast(
+                context,
+                context.l10n.statusComposerPhotoFormatFailure,
               );
             case StatusComposerSubmissionStatus.success:
               context.pop();
             case StatusComposerSubmissionStatus.failure:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.failureMessage ?? context.l10n.statusComposerFailure,
-                  ),
-                ),
+              showAppToast(
+                context,
+                state.failureMessage ?? context.l10n.statusComposerFailure,
               );
             case StatusComposerSubmissionStatus.initial ||
                 StatusComposerSubmissionStatus.inProgress:
@@ -475,11 +465,7 @@ class _StatusComposerViewState extends State<StatusComposerView> {
         _leaveComposer();
       } on Object {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.statusComposerDraftSaveFailure),
-          ),
-        );
+        showAppToast(context, context.l10n.statusComposerDraftSaveFailure);
       }
       return;
     }

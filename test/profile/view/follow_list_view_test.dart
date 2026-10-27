@@ -90,10 +90,6 @@ void main() {
               ),
               findsOneWidget,
             );
-            expect(
-              tester.widget<SnackBar>(find.byType(SnackBar)).action,
-              isNull,
-            );
             expect(find.byType(AppRetryView), findsNothing);
           }
         });

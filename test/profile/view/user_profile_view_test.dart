@@ -863,7 +863,7 @@ void main() {
     group('load failure feedback', () {
       for (final profile in [null, _profile]) {
         testWidgets(
-          'shows a snackbar without an action when loading fails '
+          'shows a transient toast when loading fails '
           'with cached profile=${profile != null}',
           (tester) async {
             final states = StreamController<UserProfileState>();
@@ -880,41 +880,29 @@ void main() {
               ),
             );
             final context = tester.element(find.byType(UserProfileView));
-            expect(find.byType(SnackBar), findsNothing);
+            expect(find.text(context.l10n.retryPageMessage), findsNothing);
 
             states.add(UserProfileLoadFailure(profile: profile));
             await tester.pump();
             await tester.pump(const Duration(milliseconds: 300));
 
-            expect(
-              find.descendant(
-                of: find.byType(SnackBar),
-                matching: find.text(context.l10n.retryPageMessage),
-              ),
-              findsOneWidget,
-            );
+            expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
             expect(find.byType(AppRetryView), findsNothing);
             if (profile != null) {
               expect(find.text(profile.name), findsOneWidget);
               expect(find.byType(ProfileMenuSection), findsOneWidget);
             }
 
-            expect(
-              tester.widget<SnackBar>(find.byType(SnackBar)).action,
-              isNull,
-            );
-            expect(find.byType(AppSnackBarAction), findsNothing);
             verifyNever(() => userProfileCubit.load());
-            await tester.pump(const Duration(seconds: 5));
-            await tester.pump(const Duration(milliseconds: 300));
-            expect(find.byType(SnackBar), findsNothing);
+            await tester.pumpToastDismissal();
+            expect(find.text(context.l10n.retryPageMessage), findsNothing);
 
             states
               ..add(loading)
               ..add(UserProfileLoadFailure(profile: profile));
             await tester.pump();
-            await tester.pump(const Duration(seconds: 1));
-            expect(find.byType(SnackBar), findsOneWidget);
+            await tester.pump(const Duration(milliseconds: 300));
+            expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
           },
         );
       }

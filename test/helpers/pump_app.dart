@@ -11,6 +11,17 @@ extension PumpApp on WidgetTester {
     await pump(Durations.extralong4);
   }
 
+  /// Pumps enough frames for a showing app toast to finish its entrance,
+  /// hold, and exit animations. Animation frames report the clock before
+  /// each pump, so every phase needs a clock-advancing pump plus one more
+  /// frame pump before the toast entry is removed.
+  Future<void> pumpToastDismissal() async {
+    await pump(const Duration(seconds: 4));
+    await pump(const Duration(seconds: 4));
+    await pump(const Duration(seconds: 4));
+    await pump(const Duration(milliseconds: 300));
+  }
+
   Future<void> pumpApp(
     Widget widget, {
     ThemeData? theme,

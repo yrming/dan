@@ -45,13 +45,7 @@ class SettingsView extends StatelessWidget {
       listener: (context, state) {
         if (state.status == AppearanceStatus.failure &&
             ModalRoute.of(context)?.isCurrent != false) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.appearanceSaveFailure),
-              ),
-            );
+          showAppToast(context, context.l10n.appearanceSaveFailure);
         }
       },
       builder: (context, state) {

@@ -739,7 +739,6 @@ void main() {
       final context = tester.element(find.byType(StatusComposerView));
 
       expect(find.text(context.l10n.statusComposerFailure), findsOneWidget);
-      expect(find.byType(SnackBar), findsOneWidget);
     });
   });
 }

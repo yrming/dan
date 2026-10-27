@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:appearance_repository/appearance_repository.dart';
 import 'package:dan/app/theme/theme.dart';
+import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/appearance/appearance.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/settings/widgets/font_size_preview.dart';
@@ -20,13 +21,7 @@ class FontSizeView extends StatelessWidget {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status == AppearanceStatus.failure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.appearanceSaveFailure),
-              ),
-            );
+          showAppToast(context, context.l10n.appearanceSaveFailure);
         }
       },
       builder: (context, state) {

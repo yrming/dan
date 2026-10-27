@@ -10,7 +10,7 @@ import 'package:dan/notifications/notifications.dart';
 import 'package:dan/profile/profile.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Badge, SnackBar;
+import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -582,7 +582,6 @@ void main() {
 
       expect(find.text(context.l10n.retryButtonLabel), findsNothing);
       expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
-      expect(tester.widget<SnackBar>(find.byType(SnackBar)).action, isNull);
 
       when(
         () => directMessageRepository.getConversationList(

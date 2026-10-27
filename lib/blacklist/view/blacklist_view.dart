@@ -64,7 +64,7 @@ class _BlacklistViewState extends State<BlacklistView> {
         BlocListener<BlacklistCubit, BlacklistState>(
           listenWhen: (previous, current) =>
               !previous.loadMoreError && current.loadMoreError,
-          listener: (context, state) => showAppFailureSnackBar(
+          listener: (context, state) => showAppFailureToast(
             context,
             message: state.requestFailureMessage,
           ),
@@ -73,16 +73,10 @@ class _BlacklistViewState extends State<BlacklistView> {
           listenWhen: (previous, current) =>
               previous.actionFailureCount != current.actionFailureCount,
           listener: (context, state) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.actionFailureMessage ??
-                        context.l10n.blacklistActionFailure,
-                  ),
-                ),
-              );
+            showAppToast(
+              context,
+              state.actionFailureMessage ?? context.l10n.blacklistActionFailure,
+            );
           },
         ),
       ],

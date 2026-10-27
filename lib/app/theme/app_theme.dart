@@ -136,15 +136,6 @@ abstract final class AppTheme {
         color: colorScheme.outlineVariant,
         thickness: 0,
       ),
-      snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: colors.snackBarBackground,
-        contentTextStyle: typography.statusBody.copyWith(
-          color: colors.snackBarForeground,
-        ),
-        actionTextColor: colors.snackBarForeground,
-        elevation: 0,
-      ),
       sliderTheme: const SliderThemeData(
         trackHeight: 12,
         overlayColor: AppColors.transparent,

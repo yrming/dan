@@ -170,10 +170,6 @@ void main() {
                   ),
                   findsOneWidget,
                 );
-                expect(
-                  tester.widget<SnackBar>(find.byType(SnackBar)).action,
-                  isNull,
-                );
                 expect(find.byType(StatusListItem), findsOneWidget);
                 expect(find.byType(AppRetryView), findsNothing);
               }
@@ -181,6 +177,26 @@ void main() {
           );
         }
       }
+
+      testWidgets(
+        'skips the toast when the failure view is already showing',
+        (tester) async {
+          final failed = StatusListState(status: StatusListStatus.failure);
+          await pumpStatusList(tester, failed);
+
+          states.add(
+            failed.copyWith(
+              refreshStatus: StatusRefreshStatus.failure,
+              requestFailureMessage: '请求太频繁，请稍后再试',
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
+
+          expect(find.byType(AppRetryView), findsOneWidget);
+          expect(find.text('请求太频繁，请稍后再试'), findsOneWidget);
+        },
+      );
     });
 
     group('empty message', () {
@@ -506,7 +522,6 @@ void main() {
 
         expect(find.byType(AppRetryView), findsNothing);
         expect(find.text('很抱歉，出错了，请重试。'), findsOneWidget);
-        expect(tester.widget<SnackBar>(find.byType(SnackBar)).action, isNull);
         verifyNever(
           () => statusListBloc.add(const StatusListLoadMoreRequested()),
         );

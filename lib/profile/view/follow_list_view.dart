@@ -27,7 +27,7 @@ class FollowListView extends StatelessWidget {
         BlocListener<FollowListCubit, FollowListState>(
           listenWhen: (previous, current) =>
               !previous.loadMoreError && current.loadMoreError,
-          listener: (context, state) => showAppFailureSnackBar(
+          listener: (context, state) => showAppFailureToast(
             context,
             message: state.requestFailureMessage,
           ),
@@ -211,11 +211,7 @@ class FollowListView extends StatelessWidget {
   }
 
   void _showFeedback(BuildContext context, String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+    showAppToast(context, message);
   }
 }
 

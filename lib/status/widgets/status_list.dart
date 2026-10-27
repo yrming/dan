@@ -175,10 +175,15 @@ class _StatusListState extends State<StatusList> {
                     current.refreshStatus == StatusRefreshStatus.failure) ||
                 (previous.loadMoreStatus != current.loadMoreStatus &&
                     current.loadMoreStatus == StatusLoadMoreStatus.failure),
-            listener: (context, state) => showAppFailureSnackBar(
-              context,
-              message: state.requestFailureMessage,
-            ),
+            listener: (context, state) {
+              // The full-page failure view already reports this error in
+              // place; toasts are for failures behind visible content.
+              if (state.status == StatusListStatus.failure) return;
+              showAppFailureToast(
+                context,
+                message: state.requestFailureMessage,
+              );
+            },
           ),
         ],
         child: BlocConsumer<StatusListBloc, StatusListState>(
@@ -194,9 +199,7 @@ class _StatusListState extends State<StatusList> {
                 : state.favoriteSuccess!.isFavorited
                 ? context.l10n.statusFavoriteSuccess
                 : context.l10n.statusUnfavoriteSuccess;
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text(message)));
+            showAppToast(context, message);
           },
           builder: (context, state) {
             return switch (state.status) {

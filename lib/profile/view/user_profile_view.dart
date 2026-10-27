@@ -59,8 +59,7 @@ class _UserProfileViewState extends State<UserProfileView> {
     }
   }
 
-  void _showLoadFailure(BuildContext context) =>
-      showAppFailureSnackBar(context);
+  void _showLoadFailure(BuildContext context) => showAppFailureToast(context);
 
   @override
   void didChangeDependencies() {

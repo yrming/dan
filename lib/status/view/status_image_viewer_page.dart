@@ -618,17 +618,12 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
           previous.status != current.status &&
           current.status != StatusImageViewerActionStatus.inProgress,
       listener: (context, state) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                state.status == StatusImageViewerActionStatus.success
-                    ? context.l10n.statusImageViewerSavedToGalleryLabel
-                    : context.l10n.statusImageViewerActionFailureLabel,
-              ),
-            ),
-          );
+        showAppToast(
+          context,
+          state.status == StatusImageViewerActionStatus.success
+              ? context.l10n.statusImageViewerSavedToGalleryLabel
+              : context.l10n.statusImageViewerActionFailureLabel,
+        );
       },
       child: viewer,
     );

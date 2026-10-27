@@ -103,7 +103,7 @@ void main() {
 
     group('profile load failure', () {
       for (final userId in [_account.id, 'another-user']) {
-        testWidgets('shows a snackbar without an action for $userId', (
+        testWidgets('shows a transient toast for $userId', (
           tester,
         ) async {
           when(
@@ -113,19 +113,10 @@ void main() {
           await pumpPage(tester, userId);
           await tester.pumpTransition();
           final context = tester.element(find.byType(UserProfileView));
-          expect(
-            find.descendant(
-              of: find.byType(SnackBar),
-              matching: find.text(context.l10n.retryPageMessage),
-            ),
-            findsOneWidget,
-          );
+          expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
 
-          expect(tester.widget<SnackBar>(find.byType(SnackBar)).action, isNull);
-          expect(find.byType(SnackBarAction), findsNothing);
-          await tester.pump(const Duration(seconds: 5));
-          await tester.pump(const Duration(milliseconds: 300));
-          expect(find.byType(SnackBar), findsNothing);
+          await tester.pumpToastDismissal();
+          expect(find.text(context.l10n.retryPageMessage), findsNothing);
           verify(() => userRepository.getUser(userId)).called(1);
         });
       }

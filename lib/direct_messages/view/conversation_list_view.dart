@@ -112,8 +112,12 @@ class _ConversationListViewState extends State<ConversationListView> {
                 current.refreshStatus == ConversationRefreshStatus.failure) ||
             (previous.loadMoreStatus != current.loadMoreStatus &&
                 current.loadMoreStatus == ConversationLoadMoreStatus.failure),
-        listener: (context, state) =>
-            showAppFailureSnackBar(context, message: state.failureMessage),
+        listener: (context, state) {
+          // The full-page failure view already reports this error in place;
+          // toasts are for failures behind visible content.
+          if (state.status == ConversationListStatus.failure) return;
+          showAppFailureToast(context, message: state.failureMessage);
+        },
         builder: (context, state) {
           _scheduleLoadMoreIfNeeded(state);
           return switch (state.status) {

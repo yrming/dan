@@ -94,7 +94,6 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   late GoRouter _router;
   late final AppLifecycleListener _lifecycleListener;
   String? _lastActiveAccountId;
@@ -103,14 +102,7 @@ class _AppViewState extends State<AppView> {
   void initState() {
     super.initState();
     _router = createAppRouter(context.read<AuthenticationBloc>());
-    _router.routerDelegate.addListener(_dismissSnackBars);
     _lifecycleListener = AppLifecycleListener(onResume: _handleAppResumed);
-  }
-
-  void _dismissSnackBars() {
-    _scaffoldMessengerKey.currentState
-      ?..clearSnackBars()
-      ..removeCurrentSnackBar();
   }
 
   void _handleAppResumed() {
@@ -121,9 +113,6 @@ class _AppViewState extends State<AppView> {
     final authenticationBloc = context.read<AuthenticationBloc>();
     final previousRouter = _router;
     final nextRouter = createAppRouter(authenticationBloc);
-    previousRouter.routerDelegate.removeListener(_dismissSnackBars);
-    nextRouter.routerDelegate.addListener(_dismissSnackBars);
-    _dismissSnackBars();
     setState(() {
       _router = nextRouter;
     });
@@ -133,7 +122,6 @@ class _AppViewState extends State<AppView> {
   @override
   void dispose() {
     _lifecycleListener.dispose();
-    _router.routerDelegate.removeListener(_dismissSnackBars);
     _router.dispose();
     super.dispose();
   }
@@ -162,7 +150,6 @@ class _AppViewState extends State<AppView> {
         builder: (context, state) {
           final settings = state.settings;
           return MaterialApp.router(
-            scaffoldMessengerKey: _scaffoldMessengerKey,
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(appearance: settings),
             darkTheme: AppTheme.dark(appearance: settings),

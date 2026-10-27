@@ -5,7 +5,7 @@ import 'package:dan/app/navigation/direct_message_navigation.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
-import 'package:dan/app/widgets/app_action_sheet.dart';
+import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/notifications/notifications.dart';
 import 'package:dan/profile/cubit/user_profile_cubit.dart';
@@ -227,13 +227,10 @@ class _UserProfileContent extends StatelessWidget {
           current is UserProfileLoadSuccess &&
           previous.actionFailureCount != current.actionFailureCount,
       listener: (context, state) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              (state as UserProfileLoadSuccess).actionFailureMessage ??
-                  context.l10n.followActionFailure,
-            ),
-          ),
+        showAppToast(
+          context,
+          (state as UserProfileLoadSuccess).actionFailureMessage ??
+              context.l10n.followActionFailure,
         );
       },
       child: BlocListener<UserProfileCubit, UserProfileState>(
@@ -252,9 +249,7 @@ class _UserProfileContent extends StatelessWidget {
                   : success.isBlocked == true
                   ? context.l10n.userProfileBlockSuccess
                   : context.l10n.userProfileUnblockSuccess);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
+          showAppToast(context, message);
         },
         child: BlocListener<UserProfileCubit, UserProfileState>(
           listenWhen: (previous, current) =>
@@ -262,11 +257,7 @@ class _UserProfileContent extends StatelessWidget {
               current is UserProfileLoadSuccess &&
               previous.requestSentCount != current.requestSentCount,
           listener: (context, state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.followActionRequestSent),
-              ),
-            );
+            showAppToast(context, context.l10n.followActionRequestSent);
           },
           child:
               BlocSelector<

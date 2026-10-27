@@ -41,7 +41,7 @@ class ConversationView extends StatelessWidget {
               previous.historyLoadStatus != current.historyLoadStatus),
       listener: (context, state) {
         if (state is ConversationLoadSuccess) {
-          showAppFailureSnackBar(context, message: state.failureMessage);
+          showAppFailureToast(context, message: state.failureMessage);
         }
       },
       builder: (context, state) {

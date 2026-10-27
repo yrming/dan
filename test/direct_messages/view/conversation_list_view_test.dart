@@ -116,16 +116,45 @@ void main() {
                   ),
                   findsOneWidget,
                 );
-                expect(
-                  tester.widget<SnackBar>(find.byType(SnackBar)).action,
-                  isNull,
-                );
                 expect(find.byType(AppRetryView), findsNothing);
               }
             },
           );
         }
       }
+
+      testWidgets(
+        'skips the toast when the failure view is already showing',
+        (tester) async {
+          const failed = ConversationListState(
+            status: ConversationListStatus.failure,
+          );
+          final states = StreamController<ConversationListState>();
+          addTearDown(states.close);
+          whenListen(bloc, states.stream, initialState: failed);
+          await tester.pumpApp(
+            BlocProvider.value(
+              value: bloc,
+              child: const Scaffold(body: ConversationListView()),
+            ),
+          );
+
+          states.add(
+            failed.copyWith(
+              refreshStatus: ConversationRefreshStatus.failure,
+              failureMessage: '服务开小差了',
+            ),
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
+
+          expect(find.byType(AppRetryView), findsOneWidget);
+          // The failure view keeps its generic label and no toast duplicates
+          // the server message on top of it.
+          expect(find.text('服务开小差了'), findsNothing);
+          expect(find.text('很抱歉，出错了，请重试。'), findsOneWidget);
+        },
+      );
     });
 
     group('no end indicator', () {

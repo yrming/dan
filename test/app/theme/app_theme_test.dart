@@ -72,33 +72,30 @@ void main() {
       );
     });
 
-    test(
-      'uses the shared floating snack bar style in light and dark themes',
-      () {
-        final lightSnackBar = AppTheme.light().snackBarTheme;
-        final darkSnackBar = AppTheme.dark().snackBarTheme;
-
-        expect(lightSnackBar.behavior, SnackBarBehavior.floating);
-        expect(lightSnackBar.backgroundColor, const Color(0xFF313131));
-        expect(
-          lightSnackBar.contentTextStyle?.color,
-          const Color(0xFFFBFBFB),
-        );
-        expect(darkSnackBar.behavior, SnackBarBehavior.floating);
-        expect(darkSnackBar.backgroundColor, const Color(0xFF242424));
-        expect(
-          darkSnackBar.contentTextStyle?.color,
-          const Color(0xFFFBFBFB),
-        );
-        expect(lightSnackBar.contentTextStyle?.fontSize, 16);
-        expect(darkSnackBar.contentTextStyle?.fontSize, 16);
-
-        final scaledSnackBar = AppTheme.light(
+    test('uses the shared toast palette in light and dark themes', () {
+      expect(AppColors.danLight.toastBackground, const Color(0xFF313131));
+      expect(AppColors.danLight.toastForeground, const Color(0xFFFBFBFB));
+      expect(AppColors.danDark.toastBackground, const Color(0xFF242424));
+      expect(AppColors.danDark.toastForeground, const Color(0xFFFBFBFB));
+      expect(
+        AppTheme.light().extension<AppColors>()?.toastBackground,
+        AppColors.danLight.toastBackground,
+      );
+      expect(
+        AppTheme.dark().extension<AppColors>()?.toastBackground,
+        AppColors.danDark.toastBackground,
+      );
+      expect(
+        AppTheme.light().extension<AppTypography>()?.statusBody.fontSize,
+        16,
+      );
+      expect(
+        AppTheme.light(
           appearance: const AppearanceSettings(fontSize: 20),
-        ).snackBarTheme;
-        expect(scaledSnackBar.contentTextStyle?.fontSize, 20);
-      },
-    );
+        ).extension<AppTypography>()?.statusBody.fontSize,
+        20,
+      );
+    });
 
     test('registers and maps application color tokens', () {
       final lightTheme = AppTheme.light();

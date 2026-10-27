@@ -91,13 +91,7 @@ class StatusDetailView extends StatelessWidget {
           _ =>
             state.favoriteActionMessage ?? context.l10n.statusFavoriteFailure,
         };
-        ScaffoldMessenger.maybeOf(context)
-          ?..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(message),
-            ),
-          );
+        showAppToast(context, message);
       },
       child: BlocBuilder<StatusDetailCubit, StatusDetailState>(
         builder: (context, state) {

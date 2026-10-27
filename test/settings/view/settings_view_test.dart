@@ -361,7 +361,6 @@ void main() {
       final context = tester.element(find.byType(SettingsView));
 
       expect(find.text(context.l10n.appearanceSaveFailure), findsOneWidget);
-      expect(find.byType(SnackBar), findsOneWidget);
     });
   });
 }

@@ -19,8 +19,8 @@ final class AppColors extends ThemeExtension<AppColors> {
     required this.skeletonBase,
     required this.skeletonHighlight,
     required this.divider,
-    required this.snackBarBackground,
-    required this.snackBarForeground,
+    required this.toastBackground,
+    required this.toastForeground,
     required this.directMessageLinkText,
     this.wechatLinkText,
     this.wechatStatusActionBackground,
@@ -45,8 +45,8 @@ final class AppColors extends ThemeExtension<AppColors> {
     directMessageLinkText: directMessageLightLink,
     wechatStatusActionBackground: Color(0xFFF7F7F7),
     divider: Color(0xFFE5E5E5),
-    snackBarBackground: Color(0xFF313131),
-    snackBarForeground: Color(0xFFFBFBFB),
+    toastBackground: Color(0xFF313131),
+    toastForeground: Color(0xFFFBFBFB),
   );
 
   /// Dan dark theme color tokens.
@@ -68,8 +68,8 @@ final class AppColors extends ThemeExtension<AppColors> {
     directMessageLinkText: directMessageDarkLink,
     wechatStatusActionBackground: Color(0xFF202020),
     divider: Color(0xFF252525),
-    snackBarBackground: Color(0xFF242424),
-    snackBarForeground: Color(0xFFFBFBFB),
+    toastBackground: Color(0xFF242424),
+    toastForeground: Color(0xFFFBFBFB),
   );
 
   /// Foreground content displayed on the WeChat green accent color.
@@ -156,11 +156,11 @@ final class AppColors extends ThemeExtension<AppColors> {
   /// Hairline divider and separator.
   final Color divider;
 
-  /// Background for floating snack bars.
-  final Color snackBarBackground;
+  /// Background for transient toasts.
+  final Color toastBackground;
 
-  /// Text and action foreground for floating snack bars.
-  final Color snackBarForeground;
+  /// Text foreground for transient toasts.
+  final Color toastForeground;
 
   @override
   AppColors copyWith({
@@ -181,8 +181,8 @@ final class AppColors extends ThemeExtension<AppColors> {
     Color? directMessageLinkText,
     Color? wechatStatusActionBackground,
     Color? divider,
-    Color? snackBarBackground,
-    Color? snackBarForeground,
+    Color? toastBackground,
+    Color? toastForeground,
   }) {
     return AppColors(
       wechatGreen: wechatGreen ?? this.wechatGreen,
@@ -208,8 +208,8 @@ final class AppColors extends ThemeExtension<AppColors> {
       wechatStatusActionBackground:
           wechatStatusActionBackground ?? this.wechatStatusActionBackground,
       divider: divider ?? this.divider,
-      snackBarBackground: snackBarBackground ?? this.snackBarBackground,
-      snackBarForeground: snackBarForeground ?? this.snackBarForeground,
+      toastBackground: toastBackground ?? this.toastBackground,
+      toastForeground: toastForeground ?? this.toastForeground,
     );
   }
 
@@ -283,14 +283,14 @@ final class AppColors extends ThemeExtension<AppColors> {
         t,
       ),
       divider: Color.lerp(divider, other.divider, t)!,
-      snackBarBackground: Color.lerp(
-        snackBarBackground,
-        other.snackBarBackground,
+      toastBackground: Color.lerp(
+        toastBackground,
+        other.toastBackground,
         t,
       )!,
-      snackBarForeground: Color.lerp(
-        snackBarForeground,
-        other.snackBarForeground,
+      toastForeground: Color.lerp(
+        toastForeground,
+        other.toastForeground,
         t,
       )!,
     );
