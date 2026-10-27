@@ -845,7 +845,10 @@ void main() {
           ),
         );
 
-        final result = await subject.favoriteStatus(_status.id);
+        final result = await subject.favoriteStatus(
+          _status.id,
+          currentStatus: _status.copyWith(isFavorited: false),
+        );
 
         expect(result.isFavorited, isTrue);
         await change;
@@ -867,11 +870,45 @@ void main() {
           ),
         );
 
-        final result = await subject.unfavoriteStatus(_status.id);
+        final result = await subject.unfavoriteStatus(
+          _status.id,
+          currentStatus: _status,
+        );
 
         expect(result.isFavorited, isFalse);
         await change;
       });
+
+      test(
+        'preserves the current status when the mutation response is malformed',
+        () async {
+          final malformedText = [
+            'a:3:{i:0;s:1:"1";i:1;i:23513027;i:2;s:143:"',
+            _status.text,
+            '";}',
+          ].join();
+          when(
+            () => favoritesApi.destroy(_status.id, format: 'html'),
+          ).thenAnswer(
+            (_) async => fanfou.Status(
+              id: _status.id,
+              createdAt: _status.createdAt,
+              text: malformedText,
+              favorited: false,
+            ),
+          );
+
+          final result = await subject.unfavoriteStatus(
+            _status.id,
+            currentStatus: _status,
+          );
+
+          expect(result, _status.copyWith(isFavorited: false));
+          expect(result.text, _status.text);
+          expect(result.photo, _status.photo);
+          expect(result.author, _status.author);
+        },
+      );
     });
 
     test(

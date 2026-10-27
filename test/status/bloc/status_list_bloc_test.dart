@@ -1048,7 +1048,10 @@ void main() {
         'calls favoriteStatus and tracks the in-progress identifier',
         setUp: () {
           when(
-            () => statusRepository.favoriteStatus(_statusB.id),
+            () => statusRepository.favoriteStatus(
+              _statusB.id,
+              currentStatus: _statusB,
+            ),
           ).thenAnswer((_) async => _statusB.copyWith(isFavorited: true));
         },
         build: buildSubject,
@@ -1075,7 +1078,12 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(() => statusRepository.favoriteStatus(_statusB.id)).called(1);
+          verify(
+            () => statusRepository.favoriteStatus(
+              _statusB.id,
+              currentStatus: _statusB,
+            ),
+          ).called(1);
         },
       );
 

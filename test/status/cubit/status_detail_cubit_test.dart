@@ -506,6 +506,42 @@ void main() {
       );
     });
 
+    group('toggleFavorite', () {
+      blocTest<StatusDetailCubit, StatusDetailState>(
+        'preserves the displayed status when unfavorite returns malformed text',
+        build: () {
+          final favoritedStatus = _status.copyWith(isFavorited: true);
+          when(
+            () => repository.unfavoriteStatus(
+              favoritedStatus.id,
+              currentStatus: favoritedStatus,
+            ),
+          ).thenAnswer(
+            (_) async => favoritedStatus.copyWith(isFavorited: false),
+          );
+          return buildSubject(initialStatus: favoritedStatus);
+        },
+        act: (cubit) => cubit.toggleFavorite(),
+        expect: () => [
+          StatusDetailState(
+            status: StatusDetailStatus.success,
+            statusDetail: _status.copyWith(isFavorited: true),
+          ),
+          StatusDetailState(
+            status: StatusDetailStatus.success,
+            statusDetail: _status.copyWith(isFavorited: false),
+            favoriteActionStatus: StatusFavoriteActionStatus.unfavorited,
+          ),
+        ],
+        verify: (_) => verify(
+          () => repository.unfavoriteStatus(
+            _status.id,
+            currentStatus: _status.copyWith(isFavorited: true),
+          ),
+        ).called(1),
+      );
+    });
+
     group('delete', () {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'skips context when deletion leaves the original selected',

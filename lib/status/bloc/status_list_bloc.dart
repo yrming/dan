@@ -309,9 +309,15 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
     );
     try {
       if (status.isFavorited) {
-        await _statusRepository.unfavoriteStatus(event.statusId);
+        await _statusRepository.unfavoriteStatus(
+          event.statusId,
+          currentStatus: status,
+        );
       } else {
-        await _statusRepository.favoriteStatus(event.statusId);
+        await _statusRepository.favoriteStatus(
+          event.statusId,
+          currentStatus: status,
+        );
       }
       emit(
         state.copyWith(

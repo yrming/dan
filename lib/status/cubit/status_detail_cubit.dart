@@ -224,8 +224,14 @@ class StatusDetailCubit extends Cubit<StatusDetailState> {
     );
     try {
       final updated = status.isFavorited
-          ? await _statusRepository.unfavoriteStatus(status.id)
-          : await _statusRepository.favoriteStatus(status.id);
+          ? await _statusRepository.unfavoriteStatus(
+              status.id,
+              currentStatus: status,
+            )
+          : await _statusRepository.favoriteStatus(
+              status.id,
+              currentStatus: status,
+            );
       if (isClosed) return;
       _selectedStatus = updated;
       emit(

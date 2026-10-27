@@ -346,15 +346,22 @@ class StatusRepository {
   }
 
   /// Favorites a status and publishes its latest value.
-  Future<Status> favoriteStatus(String statusId) async {
+  ///
+  /// [currentStatus] is the value already displayed by the caller. Fanfou's
+  /// favorite mutation responses can contain malformed status text, so the
+  /// existing value is used as the source of content.
+  Future<Status> favoriteStatus(
+    String statusId, {
+    required Status currentStatus,
+  }) async {
     final accountId = _requireActiveAccountId();
-    final response = await _withClient(
+    await _withClient(
       (client) => client.favorites.create(
         statusId,
         format: _statusResponseFormat,
       ),
     );
-    final status = _mapStatus(response).copyWith(isFavorited: true);
+    final status = currentStatus.copyWith(isFavorited: true);
     _statusChangesController.add(
       StatusUpdated(accountId: accountId, status: status),
     );
@@ -362,15 +369,22 @@ class StatusRepository {
   }
 
   /// Removes a favorite and publishes its latest value.
-  Future<Status> unfavoriteStatus(String statusId) async {
+  ///
+  /// [currentStatus] is the value already displayed by the caller. Fanfou's
+  /// unfavorite response may return a PHP-serialized value in the status text,
+  /// so the existing value is used as the source of content.
+  Future<Status> unfavoriteStatus(
+    String statusId, {
+    required Status currentStatus,
+  }) async {
     final accountId = _requireActiveAccountId();
-    final response = await _withClient(
+    await _withClient(
       (client) => client.favorites.destroy(
         statusId,
         format: _statusResponseFormat,
       ),
     );
-    final status = _mapStatus(response).copyWith(isFavorited: false);
+    final status = currentStatus.copyWith(isFavorited: false);
     _statusChangesController.add(
       StatusUpdated(accountId: accountId, status: status),
     );
