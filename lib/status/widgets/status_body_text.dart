@@ -2,10 +2,14 @@ import 'dart:async';
 
 import 'package:dan/app/navigation/navigation.dart';
 import 'package:dan/app/theme/theme.dart';
+import 'package:dan/app/widgets/widgets.dart';
+import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/models/status_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -86,40 +90,72 @@ class _StatusBodyTextState extends State<StatusBodyText> {
   Widget build(BuildContext context) {
     final bodyStyle = context.appTypography.statusBody;
     _leadingRecognizer.onTap = widget.onLeadingTap;
-    return Text.rich(
-      TextSpan(
-        style: bodyStyle,
-        children: [
-          if (widget.leadingText case final text?) ...[
-            TextSpan(
-              text: text,
-              style: bodyStyle.copyWith(
-                color: widget.leadingColor ?? widget.linkColor,
-                fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onLongPress: _showCopyActionSheet,
+      child: Text.rich(
+        TextSpan(
+          style: bodyStyle,
+          children: [
+            if (widget.leadingText case final text?) ...[
+              TextSpan(
+                text: text,
+                style: bodyStyle.copyWith(
+                  color: widget.leadingColor ?? widget.linkColor,
+                  fontWeight: FontWeight.w500,
+                ),
+                recognizer: widget.onLeadingTap == null
+                    ? null
+                    : _leadingRecognizer,
               ),
-              recognizer: widget.onLeadingTap == null
-                  ? null
-                  : _leadingRecognizer,
-            ),
-            const TextSpan(text: ': '),
+              const TextSpan(text: ': '),
+            ],
+            for (final part in _parts)
+              TextSpan(
+                text: part.text,
+                style: part.kind == StatusTextPartKind.plain
+                    ? null
+                    : bodyStyle.copyWith(color: widget.linkColor),
+                recognizer: _recognizers[part],
+              ),
           ],
-          for (final part in _parts)
-            TextSpan(
-              text: part.text,
-              style: part.kind == StatusTextPartKind.plain
-                  ? null
-                  : bodyStyle.copyWith(color: widget.linkColor),
-              recognizer: _recognizers[part],
+        ),
+        maxLines: widget.maxLines,
+        overflow: widget.maxLines == null ? null : TextOverflow.ellipsis,
+        textHeightBehavior: const TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: false,
+          leadingDistribution: TextLeadingDistribution.even,
+        ),
+      ),
+    );
+  }
+
+  /// Shows the long-press actions for copying this status text.
+  Future<void> _showCopyActionSheet() async {
+    final plainText = statusHtmlToPlainText(widget.text);
+    if (plainText.isEmpty) return;
+    final copiedMessage = context.l10n.statusTextCopied;
+    await showAppActionSheet(
+      context,
+      sheetKey: const Key('status-text-copy-sheet'),
+      groups: [
+        AppActionSheetGroup(
+          key: const Key('status-text-copy-group'),
+          children: [
+            AppActionSheetItem(
+              key: const Key('status-text-copy-action'),
+              label: context.l10n.statusCopyTextLabel,
+              icon: RemixIcons.file_copy_line,
+              onPressed: () {
+                unawaited(
+                  Clipboard.setData(ClipboardData(text: plainText)),
+                );
+                showAppToast(context, copiedMessage);
+              },
             ),
-        ],
-      ),
-      maxLines: widget.maxLines,
-      overflow: widget.maxLines == null ? null : TextOverflow.ellipsis,
-      textHeightBehavior: const TextHeightBehavior(
-        applyHeightToFirstAscent: false,
-        applyHeightToLastDescent: false,
-        leadingDistribution: TextLeadingDistribution.even,
-      ),
+          ],
+        ),
+      ],
     );
   }
 

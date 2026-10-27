@@ -250,6 +250,14 @@
     "statusActionFavoriteLabel": "收藏",
     "statusActionRepostLabel": "转发",
     "statusActionDeleteLabel": "删除",
+    "statusCopyTextLabel": "复制文本",
+    "@statusCopyTextLabel": {
+        "description": "长按消息文本后操作面板中的复制操作。"
+    },
+    "statusTextCopied": "已复制",
+    "@statusTextCopied": {
+        "description": "消息文本复制到剪贴板后的反馈提示。"
+    },
     "statusDeleteDialogTitle": "删除这条消息？",
     "statusDeleteDialogContent": "用《IT 狂人》中 Denholm 的声音连续问 12 遍 Are you sure ?",
     "statusDeleteDialogCancelLabel": "取消",

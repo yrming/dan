@@ -1,8 +1,10 @@
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/theme/theme.dart';
+import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/widgets/status_body_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -144,6 +146,41 @@ void main() {
 
       expect(find.text('A & B 加粗'), findsOneWidget);
       expect(find.textContaining('<strong>'), findsNothing);
+    });
+
+    testWidgets('copies the plain status text from a long press', (
+      tester,
+    ) async {
+      Object? clipboardText;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            clipboardText = (call.arguments as Map?)?['text'];
+          }
+          return null;
+        },
+      );
+      await tester.pumpApp(
+        const StatusBodyText(
+          text:
+              '你好 @<a href="https://fanfou.com/user-id">user_a</a>，看看 <a href="https://example.com">链接</a>。',
+          linkColor: AppColors.wechatLightLink,
+        ),
+      );
+
+      await tester.longPress(find.byType(StatusBodyText));
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(StatusBodyText));
+      expect(find.text(context.l10n.statusCopyTextLabel), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('status-text-copy-action')));
+      await tester.pumpAndSettle();
+
+      expect(clipboardText, '你好 @user_a，看看 链接。');
+      expect(find.text(context.l10n.statusTextCopied), findsOneWidget);
+      expect(find.text(context.l10n.statusCopyTextLabel), findsNothing);
     });
 
     testWidgets('does not apply line height outside the first and last lines', (
