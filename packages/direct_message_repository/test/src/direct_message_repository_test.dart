@@ -20,6 +20,7 @@ void main() {
       when(() => fanfouClient.close()).thenReturn(null);
       subject = DirectMessageRepository(
         clientFactory: () async => fanfouClient,
+        activeAccountIdProvider: () => 'account-a',
       );
     });
 
@@ -217,6 +218,7 @@ void main() {
         () async {
           final subjectWithBrokenFactory = DirectMessageRepository(
             clientFactory: () async => throw Exception('no session'),
+            activeAccountIdProvider: () => 'account-a',
           );
 
           await expectLater(
@@ -347,6 +349,86 @@ void main() {
           throwsA(isA<ArgumentError>()),
         );
         verifyNever(() => fanfouClient.directMessages);
+      });
+    });
+
+    group('deleteMessage', () {
+      test('deletes the message when the API call succeeds', () async {
+        when(
+          () => directMessagesApi.destroy('dm-1'),
+        ).thenAnswer((_) async => _fanfouMessageWithUsers);
+
+        await subject.deleteMessage('dm-1');
+
+        verify(() => directMessagesApi.destroy('dm-1')).called(1);
+        verify(() => fanfouClient.close()).called(1);
+      });
+
+      test('rejects an empty id without calling the API', () async {
+        await expectLater(
+          subject.deleteMessage(' '),
+          throwsA(isA<ArgumentError>()),
+        );
+        verifyNever(() => fanfouClient.directMessages);
+      });
+
+      test('maps API errors to a repository failure', () async {
+        when(
+          () => directMessagesApi.destroy('dm-1'),
+        ).thenThrow(fanfou.FanfouApiException(403, 'denied'));
+
+        await expectLater(
+          subject.deleteMessage('dm-1'),
+          throwsA(
+            isA<DirectMessageRepositoryApiFailure>().having(
+              (failure) => failure.statusCode,
+              'statusCode',
+              403,
+            ),
+          ),
+        );
+        verify(() => fanfouClient.close()).called(1);
+      });
+
+      test(
+        'publishes a $DirectMessageDeleted change for the active account',
+        () async {
+          when(
+            () => directMessagesApi.destroy('dm-1'),
+          ).thenAnswer((_) async => _fanfouMessageWithUsers);
+
+          final changes = <DirectMessageChange>[];
+          final subscription = subject.messageChanges.listen(changes.add);
+          addTearDown(subscription.cancel);
+
+          await subject.deleteMessage('dm-1');
+          await Future<void>.delayed(Duration.zero);
+
+          expect(changes, const [
+            DirectMessageDeleted(accountId: 'account-a', messageId: 'dm-1'),
+          ]);
+        },
+      );
+
+      test('skips publishing without an active account', () async {
+        final subjectWithoutAccount = DirectMessageRepository(
+          clientFactory: () async => fanfouClient,
+          activeAccountIdProvider: () => null,
+        );
+        when(
+          () => directMessagesApi.destroy('dm-1'),
+        ).thenAnswer((_) async => _fanfouMessageWithUsers);
+
+        final changes = <DirectMessageChange>[];
+        final subscription = subjectWithoutAccount.messageChanges.listen(
+          changes.add,
+        );
+        addTearDown(subscription.cancel);
+
+        await subjectWithoutAccount.deleteMessage('dm-1');
+        await Future<void>.delayed(Duration.zero);
+
+        expect(changes, isEmpty);
       });
     });
   });

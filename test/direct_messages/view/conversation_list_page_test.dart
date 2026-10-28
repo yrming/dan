@@ -67,6 +67,9 @@ void main() {
 
     setUp(() {
       directMessageRepository = _MockDirectMessageRepository();
+      when(() => directMessageRepository.messageChanges).thenAnswer(
+        (_) => const Stream.empty(),
+      );
       userRepository = _MockUserRepository();
       notificationCountsCubit = _MockNotificationCountsCubit();
       when(

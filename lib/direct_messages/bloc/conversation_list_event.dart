@@ -38,3 +38,15 @@ final class ConversationListLoadMoreRequested extends ConversationListEvent {
   /// Creates a load-more request.
   const ConversationListLoadMoreRequested();
 }
+
+/// Applies a direct-message mutation published by the repository.
+final class ConversationListMessageChanged extends ConversationListEvent {
+  /// Creates a message change event.
+  const ConversationListMessageChanged({required this.change});
+
+  /// Published mutation to apply to the list.
+  final DirectMessageChange change;
+
+  @override
+  List<Object?> get props => [change];
+}

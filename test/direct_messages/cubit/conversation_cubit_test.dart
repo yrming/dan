@@ -493,5 +493,72 @@ void main() {
         ],
       );
     });
+
+    group('deleteMessage', () {
+      blocTest<ConversationCubit, ConversationState>(
+        'emits progress then removes the deleted message',
+        setUp: () {
+          when(
+            () => directMessageRepository.deleteMessage('dm-2'),
+          ).thenAnswer((_) async {});
+        },
+        build: buildCubit,
+        seed: () => const ConversationLoadSuccess(
+          messages: [outgoingMessage, incomingMessage],
+        ),
+        act: (cubit) => cubit.deleteMessage('dm-2'),
+        expect: () => [
+          const ConversationLoadSuccess(
+            messages: [outgoingMessage, incomingMessage],
+            deletionStatus: ConversationDeletionStatus.inProgress,
+          ),
+          const ConversationLoadSuccess(messages: [incomingMessage]),
+        ],
+        verify: (_) {
+          verify(() => directMessageRepository.deleteMessage('dm-2')).called(
+            1,
+          );
+        },
+      );
+
+      blocTest<ConversationCubit, ConversationState>(
+        'emits a deletion failure with the API message',
+        setUp: () {
+          when(() => directMessageRepository.deleteMessage('dm-2')).thenThrow(
+            const DirectMessageRepositoryApiFailure(
+              statusCode: 403,
+              message: '没有权限删除',
+            ),
+          );
+        },
+        build: buildCubit,
+        seed: () => const ConversationLoadSuccess(
+          messages: [outgoingMessage, incomingMessage],
+        ),
+        act: (cubit) => cubit.deleteMessage('dm-2'),
+        expect: () => [
+          const ConversationLoadSuccess(
+            messages: [outgoingMessage, incomingMessage],
+            deletionStatus: ConversationDeletionStatus.inProgress,
+          ),
+          const ConversationLoadSuccess(
+            messages: [outgoingMessage, incomingMessage],
+            deletionStatus: ConversationDeletionStatus.failure,
+            failureMessage: '没有权限删除',
+          ),
+        ],
+      );
+
+      blocTest<ConversationCubit, ConversationState>(
+        'does nothing before the conversation loads',
+        build: buildCubit,
+        seed: () => const ConversationInitial(),
+        act: (cubit) => cubit.deleteMessage('dm-2'),
+        expect: () => <ConversationState>[],
+        verify: (_) {
+          verifyNever(() => directMessageRepository.deleteMessage(any()));
+        },
+      );
+    });
   });
 }

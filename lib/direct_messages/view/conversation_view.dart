@@ -9,6 +9,7 @@ import 'package:dan/l10n/l10n.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remixicon/remixicon.dart';
 
@@ -34,15 +35,37 @@ class ConversationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ConversationCubit, ConversationState>(
-      listenWhen: (previous, current) =>
-          current is ConversationLoadSuccess &&
-          current.historyLoadStatus == ConversationHistoryLoadStatus.failure &&
-          (previous is! ConversationLoadSuccess ||
-              previous.historyLoadStatus != current.historyLoadStatus),
-      listener: (context, state) {
-        if (state is ConversationLoadSuccess) {
-          showAppFailureToast(context, message: state.failureMessage);
+      listenWhen: (previous, current) {
+        if (current is! ConversationLoadSuccess) return false;
+        if (previous case final ConversationLoadSuccess previousSuccess) {
+          final historyFailed =
+              current.historyLoadStatus ==
+              ConversationHistoryLoadStatus.failure;
+          final deletionFailed =
+              current.deletionStatus == ConversationDeletionStatus.failure;
+          return (historyFailed &&
+                  previousSuccess.historyLoadStatus !=
+                      current.historyLoadStatus) ||
+              (deletionFailed &&
+                  previousSuccess.deletionStatus != current.deletionStatus);
         }
+        // Entering the success state only matters when a failure flag is
+        // already carried over, such as a seeded or restored state.
+        return current.historyLoadStatus ==
+                ConversationHistoryLoadStatus.failure ||
+            current.deletionStatus == ConversationDeletionStatus.failure;
+      },
+      listener: (context, state) {
+        if (state is! ConversationLoadSuccess) return;
+        if (state.deletionStatus == ConversationDeletionStatus.failure) {
+          showAppFailureToast(
+            context,
+            message:
+                state.failureMessage ?? context.l10n.directMessageDeleteFailure,
+          );
+          return;
+        }
+        showAppFailureToast(context, message: state.failureMessage);
       },
       builder: (context, state) {
         final peerScreenName = state.peerScreenName;
@@ -367,6 +390,9 @@ class _MessageList extends StatelessWidget {
                 child: DirectMessageBubble(
                   message: message,
                   isSentByActiveAccount: isSent,
+                  onLongPress: () => unawaited(
+                    _showDirectMessageActions(context, message),
+                  ),
                 ),
               ),
             ],
@@ -443,4 +469,49 @@ class _StatusView extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Shows the long-press actions for one direct-message bubble.
+Future<void> _showDirectMessageActions(
+  BuildContext context,
+  DirectMessage message,
+) async {
+  final l10n = context.l10n;
+  final copiedMessage = l10n.statusTextCopied;
+  await showAppActionSheet(
+    context,
+    sheetKey: const Key('direct-message-action-sheet'),
+    groups: [
+      AppActionSheetGroup(
+        key: const Key('direct-message-copy-group'),
+        children: [
+          AppActionSheetItem(
+            key: const Key('direct-message-copy-action'),
+            label: l10n.statusCopyTextLabel,
+            icon: RemixIcons.clipboard_line,
+            onPressed: () {
+              unawaited(
+                Clipboard.setData(ClipboardData(text: message.text)),
+              );
+              showAppToast(context, copiedMessage);
+            },
+          ),
+        ],
+      ),
+      AppActionSheetGroup(
+        key: const Key('direct-message-delete-group'),
+        children: [
+          AppActionSheetItem(
+            key: const Key('direct-message-delete-action'),
+            label: l10n.directMessageDeleteLabel,
+            icon: RemixIcons.delete_bin_line,
+            foregroundColor: context.appColors.destructiveAction,
+            onPressed: () => unawaited(
+              context.read<ConversationCubit>().deleteMessage(message.id),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
 }

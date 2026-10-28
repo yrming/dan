@@ -25,6 +25,18 @@ enum ConversationSendStatus {
   failure,
 }
 
+/// Status of deleting an existing direct message.
+enum ConversationDeletionStatus {
+  /// No deletion is in flight.
+  idle,
+
+  /// A deletion is in flight.
+  inProgress,
+
+  /// The last deletion attempt failed.
+  failure,
+}
+
 /// States of the single conversation feature.
 sealed class ConversationState extends Equatable {
   /// Creates a conversation state.
@@ -62,6 +74,7 @@ final class ConversationLoadSuccess extends ConversationState {
     this.nextPage,
     this.historyLoadStatus = ConversationHistoryLoadStatus.idle,
     this.sendStatus = ConversationSendStatus.idle,
+    this.deletionStatus = ConversationDeletionStatus.idle,
     this.failureMessage,
   });
 
@@ -79,6 +92,10 @@ final class ConversationLoadSuccess extends ConversationState {
 
   /// Status of the latest send attempt.
   final ConversationSendStatus sendStatus;
+
+  /// Status of the latest deletion attempt.
+  final ConversationDeletionStatus deletionStatus;
+
   final String? failureMessage;
 
   /// Returns a copy with selected fields replaced.
@@ -89,6 +106,7 @@ final class ConversationLoadSuccess extends ConversationState {
     Object? nextPage = _unset,
     ConversationHistoryLoadStatus? historyLoadStatus,
     ConversationSendStatus? sendStatus,
+    ConversationDeletionStatus? deletionStatus,
     Object? failureMessage = _unset,
   }) {
     return ConversationLoadSuccess(
@@ -98,6 +116,7 @@ final class ConversationLoadSuccess extends ConversationState {
       nextPage: nextPage == _unset ? this.nextPage : nextPage as int?,
       historyLoadStatus: historyLoadStatus ?? this.historyLoadStatus,
       sendStatus: sendStatus ?? this.sendStatus,
+      deletionStatus: deletionStatus ?? this.deletionStatus,
       failureMessage: failureMessage == _unset
           ? this.failureMessage
           : failureMessage as String?,
@@ -112,6 +131,7 @@ final class ConversationLoadSuccess extends ConversationState {
     nextPage,
     historyLoadStatus,
     sendStatus,
+    deletionStatus,
     failureMessage,
   ];
 }

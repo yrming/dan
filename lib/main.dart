@@ -35,6 +35,8 @@ Future<void> main() async {
   );
   final directMessageRepository = DirectMessageRepository(
     clientFactory: authenticationRepository.createClientForActiveAccount,
+    activeAccountIdProvider: () =>
+        authenticationRepository.currentAuthentication.activeAccount?.id,
   );
   final userRepository = UserRepository(
     userApiClient: UserApiClient(

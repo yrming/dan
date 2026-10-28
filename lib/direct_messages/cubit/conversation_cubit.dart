@@ -137,6 +137,39 @@ class ConversationCubit extends Cubit<ConversationState> {
     }
   }
 
+  /// Deletes [messageId] and removes it from the transcript.
+  Future<void> deleteMessage(String messageId) async {
+    final state = this.state;
+    if (state is! ConversationLoadSuccess ||
+        state.deletionStatus == ConversationDeletionStatus.inProgress) {
+      return;
+    }
+
+    emit(
+      state.copyWith(deletionStatus: ConversationDeletionStatus.inProgress),
+    );
+    try {
+      await _directMessageRepository.deleteMessage(messageId);
+      emit(
+        state.copyWith(
+          messages: state.messages
+              .where((message) => message.id != messageId)
+              .toList(),
+          deletionStatus: ConversationDeletionStatus.idle,
+        ),
+      );
+    } on Object catch (error) {
+      emit(
+        state.copyWith(
+          deletionStatus: ConversationDeletionStatus.failure,
+          failureMessage: error is DirectMessageRepositoryApiFailure
+              ? error.message
+              : null,
+        ),
+      );
+    }
+  }
+
   String? _peerScreenNameFrom(List<DirectMessage> messages) {
     for (final message in messages) {
       if (message.senderId != _activeAccountId) {

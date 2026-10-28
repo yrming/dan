@@ -279,6 +279,14 @@
     "directMessageConversationLoadingLabel": "正在加载聊天记录",
     "directMessageConversationEmptyLabel": "多少年 共对亦无言\n仿佛多少年 欲爱但忘言\n欲爱但忘言 让你走过眼前",
     "directMessageConversationFallbackTitle": "聊天",
+    "directMessageDeleteLabel": "删除",
+    "@directMessageDeleteLabel": {
+        "description": "长按私信气泡后操作面板中的删除操作。"
+    },
+    "directMessageDeleteFailure": "删除失败，请重试。",
+    "@directMessageDeleteFailure": {
+        "description": "私信删除失败时的反馈提示。"
+    },
     "directMessageComposerHint": "输入内容",
     "sendButtonLabel": "发送"
 }

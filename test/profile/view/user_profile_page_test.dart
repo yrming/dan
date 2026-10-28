@@ -46,6 +46,9 @@ void main() {
       userRepository = _MockUserRepository();
       authenticationRepository = _MockAuthenticationRepository();
       directMessageRepository = _MockDirectMessageRepository();
+      when(() => directMessageRepository.messageChanges).thenAnswer(
+        (_) => const Stream.empty(),
+      );
       notificationCountsCubit = _MockNotificationCountsCubit();
       when(() => notificationCountsCubit.state).thenReturn(
         const NotificationCountsLoadSuccess(counts: _notificationCounts),

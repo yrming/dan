@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dan/direct_messages/bloc/conversation_list_bloc.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
@@ -29,6 +31,7 @@ DirectMessageConversation _conversationForUser(
 void main() {
   group(ConversationListBloc, () {
     late DirectMessageRepository directMessageRepository;
+    late StreamController<DirectMessageChange> messageChanges;
 
     const pageSize = 20;
     final fullPage = List.generate(pageSize, _conversationForUser);
@@ -44,7 +47,13 @@ void main() {
 
     setUp(() {
       directMessageRepository = _MockDirectMessageRepository();
+      messageChanges = StreamController<DirectMessageChange>.broadcast();
+      when(() => directMessageRepository.messageChanges).thenAnswer(
+        (_) => messageChanges.stream,
+      );
     });
+
+    tearDown(() => messageChanges.close());
 
     ConversationListBloc buildBloc() {
       return ConversationListBloc(
@@ -91,7 +100,12 @@ void main() {
             nextPage: 3,
           ),
         ],
-        verify: (_) => verifyZeroInteractions(directMessageRepository),
+        verify: (_) => verifyNever(
+          () => directMessageRepository.getConversationList(
+            limit: any(named: 'limit'),
+            page: any(named: 'page'),
+          ),
+        ),
       );
       for (final userId in ['user-0', 'unknown']) {
         blocTest<ConversationListBloc, ConversationListState>(
@@ -104,7 +118,12 @@ void main() {
           act: (bloc) =>
               bloc.add(ConversationListConversationOpened(userId: userId)),
           expect: () => <ConversationListState>[],
-          verify: (_) => verifyZeroInteractions(directMessageRepository),
+          verify: (_) => verifyNever(
+            () => directMessageRepository.getConversationList(
+              limit: any(named: 'limit'),
+              page: any(named: 'page'),
+            ),
+          ),
         );
       }
     });
@@ -431,6 +450,116 @@ void main() {
           conversations: shortPage,
         ),
         act: (bloc) => bloc.add(const ConversationListLoadMoreRequested()),
+        expect: () => <ConversationListState>[],
+        verify: (_) {
+          verifyNever(
+            () => directMessageRepository.getConversationList(
+              limit: any(named: 'limit'),
+              page: any(named: 'page'),
+            ),
+          );
+        },
+      );
+    });
+
+    group('ConversationListMessageChanged', () {
+      const refreshedConversation = DirectMessageConversation(
+        otherUserId: 'user-0',
+        lastMessage: DirectMessage(
+          id: 'dm-0-older',
+          text: '更早的一条',
+          createdAt: 'Mon Jul 27 00:00:00 +0000 2026',
+          senderId: 'user-0',
+          recipientId: 'account-a',
+        ),
+        messageCount: 1,
+        hasUnread: false,
+        otherUserScreenName: 'user_0',
+      );
+
+      blocTest<ConversationListBloc, ConversationListState>(
+        'refreshes the affected summaries after a deletion',
+        setUp: () {
+          when(
+            () => directMessageRepository.getConversationList(
+              limit: pageSize,
+              page: 1,
+            ),
+          ).thenAnswer(
+            (_) async => DirectMessageConversationPage(
+              conversations: [refreshedConversation, ...shortPage.skip(1)],
+              hasMore: false,
+              nextPage: null,
+            ),
+          );
+        },
+        build: buildBloc,
+        seed: () => ConversationListState(
+          status: ConversationListStatus.success,
+          conversations: shortPage,
+          hasMore: true,
+          nextPage: 2,
+        ),
+        act: (bloc) => bloc.add(
+          const ConversationListMessageChanged(
+            change: DirectMessageDeleted(
+              accountId: 'account-a',
+              messageId: 'dm-0',
+            ),
+          ),
+        ),
+        expect: () => [
+          ConversationListState(
+            status: ConversationListStatus.success,
+            conversations: [refreshedConversation, ...shortPage.skip(1)],
+          ),
+        ],
+        verify: (_) => verify(
+          () => directMessageRepository.getConversationList(
+            limit: pageSize,
+            page: 1,
+          ),
+        ).called(1),
+      );
+
+      blocTest<ConversationListBloc, ConversationListState>(
+        'keeps the list when the refresh fails',
+        setUp: () {
+          when(
+            () => directMessageRepository.getConversationList(
+              limit: any(named: 'limit'),
+              page: any(named: 'page'),
+            ),
+          ).thenThrow(const DirectMessageRepositoryUnknownFailure());
+        },
+        build: buildBloc,
+        seed: () => ConversationListState(
+          status: ConversationListStatus.success,
+          conversations: shortPage,
+        ),
+        act: (bloc) => bloc.add(
+          const ConversationListMessageChanged(
+            change: DirectMessageDeleted(
+              accountId: 'account-a',
+              messageId: 'dm-0',
+            ),
+          ),
+        ),
+        expect: () => <ConversationListState>[],
+      );
+
+      blocTest<ConversationListBloc, ConversationListState>(
+        'ignores deletions before the list has loaded',
+        build: buildBloc,
+        seed: () => const ConversationListState(),
+        act: (bloc) => bloc.add(
+          const ConversationListMessageChanged(
+            change: DirectMessageDeleted(
+              accountId: 'account-a',
+              messageId: 'dm-0',
+            ),
+          ),
+        ),
         expect: () => <ConversationListState>[],
         verify: (_) {
           verifyNever(

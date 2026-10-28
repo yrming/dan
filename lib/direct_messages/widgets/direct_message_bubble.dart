@@ -18,6 +18,7 @@ class DirectMessageBubble extends StatelessWidget {
     this.avatarUrl,
     this.avatarSemanticLabel,
     this.onAvatarTap,
+    this.onLongPress,
     this.externalLinkLauncher = _launchExternalLink,
     super.key,
   });
@@ -36,6 +37,9 @@ class DirectMessageBubble extends StatelessWidget {
 
   /// Tap callback retained for API compatibility; avatars are not shown.
   final VoidCallback? onAvatarTap;
+
+  /// Called when the bubble is long-pressed, such as to open message actions.
+  final VoidCallback? onLongPress;
 
   /// Opens a URL when the message consists of an HTTP or HTTPS link.
   final DirectMessageExternalLinkLauncher externalLinkLauncher;
@@ -59,6 +63,7 @@ class DirectMessageBubble extends StatelessWidget {
         externalLinkLauncher: externalLinkLauncher,
         maxWidth: screenWidth * 0.72,
         text: message.text,
+        onLongPress: onLongPress,
       ),
     );
 
@@ -80,6 +85,7 @@ class _MessageBubble extends StatelessWidget {
     required this.externalLinkLauncher,
     required this.maxWidth,
     required this.text,
+    this.onLongPress,
   });
 
   final Color color;
@@ -88,27 +94,31 @@ class _MessageBubble extends StatelessWidget {
   final DirectMessageExternalLinkLauncher externalLinkLauncher;
   final double maxWidth;
   final String text;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
     final sizing = context.appSizing;
-    return Container(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      padding: EdgeInsets.symmetric(
-        horizontal: sizing.scaled(AppSpacing.sm),
-        vertical: sizing.scaled(AppSpacing.xs),
-      ),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(
-          sizing.scaled(DirectMessageBubble._borderRadius),
+    return GestureDetector(
+      onLongPress: onLongPress,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        padding: EdgeInsets.symmetric(
+          horizontal: sizing.scaled(AppSpacing.sm),
+          vertical: sizing.scaled(AppSpacing.xs),
         ),
-      ),
-      child: _DirectMessageText(
-        text: text,
-        textColor: textColor,
-        linkColor: linkColor,
-        externalLinkLauncher: externalLinkLauncher,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(
+            sizing.scaled(DirectMessageBubble._borderRadius),
+          ),
+        ),
+        child: _DirectMessageText(
+          text: text,
+          textColor: textColor,
+          linkColor: linkColor,
+          externalLinkLauncher: externalLinkLauncher,
+        ),
       ),
     );
   }

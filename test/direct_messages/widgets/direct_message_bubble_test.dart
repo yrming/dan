@@ -42,6 +42,24 @@ void main() {
       expect(launchedUri, Uri.parse(message.text));
     });
 
+    testWidgets('reports long presses through the callback', (tester) async {
+      var longPressCount = 0;
+      await tester.pumpApp(
+        Scaffold(
+          body: DirectMessageBubble(
+            message: message,
+            isSentByActiveAccount: true,
+            onLongPress: () => longPressCount++,
+          ),
+        ),
+      );
+
+      await tester.longPress(find.text(message.text));
+      await tester.pump();
+
+      expect(longPressCount, 1);
+    });
+
     testWidgets('renders without an avatar or bubble tail', (tester) async {
       await tester.pumpApp(
         const Scaffold(

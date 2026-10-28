@@ -115,6 +115,9 @@ void main() {
       when(() => draftRepository.load(any())).thenAnswer((_) async => null);
       when(() => draftRepository.clear(any())).thenAnswer((_) async {});
       directMessageRepository = _MockDirectMessageRepository();
+      when(() => directMessageRepository.messageChanges).thenAnswer(
+        (_) => const Stream.empty(),
+      );
       userRepository = _MockUserRepository();
       when(
         () => userRepository.getCachedUser(any()),

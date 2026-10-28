@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:direct_message_repository/src/exceptions/exceptions.dart';
 import 'package:direct_message_repository/src/models/models.dart';
 import 'package:fanfou/fanfou.dart' as fanfou;
@@ -5,6 +7,9 @@ import 'package:fanfou_error_parser/fanfou_error_parser.dart';
 
 /// Creates a Fanfou client scoped to the active account.
 typedef DirectMessageClientFactory = Future<fanfou.FanfouClient> Function();
+
+/// Returns the identifier of the account currently used by the repository.
+typedef DirectMessageActiveAccountIdProvider = String? Function();
 
 /// Repository for Fanfou direct messages.
 ///
@@ -16,13 +21,25 @@ class DirectMessageRepository {
   /// Creates a direct message repository.
   factory DirectMessageRepository({
     required DirectMessageClientFactory clientFactory,
+    required DirectMessageActiveAccountIdProvider activeAccountIdProvider,
   }) {
-    return DirectMessageRepository._(clientFactory);
+    return DirectMessageRepository._(clientFactory, activeAccountIdProvider);
   }
 
-  DirectMessageRepository._(this._clientFactory);
+  DirectMessageRepository._(
+    this._clientFactory,
+    this._activeAccountIdProvider,
+  );
 
   final DirectMessageClientFactory _clientFactory;
+  final DirectMessageActiveAccountIdProvider _activeAccountIdProvider;
+
+  final StreamController<DirectMessageChange> _messageChangesController =
+      StreamController<DirectMessageChange>.broadcast();
+
+  /// Successful direct-message mutations, scoped by account identifier.
+  Stream<DirectMessageChange> get messageChanges =>
+      _messageChangesController.stream;
 
   /// Returns one page of the active account's conversations, newest first.
   Future<DirectMessageConversationPage> getConversationList({
@@ -81,6 +98,24 @@ class DirectMessageRepository {
     );
     return _messageFromSdk(response);
   }
+
+  /// Deletes the direct message [messageId].
+  Future<void> deleteMessage(String messageId) async {
+    if (messageId.trim().isEmpty) {
+      throw ArgumentError.value(messageId, 'messageId', 'Must not be empty.');
+    }
+
+    await _withClient((client) => client.directMessages.destroy(messageId));
+    final accountId = _activeAccountIdProvider();
+    if (accountId != null && accountId.isNotEmpty) {
+      _messageChangesController.add(
+        DirectMessageDeleted(accountId: accountId, messageId: messageId),
+      );
+    }
+  }
+
+  /// Releases the message change stream.
+  Future<void> close() => _messageChangesController.close();
 
   Future<R> _withClient<R>(
     Future<R> Function(fanfou.FanfouClient client) action,

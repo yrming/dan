@@ -27,11 +27,30 @@ class ConversationListBloc
       _onLoadMoreRequested,
       transformer: droppable(),
     );
+    on<ConversationListMessageChanged>(
+      _onMessageChanged,
+      transformer: sequential(),
+    );
+
+    _messageChangesSubscription = _directMessageRepository.messageChanges
+        .listen(
+          (change) => add(ConversationListMessageChanged(change: change)),
+          onError: addError,
+        );
   }
 
   final DirectMessageRepository _directMessageRepository;
 
+  late final StreamSubscription<DirectMessageChange>
+  _messageChangesSubscription;
+
   static const _pageSize = 20;
+
+  @override
+  Future<void> close() async {
+    await _messageChangesSubscription.cancel();
+    return super.close();
+  }
 
   void _onConversationOpened(
     ConversationListConversationOpened event,
@@ -155,6 +174,31 @@ class ConversationListBloc
               : null,
         ),
       );
+    }
+  }
+
+  /// Applies repository mutations, such as a deleted message refreshing the
+  /// affected conversation summaries in place.
+  Future<void> _onMessageChanged(
+    ConversationListMessageChanged event,
+    Emitter<ConversationListState> emit,
+  ) async {
+    if (event.change is! DirectMessageDeleted) return;
+    if (state.status != ConversationListStatus.success) return;
+    try {
+      final page = await _fetchPage(page: 1);
+      emit(
+        state.copyWith(
+          conversations: _mergeConversations(
+            page.conversations,
+            state.conversations,
+          ),
+          hasMore: page.hasMore,
+          nextPage: page.nextPage,
+        ),
+      );
+    } on Object catch (error, stackTrace) {
+      addError(error, stackTrace);
     }
   }
 
