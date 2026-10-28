@@ -488,7 +488,7 @@ Future<void> _showDirectMessageActions(
           AppActionSheetItem(
             key: const Key('direct-message-copy-action'),
             label: l10n.statusCopyTextLabel,
-            icon: RemixIcons.clipboard_line,
+            icon: RemixIcons.file_copy_line,
             onPressed: () {
               unawaited(
                 Clipboard.setData(ClipboardData(text: message.text)),
