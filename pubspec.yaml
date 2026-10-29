@@ -81,3 +81,4 @@ flutter_launcher_icons:
     generate: true
   macos:
     generate: true
+  remove_alpha_ios: true
