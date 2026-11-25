@@ -11,10 +11,10 @@ import 'package:dan/l10n/gen/app_localizations.dart';
 import 'package:dan/notifications/notifications.dart';
 import 'package:dan/status/status.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -158,7 +158,10 @@ class _AppViewState extends State<AppView> {
               value: Theme.of(context).appBarTheme.systemOverlayStyle!,
               child: child ?? const SizedBox.shrink(),
             ),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              ...GlobalMaterialLocalizations.delegates,
+            ],
             supportedLocales: AppLocalizations.supportedLocales,
             routerConfig: _router,
           );

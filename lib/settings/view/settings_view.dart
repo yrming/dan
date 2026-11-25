@@ -5,8 +5,8 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/appearance/appearance.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 
 /// Renders appearance and display settings.

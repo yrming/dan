@@ -2,17 +2,18 @@ import 'dart:async';
 
 import 'package:appearance_repository/appearance_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoSliverRefreshControl;
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/status.dart';
 import 'package:dan/status/widgets/status_action_button.dart';
 import 'package:dan/status/widgets/status_list_item.dart';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 

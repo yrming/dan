@@ -2,7 +2,7 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/status/models/status_list_layout.dart';
 import 'package:dan/status/widgets/monthly_status_photos.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Displays animated placeholders matching the status-list item layout.
 class StatusListSkeleton extends StatelessWidget {

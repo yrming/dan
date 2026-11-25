@@ -3,7 +3,7 @@ import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/models/status_composer_photo.dart';
 import 'package:dan/status/view/status_composer_photo_preview_page.dart';
 import 'package:dan/status/widgets/x_status_photo.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A selected attachment with preview and removal actions.
 class StatusComposerPhotoPicker extends StatefulWidget {

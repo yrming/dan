@@ -9,9 +9,9 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_shell_app_bar.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/notifications/notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Main authenticated application shell.
 class AppShell extends StatefulWidget {

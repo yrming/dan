@@ -1,7 +1,7 @@
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/authentication/bloc/authentication_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Error boundary shown when stored authentication cannot be restored.
 class AuthenticationFailurePage extends StatelessWidget {

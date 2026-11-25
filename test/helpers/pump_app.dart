@@ -1,8 +1,8 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/l10n/gen/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension PumpApp on WidgetTester {
   /// Completes a route or dialog transition while shimmers keep running.
@@ -35,7 +35,10 @@ extension PumpApp on WidgetTester {
         darkTheme: darkTheme ?? AppTheme.dark(),
         themeMode: themeMode,
         locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
         supportedLocales: AppLocalizations.supportedLocales,
         home: widget,
       ),
@@ -55,7 +58,10 @@ extension PumpApp on WidgetTester {
       darkTheme: darkTheme ?? AppTheme.dark(),
       themeMode: themeMode,
       locale: locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
     );

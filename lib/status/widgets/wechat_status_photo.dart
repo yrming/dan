@@ -1,5 +1,5 @@
 import 'package:dan/app/theme/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Maximum width of a WeChat-style single status image.
 const wechatStatusPhotoMaxWidth = 200.0;

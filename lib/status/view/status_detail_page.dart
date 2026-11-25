@@ -8,9 +8,9 @@ import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/cubit/status_detail_cubit.dart';
 import 'package:dan/status/widgets/status_detail_skeleton.dart';
 import 'package:dan/status/widgets/status_list_item.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 import 'package:user_repository/user_repository.dart';
 

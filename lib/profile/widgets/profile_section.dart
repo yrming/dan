@@ -1,5 +1,5 @@
 import 'package:dan/app/theme/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Non-interactive grouped profile information.
 class ProfileSection extends StatelessWidget {

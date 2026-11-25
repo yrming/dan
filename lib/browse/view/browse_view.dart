@@ -1,6 +1,6 @@
 import 'package:dan/app/navigation/app_shell_tab.dart';
 import 'package:dan/status/status.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Displays the public timeline on the browse tab.
 class BrowseView extends StatelessWidget {

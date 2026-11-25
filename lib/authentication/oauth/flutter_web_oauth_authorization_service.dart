@@ -3,12 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 
 /// Signature used to replace the platform authenticator in tests.
-typedef OAuthWebAuthenticator =
-    Future<String> Function({
-      required String url,
-      required String callbackUrlScheme,
-      FlutterWebAuth2Options options,
-    });
+typedef OAuthWebAuthenticator = Future<String> Function({
+  required String url,
+  required String callbackUrlScheme,
+  FlutterWebAuth2Options options,
+});
 
 /// Runs Fanfou OAuth in the platform system-browser authentication session.
 final class FlutterWebOAuthAuthorizationService

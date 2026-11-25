@@ -1,7 +1,7 @@
 import 'package:dan/app/theme/theme.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:material_ui/material_ui.dart';
 
 /// Reading styles adapted from the website's document-prose typography.
 MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
@@ -19,7 +19,28 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
     fontWeight: FontWeight.w500,
   );
 
-  return MarkdownStyleSheet.fromTheme(theme).copyWith(
+  // Map shared text/painting values explicitly: flutter_markdown_plus still
+  // accepts the legacy Flutter ThemeData, not material_ui's ThemeData.
+  return MarkdownStyleSheet(
+    h4: theme.textTheme.bodyLarge,
+    h4Padding: EdgeInsets.zero,
+    h5: theme.textTheme.bodyLarge,
+    h5Padding: EdgeInsets.zero,
+    h6: theme.textTheme.bodyLarge,
+    h6Padding: EdgeInsets.zero,
+    em: const TextStyle(fontStyle: FontStyle.italic),
+    del: const TextStyle(decoration: TextDecoration.lineThrough),
+    img: theme.textTheme.bodyMedium,
+    checkbox: theme.textTheme.bodyMedium!.copyWith(color: theme.primaryColor),
+    tableHead: const TextStyle(fontWeight: FontWeight.w600),
+    tableBody: theme.textTheme.bodyMedium,
+    tableHeadAlign: TextAlign.center,
+    tablePadding: const EdgeInsets.only(bottom: 4),
+    tableBorder: TableBorder.all(color: theme.dividerColor),
+    tableColumnWidth: const FlexColumnWidth(),
+    tableCellsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+    tableCellsDecoration: const BoxDecoration(),
+    codeblockPadding: const EdgeInsets.all(8),
     p: body,
     // List items use ten pixels; paragraph padding adds six more for prose.
     blockSpacing: sizing.scaled(AppSpacing.space10),

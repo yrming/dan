@@ -1,6 +1,6 @@
 import 'package:dan/app/widgets/app_toast.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shows request failure feedback as a toast.
 void showAppFailureToast(BuildContext context, {String? message}) {

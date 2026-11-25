@@ -1,6 +1,6 @@
 import 'package:dan/app/navigation/scroll_to_top_scope.dart';
 import 'package:dan/app/theme/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// App bar used by sub-pages pushed above the authenticated shell.
 ///

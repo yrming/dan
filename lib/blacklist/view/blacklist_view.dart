@@ -6,9 +6,9 @@ import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/blacklist/cubit/blacklist_cubit.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/profile/widgets/follow_list_skeleton.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class BlacklistView extends StatefulWidget {
   const BlacklistView({super.key});

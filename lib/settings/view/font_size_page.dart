@@ -2,7 +2,7 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/settings/view/font_size_view.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Route boundary using the application-wide appearance cubit.
 class FontSizePage extends StatelessWidget {

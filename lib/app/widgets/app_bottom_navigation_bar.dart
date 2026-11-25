@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:dan/app/navigation/app_shell_tab.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Four-tab application navigation bar owned by the authenticated shell.
 class AppBottomNavigationBar extends StatelessWidget {

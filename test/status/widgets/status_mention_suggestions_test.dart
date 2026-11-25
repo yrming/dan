@@ -1,11 +1,12 @@
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/status/status.dart';
 import 'package:dan/status/widgets/status_mention_suggestions.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:status_repository/status_repository.dart';
+
 import '../../helpers/helpers.dart';
 
 class _MockStatuses extends Mock implements StatusRepository {}

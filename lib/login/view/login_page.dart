@@ -2,8 +2,8 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:dan/authentication/authentication.dart';
 import 'package:dan/login/bloc/login_bloc.dart';
 import 'package:dan/login/view/login_view.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Route boundary that provides the login business logic.
 class LoginPage extends StatelessWidget {

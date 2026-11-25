@@ -1,7 +1,7 @@
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/models/status_composer_photo.dart';
 import 'package:dan/status/view/status_image_viewer_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Full-screen preview of a photo selected for a draft.
 class StatusComposerPhotoPreviewPage extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:dan/app/navigation/app_shell_tab.dart';
 import 'package:dan/app/navigation/scroll_to_top_scope.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 
 /// App bar used by the authenticated shell.

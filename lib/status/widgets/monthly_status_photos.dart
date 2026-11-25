@@ -8,8 +8,8 @@ import 'package:dan/status/models/status_image_gallery.dart';
 import 'package:dan/status/widgets/status_body_text.dart';
 import 'package:dan/status/widgets/status_list_item_tap_target.dart';
 import 'package:dan/status/widgets/status_photo.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 /// Lazily builds a personal photo album grouped by calendar month.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Theme-aware vector rendering of the Dan sunrise mark.
 class DanLogo extends StatelessWidget {

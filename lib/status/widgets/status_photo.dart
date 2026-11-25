@@ -6,7 +6,7 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/status/widgets/wechat_status_photo.dart';
 import 'package:dan/status/widgets/x_status_photo.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 export 'package:appearance_repository/appearance_repository.dart'
     show StatusPhotoStyle;

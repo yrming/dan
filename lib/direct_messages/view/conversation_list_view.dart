@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoSliverRefreshControl;
 import 'package:dan/app/navigation/direct_message_navigation.dart';
 import 'package:dan/app/navigation/user_profile_navigation.dart';
 import 'package:dan/app/widgets/widgets.dart';
@@ -8,9 +10,8 @@ import 'package:dan/direct_messages/widgets/conversation_list_item.dart';
 import 'package:dan/direct_messages/widgets/conversation_list_skeleton.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:user_repository/user_repository.dart';
 
 /// Displays a refreshable, paginated list of direct message conversations.

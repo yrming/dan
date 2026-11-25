@@ -1,7 +1,7 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One conversation entry of the direct message list.
 class ConversationListItem extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/status/models/status_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Highlights status entities while preserving normal text editing and IME use.
 class StatusComposerTextController extends TextEditingController {

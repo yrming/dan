@@ -1,7 +1,7 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shared loading failure message and retry action.
 class AppRetryView extends StatefulWidget {

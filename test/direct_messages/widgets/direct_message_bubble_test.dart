@@ -3,8 +3,8 @@ import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/direct_messages/direct_messages.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../helpers/helpers.dart';
 

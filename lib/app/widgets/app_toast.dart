@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dan/app/theme/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Duration of the toast entrance fade.
 const _fadeInDuration = Duration(milliseconds: 200);

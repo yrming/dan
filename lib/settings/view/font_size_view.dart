@@ -6,9 +6,9 @@ import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/appearance/appearance.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/settings/widgets/font_size_preview.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Previews and immediately saves changes to the application font size.
 class FontSizeView extends StatelessWidget {

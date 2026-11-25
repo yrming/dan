@@ -1,5 +1,5 @@
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Loading boundary shown while stored accounts are restored.
 class AuthenticationLoadingPage extends StatelessWidget {

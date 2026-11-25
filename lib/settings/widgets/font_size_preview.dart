@@ -1,6 +1,6 @@
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/status.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 /// Previews font changes using the same message renderer as the timeline.

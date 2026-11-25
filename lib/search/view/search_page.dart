@@ -4,8 +4,8 @@ import 'package:dan/authentication/authentication.dart';
 import 'package:dan/search/models/search_scope.dart';
 import 'package:dan/search/view/search_view.dart';
 import 'package:dan/status/status.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart';
 
 /// Provides account-scoped search results.

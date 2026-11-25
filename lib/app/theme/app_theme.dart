@@ -6,8 +6,8 @@ import 'package:dan/app/theme/app_spacing.dart';
 import 'package:dan/app/theme/app_style.dart';
 import 'package:dan/app/theme/app_typography.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Material themes for the Dan application.
 abstract final class AppTheme {

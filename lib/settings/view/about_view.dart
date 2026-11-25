@@ -2,8 +2,8 @@ import 'package:dan/app/configuration/configuration.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 
 /// Displays the app identity, its story, and legal document links.

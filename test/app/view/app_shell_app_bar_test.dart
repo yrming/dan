@@ -1,8 +1,8 @@
 import 'package:dan/app/navigation/navigation.dart';
 import 'package:dan/app/navigation/scroll_to_top_scope.dart';
 import 'package:dan/app/view/app_shell_app_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 
 import '../../helpers/helpers.dart';

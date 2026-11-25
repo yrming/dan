@@ -1,7 +1,7 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/status/widgets/status_list_skeleton.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Loading placeholders for an original status and its reply context.
 class StatusDetailSkeleton extends StatelessWidget {

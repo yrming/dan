@@ -1,6 +1,6 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Displays animated placeholders matching direct-message conversations.
 class ConversationListSkeleton extends StatelessWidget {

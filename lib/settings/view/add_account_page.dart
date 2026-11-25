@@ -2,9 +2,9 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/authentication/authentication.dart';
 import 'package:dan/login/login.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Full-screen page for adding another authenticated account.
 class AddAccountPage extends StatelessWidget {

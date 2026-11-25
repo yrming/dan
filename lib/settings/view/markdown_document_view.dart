@@ -4,9 +4,9 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/settings/widgets/document_markdown_style.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Displays a bundled Markdown document using the active application theme.
@@ -123,16 +123,21 @@ class _MarkdownDocumentViewState extends State<MarkdownDocumentView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        MarkdownBody(
-                          data: snapshot.data!,
-                          selectable: true,
-                          fitContent: false,
-                          onTapLink: (_, href, _) => unawaited(_openLink(href)),
-                          styleSheet: documentMarkdownStyle(context),
-                          blockSyntaxes: const [DocumentMetadataSyntax()],
-                          builders: {
-                            'document-metadata': DocumentMetadataBuilder(),
-                          },
+                        // The renderer still uses legacy Material widgets.
+                        // ignore: deprecated_member_use
+                        MaterialUiCompatibilityBridge(
+                          child: MarkdownBody(
+                            data: snapshot.data!,
+                            selectable: true,
+                            fitContent: false,
+                            onTapLink: (_, href, _) =>
+                                unawaited(_openLink(href)),
+                            styleSheet: documentMarkdownStyle(context),
+                            blockSyntaxes: const [DocumentMetadataSyntax()],
+                            builders: {
+                              'document-metadata': DocumentMetadataBuilder(),
+                            },
+                          ),
                         ),
                         ?widget.footer,
                       ],

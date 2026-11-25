@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoActivityIndicator;
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/app/widgets/widgets.dart';
@@ -7,10 +8,9 @@ import 'package:dan/direct_messages/cubit/cubit.dart';
 import 'package:dan/direct_messages/widgets/direct_message_bubble.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
-import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 
 /// Renders the conversation states, including the peer-titled app bar.

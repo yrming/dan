@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoSliverRefreshControl;
 import 'package:dan/app/navigation/navigation.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/search/search.dart';
 import 'package:dan/status/status.dart';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:status_repository/status_repository.dart' as repository;

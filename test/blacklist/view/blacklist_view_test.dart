@@ -5,9 +5,9 @@ import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/blacklist/cubit/blacklist_cubit.dart';
 import 'package:dan/blacklist/view/blacklist_view.dart';
 import 'package:dan/l10n/l10n.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 

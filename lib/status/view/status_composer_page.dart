@@ -15,9 +15,9 @@ import 'package:dan/status/widgets/status_composer_photo_picker.dart';
 import 'package:dan/status/widgets/status_composer_text_controller.dart';
 import 'package:dan/status/widgets/status_mention_suggestions.dart';
 import 'package:dan/status/widgets/status_photo.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:status_repository/status_repository.dart';
 

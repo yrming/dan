@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dan/app/theme/theme.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Opens an external direct-message link.

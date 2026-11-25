@@ -5,8 +5,8 @@ import 'package:dan/status/models/status_composer_photo.dart';
 import 'package:dan/status/view/status_image_viewer_page.dart';
 import 'package:dan/status/widgets/status_composer_photo_picker.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../../helpers/helpers.dart';

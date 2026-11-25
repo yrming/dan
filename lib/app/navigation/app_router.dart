@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/view/app_shell.dart';
 import 'package:dan/authentication/authentication.dart';
@@ -20,9 +21,8 @@ import 'package:dan/user_photos/user_photos.dart';
 import 'package:dan/user_statuses/user_statuses.dart';
 import 'package:direct_message_repository/direct_message_repository.dart'
     as conversation_repository;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Durations, Easing;
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart' show Durations, Easing;
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 /// Creates the application router.

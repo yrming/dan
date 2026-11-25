@@ -4,8 +4,8 @@ import 'package:dan/app/widgets/widgets.dart';
 import 'package:dan/status/widgets/moments_status_list_item.dart';
 import 'package:dan/status/widgets/status_action_button.dart';
 import 'package:dan/status/widgets/status_photo.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 import '../../helpers/helpers.dart';

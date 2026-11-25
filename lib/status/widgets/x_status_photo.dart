@@ -1,5 +1,5 @@
 import 'package:dan/app/theme/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Minimum width and height of an X-style single status image.
 const xStatusPhotoMinExtent = 100.0;

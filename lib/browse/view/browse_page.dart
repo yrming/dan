@@ -1,8 +1,8 @@
 import 'package:dan/authentication/authentication.dart';
 import 'package:dan/browse/view/browse_view.dart';
 import 'package:dan/status/status.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart';
 
 /// Route boundary for the browse tab.

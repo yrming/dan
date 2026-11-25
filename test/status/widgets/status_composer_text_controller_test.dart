@@ -1,8 +1,8 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/status/models/status_text.dart';
 import 'package:dan/status/widgets/status_composer_text_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../helpers/helpers.dart';
 

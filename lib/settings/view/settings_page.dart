@@ -8,9 +8,9 @@ import 'package:dan/authentication/authentication.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/settings/view/account_switcher_sheet.dart';
 import 'package:dan/settings/view/settings_view.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Route boundary for application settings.
 class SettingsPage extends StatelessWidget {

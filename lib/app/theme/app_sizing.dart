@@ -2,7 +2,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:dan/app/theme/app_layout.dart';
 import 'package:dan/app/theme/app_spacing.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Theme-provided dimensions derived from the user's base font size.
 @immutable

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Makes status list item content an accessible tap target.
 class StatusListItemTapTarget extends StatelessWidget {

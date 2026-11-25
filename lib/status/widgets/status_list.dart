@@ -1,3 +1,5 @@
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoSliverRefreshControl;
 import 'package:dan/app/navigation/scroll_to_top_scope.dart';
 import 'package:dan/app/theme/theme.dart';
 import 'package:dan/app/widgets/widgets.dart';
@@ -7,9 +9,8 @@ import 'package:dan/status/models/status_list_layout.dart';
 import 'package:dan/status/widgets/monthly_status_photos.dart';
 import 'package:dan/status/widgets/status_list_item.dart';
 import 'package:dan/status/widgets/status_list_skeleton.dart';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 /// Displays a refreshable, paginated list of Fanfou statuses.

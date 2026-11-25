@@ -3,11 +3,11 @@ import 'package:dan/app/theme/theme.dart';
 import 'package:dan/l10n/l10n.dart';
 import 'package:dan/status/widgets/status_body_text.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -74,8 +74,7 @@ void main() {
       Uri? launchedUri;
       await tester.pumpApp(
         StatusBodyText(
-          text:
-              '查看 <a href="https://example.com/docs?q=flutter&amp;lang=zh#section">官网</a>。',
+          text: '查看 <a href="https://example.com/docs?q=flutter&amp;lang=zh#section">官网</a>。',
           linkColor: AppColors.wechatLightLink,
           externalLinkLauncher: (uri) async {
             launchedUri = uri;
@@ -163,8 +162,7 @@ void main() {
       );
       await tester.pumpApp(
         const StatusBodyText(
-          text:
-              '你好 @<a href="https://fanfou.com/user-id">user_a</a>，看看 <a href="https://example.com">链接</a>。',
+          text: '你好 @<a href="https://fanfou.com/user-id">user_a</a>，看看 <a href="https://example.com">链接</a>。',
           linkColor: AppColors.wechatLightLink,
         ),
       );

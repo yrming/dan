@@ -1,6 +1,6 @@
 import 'package:dan/app/theme/app_colors.dart';
 import 'package:dan/app/theme/app_sizing.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Application-specific typography expressed in product semantics.
 @immutable

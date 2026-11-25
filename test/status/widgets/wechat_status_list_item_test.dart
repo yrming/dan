@@ -5,8 +5,8 @@ import 'package:dan/status/widgets/status_action_button.dart';
 import 'package:dan/status/widgets/status_body_text.dart';
 import 'package:dan/status/widgets/status_list_item_tap_target.dart';
 import 'package:dan/status/widgets/wechat_status_list_item.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 import '../../helpers/helpers.dart';
@@ -226,8 +226,7 @@ void main() {
       (tester) async {
         const status = status_repository.Status(
           id: 'status-links',
-          text:
-              '你好 @<a href="https://fanfou.com/user-a">user_a</a>，一起看 #<a href="/q/Flutter">Flutter开发</a>#、<a href="https://example.com/docs?q=flutter#section">文档</a>。',
+          text: '你好 @<a href="https://fanfou.com/user-a">user_a</a>，一起看 #<a href="/q/Flutter">Flutter开发</a>#、<a href="https://example.com/docs?q=flutter#section">文档</a>。',
           createdAt: 'Tue Jul 28 00:00:00 +0000 2026',
           author: _statusAuthor,
         );

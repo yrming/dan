@@ -1,5 +1,5 @@
 import 'package:appearance_repository/appearance_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Application-wide style tokens that control component variants.
 @immutable

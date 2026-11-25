@@ -8,9 +8,9 @@ import 'package:dan/profile/cubit/user_profile_cubit.dart';
 import 'package:dan/profile/cubit/user_profile_state.dart';
 import 'package:dan/profile/widgets/profile_header.dart';
 import 'package:dan/profile/widgets/profile_menu_section.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:user_repository/user_repository.dart';
 

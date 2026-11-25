@@ -1,7 +1,7 @@
 import 'package:dan/app/theme/theme.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Minimum interactive size of the status action button.
 const statusActionButtonHitTargetSize = 40.0;

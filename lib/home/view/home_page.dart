@@ -1,8 +1,8 @@
 import 'package:dan/app/navigation/app_shell_tab.dart';
 import 'package:dan/authentication/authentication.dart';
 import 'package:dan/status/status.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:status_repository/status_repository.dart';
 
 /// Home timeline page.

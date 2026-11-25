@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/app/view/app_subpage_app_bar.dart';
 import 'package:dan/app/widgets/widgets.dart';
@@ -9,11 +10,10 @@ import 'package:dan/l10n/l10n.dart';
 import 'package:dan/notifications/notifications.dart';
 import 'package:dan/profile/profile.dart';
 import 'package:direct_message_repository/direct_message_repository.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart' show Badge;
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 

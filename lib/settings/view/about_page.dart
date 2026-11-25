@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dan/app/configuration/configuration.dart';
 import 'package:dan/app/navigation/routes.dart';
 import 'package:dan/settings/view/about_view.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Route boundary for application information and legal documents.
 class AboutPage extends StatelessWidget {
