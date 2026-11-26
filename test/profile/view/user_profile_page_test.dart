@@ -20,16 +20,16 @@ import 'package:user_repository/user_repository.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 class _MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+    implements AuthenticationRepository;
 
 class _MockDirectMessageRepository extends Mock
-    implements DirectMessageRepository {}
+    implements DirectMessageRepository;
 
 class _MockNotificationCountsCubit extends MockCubit<NotificationCountsState>
-    implements NotificationCountsCubit {}
+    implements NotificationCountsCubit;
 
 void main() {
   setUpAll(() {
@@ -46,22 +46,17 @@ void main() {
       userRepository = _MockUserRepository();
       authenticationRepository = _MockAuthenticationRepository();
       directMessageRepository = _MockDirectMessageRepository();
-      when(() => directMessageRepository.messageChanges).thenAnswer(
-        (_) => const Stream.empty(),
-      );
+      when(() => directMessageRepository.messageChanges)
+          .thenAnswer((_) => const Stream.empty());
       notificationCountsCubit = _MockNotificationCountsCubit();
       when(() => notificationCountsCubit.state).thenReturn(
         const NotificationCountsLoadSuccess(counts: _notificationCounts),
       );
-      when(
-        () => authenticationRepository.updateAccount(any()),
-      ).thenAnswer(
+      when(() => authenticationRepository.updateAccount(any())).thenAnswer(
         (invocation) async =>
             invocation.positionalArguments.single as AuthenticatedAccount,
       );
-      when(
-        () => userRepository.getCachedUser(any()),
-      ).thenReturn(null);
+      when(() => userRepository.getCachedUser(any())).thenReturn(null);
       when(
         () => directMessageRepository.getConversation(
           any(),
@@ -75,9 +70,8 @@ void main() {
           nextPage: null,
         ),
       );
-      when(
-        () => userRepository.getUser('another-user'),
-      ).thenAnswer((_) async => _otherProfile);
+      when(() => userRepository.getUser('another-user'))
+          .thenAnswer((_) async => _otherProfile);
       when(
         () => userRepository.isFollowing(
           userId: 'another-user',
@@ -95,10 +89,7 @@ void main() {
           ],
           child: BlocProvider.value(
             value: notificationCountsCubit,
-            child: UserProfilePage(
-              userId: userId,
-              activeAccount: _account,
-            ),
+            child: UserProfilePage(userId: userId, activeAccount: _account),
           ),
         ),
       );
@@ -106,12 +97,9 @@ void main() {
 
     group('profile load failure', () {
       for (final userId in [_account.id, 'another-user']) {
-        testWidgets('shows a transient toast for $userId', (
-          tester,
-        ) async {
-          when(
-            () => userRepository.getUser(userId),
-          ).thenThrow(Exception('Profile unavailable'));
+        testWidgets('shows a transient toast for $userId', (tester) async {
+          when(() => userRepository.getUser(userId))
+              .thenThrow(Exception('Profile unavailable'));
 
           await pumpPage(tester, userId);
           await tester.pumpTransition();
@@ -129,9 +117,8 @@ void main() {
       tester,
     ) async {
       final profileRequest = Completer<UserProfile>();
-      when(
-        () => userRepository.getUser(_account.id),
-      ).thenAnswer((_) => profileRequest.future);
+      when(() => userRepository.getUser(_account.id))
+          .thenAnswer((_) => profileRequest.future);
 
       await pumpPage(tester, _account.id);
 
@@ -179,10 +166,7 @@ void main() {
         find.widgetWithIcon(IconButton, RemixIcons.mail_line),
       );
       final pageRect = tester.getRect(find.byType(Scaffold));
-      expect(
-        pageRect.right - mailIconRect.right,
-        closeTo(AppSpacing.md, 1),
-      );
+      expect(pageRect.right - mailIconRect.right, closeTo(AppSpacing.md, 1));
       expect(mailButtonRect.width, greaterThanOrEqualTo(44));
       expect(mailButtonRect.height, greaterThanOrEqualTo(44));
       expect(find.text(_account.description!), findsOneWidget);
@@ -217,20 +201,16 @@ void main() {
         findsOneWidget,
       );
       expect(find.byType(LinearProgressIndicator), findsNothing);
-      verify(
-        () => authenticationRepository.updateAccount(
-          _refreshedAccount,
-        ),
-      ).called(1);
+      verify(() => authenticationRepository.updateAccount(_refreshedAccount))
+          .called(1);
       verifyNever(() => userRepository.getNotificationCounts());
     });
 
     testWidgets('renders the active account inside the shell without chrome', (
       tester,
     ) async {
-      when(
-        () => userRepository.getUser(_account.id),
-      ).thenAnswer((_) async => _refreshedAccountProfile);
+      when(() => userRepository.getUser(_account.id))
+          .thenAnswer((_) async => _refreshedAccountProfile);
 
       await tester.pumpApp(
         MultiRepositoryProvider(
@@ -240,9 +220,7 @@ void main() {
           ],
           child: BlocProvider.value(
             value: notificationCountsCubit,
-            child: const Scaffold(
-              body: MinePage(activeAccount: _account),
-            ),
+            child: const Scaffold(body: MinePage(activeAccount: _account)),
           ),
         ),
       );
@@ -257,9 +235,8 @@ void main() {
       tester,
     ) async {
       final profileRequest = Completer<UserProfile>();
-      when(
-        () => userRepository.getUser('another-user'),
-      ).thenAnswer((_) => profileRequest.future);
+      when(() => userRepository.getUser('another-user'))
+          .thenAnswer((_) => profileRequest.future);
       await pumpPage(tester, 'another-user');
 
       expect(find.byType(UserProfileView), findsOneWidget);
@@ -311,9 +288,8 @@ void main() {
       testWidgets('shows follow failure feedback for message=$message', (
         tester,
       ) async {
-        when(
-          () => userRepository.setFollowing('another-user', following: true),
-        ).thenThrow(FollowActionFailure(message: message));
+        when(() => userRepository.setFollowing('another-user', following: true))
+            .thenThrow(FollowActionFailure(message: message));
         await pumpPage(tester, 'another-user');
         await tester.pump();
         await tester.tap(find.byKey(const Key('user-profile-follow-action')));
@@ -337,9 +313,8 @@ void main() {
     testWidgets('shows followed with a check for a one-way followed account', (
       tester,
     ) async {
-      when(() => userRepository.getUser('another-user')).thenAnswer(
-        (_) async => _followedProfile,
-      );
+      when(() => userRepository.getUser('another-user'))
+          .thenAnswer((_) async => _followedProfile);
 
       await pumpPage(tester, 'another-user');
       await tester.pump();
@@ -351,9 +326,8 @@ void main() {
     testWidgets('shows mutual follow for a mutually followed account', (
       tester,
     ) async {
-      when(() => userRepository.getUser('another-user')).thenAnswer(
-        (_) async => _mutualProfile,
-      );
+      when(() => userRepository.getUser('another-user'))
+          .thenAnswer((_) async => _mutualProfile);
       when(
         () => userRepository.isFollowing(
           userId: 'another-user',
@@ -375,9 +349,8 @@ void main() {
 
     testWidgets('opens the protected content dialog for a protected account '
         'being viewed', (tester) async {
-      when(() => userRepository.getUser('another-user')).thenAnswer(
-        (_) async => _protectedOtherProfile,
-      );
+      when(() => userRepository.getUser('another-user'))
+          .thenAnswer((_) async => _protectedOtherProfile);
       await pumpPage(tester, 'another-user');
       await tester.pump();
       final context = tester.element(find.byType(UserProfileView));
@@ -387,20 +360,15 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(l10n.userProfileProtectedDialogTitle), findsOneWidget);
-      expect(
-        find.text(l10n.userProfileProtectedDialogContent),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.userProfileProtectedDialogContent), findsOneWidget);
     });
 
     testWidgets('opens the conversation with the viewed user from the chat '
         'action', (tester) async {
-      when(
-        () => userRepository.getUser('another-user'),
-      ).thenAnswer((_) async => _otherProfile);
-      when(
-        () => userRepository.getCachedUser('another-user'),
-      ).thenReturn(_otherProfile);
+      when(() => userRepository.getUser('another-user'))
+          .thenAnswer((_) async => _otherProfile);
+      when(() => userRepository.getCachedUser('another-user'))
+          .thenReturn(_otherProfile);
       when(
         () => directMessageRepository.getConversation(
           'another-user',
@@ -459,9 +427,10 @@ void main() {
 
       expect(find.byType(ConversationPage), findsOneWidget);
       expect(
-        GoRouter.of(
-          tester.element(find.byType(ConversationPage)),
-        ).state.uri.path,
+        GoRouter.of(tester.element(find.byType(ConversationPage)))
+            .state
+            .uri
+            .path,
         '/direct-messages/another-user',
       );
       expect(
@@ -513,10 +482,7 @@ void main() {
         tester.widget<Icon>(moreIconFinder).color,
         pageContext.appColors.textBase,
       );
-      expect(
-        pageRect.right - moreIconRect.right,
-        closeTo(AppSpacing.md, 1),
-      );
+      expect(pageRect.right - moreIconRect.right, closeTo(AppSpacing.md, 1));
       expect(
         tester
             .getSize(find.byKey(const Key('user-profile-message-action')))

@@ -20,7 +20,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 import '../../helpers/helpers.dart';
 
 class _MockStatusListBloc extends MockBloc<StatusListEvent, StatusListState>
-    implements StatusListBloc {}
+    implements StatusListBloc;
 
 void main() {
   group(StatusList, () {
@@ -55,9 +55,7 @@ void main() {
             builder: (_, _) => Scaffold(
               body: BlocProvider.value(
                 value: statusListBloc,
-                child: StatusList(
-                  emptyLabel: emptyLabel,
-                ),
+                child: StatusList(emptyLabel: emptyLabel),
               ),
             ),
           ),
@@ -66,14 +64,8 @@ void main() {
       addTearDown(router.dispose);
       await tester.pumpRouterApp(
         router,
-        theme: AppTheme.light(
-          appearance: appearance,
-          platform: platform,
-        ),
-        darkTheme: AppTheme.dark(
-          appearance: appearance,
-          platform: platform,
-        ),
+        theme: AppTheme.light(appearance: appearance, platform: platform),
+        darkTheme: AppTheme.dark(appearance: appearance, platform: platform),
         themeMode: themeMode,
       );
       await tester.pump();
@@ -179,25 +171,24 @@ void main() {
         }
       }
 
-      testWidgets(
-        'skips the toast when the failure view is already showing',
-        (tester) async {
-          final failed = StatusListState(status: StatusListStatus.failure);
-          await pumpStatusList(tester, failed);
+      testWidgets('skips the toast when the failure view is already showing', (
+        tester,
+      ) async {
+        final failed = StatusListState(status: StatusListStatus.failure);
+        await pumpStatusList(tester, failed);
 
-          states.add(
-            failed.copyWith(
-              refreshStatus: StatusRefreshStatus.failure,
-              requestFailureMessage: '请求太频繁，请稍后再试',
-            ),
-          );
-          await tester.pump();
-          await tester.pump(const Duration(milliseconds: 300));
+        states.add(
+          failed.copyWith(
+            refreshStatus: StatusRefreshStatus.failure,
+            requestFailureMessage: '请求太频繁，请稍后再试',
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
 
-          expect(find.byType(AppRetryView), findsOneWidget);
-          expect(find.text('请求太频繁，请稍后再试'), findsOneWidget);
-        },
-      );
+        expect(find.byType(AppRetryView), findsOneWidget);
+        expect(find.text('请求太频繁，请稍后再试'), findsOneWidget);
+      });
     });
 
     group('empty message', () {
@@ -208,10 +199,7 @@ void main() {
         );
 
         expect(find.byType(AppEmptyView), findsOneWidget);
-        expect(
-          find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'),
-          findsNothing,
-        );
+        expect(find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'), findsNothing);
       });
 
       testWidgets('uses the explicit empty label for illustration semantics', (
@@ -228,53 +216,46 @@ void main() {
       });
 
       for (final hasMismatch in [true, false]) {
-        testWidgets(
-          'shows the profile count mismatch message only for '
-          'hasMismatch=$hasMismatch',
-          (tester) async {
-            await pumpStatusList(
-              tester,
-              StatusListState(
-                status: StatusListStatus.empty,
-                hasProfileCountMismatch: hasMismatch,
-              ),
-            );
-            final context = tester.element(find.byType(StatusList));
+        testWidgets('shows the profile count mismatch message only for '
+            'hasMismatch=$hasMismatch', (tester) async {
+          await pumpStatusList(
+            tester,
+            StatusListState(
+              status: StatusListStatus.empty,
+              hasProfileCountMismatch: hasMismatch,
+            ),
+          );
+          final context = tester.element(find.byType(StatusList));
 
-            expect(
-              find.text(context.l10n.statusListEmptyLabel),
-              hasMismatch ? findsOneWidget : findsNothing,
-            );
-            expect(
-              find.byType(AppEmptyView),
-              hasMismatch ? findsNothing : findsOneWidget,
-            );
-          },
-        );
+          expect(
+            find.text(context.l10n.statusListEmptyLabel),
+            hasMismatch ? findsOneWidget : findsNothing,
+          );
+          expect(
+            find.byType(AppEmptyView),
+            hasMismatch ? findsNothing : findsOneWidget,
+          );
+        });
       }
     });
 
     group('no end indicator', () {
       for (final hasMore in [true, false]) {
         for (final loadMoreStatus in StatusLoadMoreStatus.values) {
-          testWidgets(
-            'hasMore=$hasMore and loadMoreStatus=$loadMoreStatus',
-            (tester) async {
-              await pumpStatusList(
-                tester,
-                StatusListState(
-                  status: StatusListStatus.success,
-                  statuses: const [_status],
-                  hasMore: hasMore,
-                  loadMoreStatus: loadMoreStatus,
-                ),
-              );
-              expect(
-                find.text('有时候有时候我会相信一切有尽头'),
-                findsNothing,
-              );
-            },
-          );
+          testWidgets('hasMore=$hasMore and loadMoreStatus=$loadMoreStatus', (
+            tester,
+          ) async {
+            await pumpStatusList(
+              tester,
+              StatusListState(
+                status: StatusListStatus.success,
+                statuses: const [_status],
+                hasMore: hasMore,
+                loadMoreStatus: loadMoreStatus,
+              ),
+            );
+            expect(find.text('有时候有时候我会相信一切有尽头'), findsNothing);
+          });
         }
       }
       for (final status in [
@@ -311,9 +292,8 @@ void main() {
         final refresh = refreshControl.onRefresh!().then((_) {
           refreshCompleted = true;
         });
-        verify(
-          () => statusListBloc.add(const StatusListRefreshRequested()),
-        ).called(1);
+        verify(() => statusListBloc.add(const StatusListRefreshRequested()))
+            .called(1);
         states.add(
           state.copyWith(loadMoreStatus: StatusLoadMoreStatus.failure),
         );
@@ -352,9 +332,7 @@ void main() {
           refreshCompleted = true;
         });
         states
-          ..add(
-            state.copyWith(refreshStatus: StatusRefreshStatus.inProgress),
-          )
+          ..add(state.copyWith(refreshStatus: StatusRefreshStatus.inProgress))
           ..add(state);
         await tester.pump();
 
@@ -411,10 +389,8 @@ void main() {
       (tester) async {
         final statuses = List<status_repository.Status>.generate(
           30,
-          (index) => _status.copyWith(
-            id: 'status-$index',
-            text: 'status $index',
-          ),
+          (index) =>
+              _status.copyWith(id: 'status-$index', text: 'status $index'),
         );
         await pumpStatusList(
           tester,
@@ -443,10 +419,7 @@ void main() {
     ) async {
       final statuses = List<status_repository.Status>.generate(
         30,
-        (index) => _status.copyWith(
-          id: 'status-$index',
-          text: 'status $index',
-        ),
+        (index) => _status.copyWith(id: 'status-$index', text: 'status $index'),
       );
       await pumpStatusList(
         tester,
@@ -457,15 +430,11 @@ void main() {
         ),
       );
 
-      await tester.drag(
-        find.byType(CustomScrollView),
-        const Offset(0, -3000),
-      );
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -3000));
       await tester.pump();
 
-      verify(
-        () => statusListBloc.add(const StatusListLoadMoreRequested()),
-      ).called(greaterThanOrEqualTo(1));
+      verify(() => statusListBloc.add(const StatusListLoadMoreRequested()))
+          .called(greaterThanOrEqualTo(1));
     });
 
     testWidgets('retries failed pagination on another upward drag', (
@@ -485,16 +454,13 @@ void main() {
       await tester.drag(find.byType(CustomScrollView), const Offset(0, -200));
       await tester.pump();
 
-      verify(
-        () => statusListBloc.add(const StatusListLoadMoreRequested()),
-      ).called(greaterThan(0));
+      verify(() => statusListBloc.add(const StatusListLoadMoreRequested()))
+          .called(greaterThan(0));
     });
 
     testWidgets(
       'shows pagination failure without a footer or automatic retry',
-      (
-        tester,
-      ) async {
+      (tester) async {
         final loading = StatusListState(
           status: StatusListStatus.success,
           loadMoreStatus: StatusLoadMoreStatus.inProgress,
@@ -529,29 +495,28 @@ void main() {
       },
     );
 
-    testWidgets(
-      'shows one skeleton item while loading more statuses',
-      (tester) async {
-        await pumpStatusList(
-          tester,
-          StatusListState(
-            status: StatusListStatus.success,
-            loadMoreStatus: StatusLoadMoreStatus.inProgress,
-            statuses: const [_status],
-            nextCursor: 'cursor-a',
-          ),
-        );
+    testWidgets('shows one skeleton item while loading more statuses', (
+      tester,
+    ) async {
+      await pumpStatusList(
+        tester,
+        StatusListState(
+          status: StatusListStatus.success,
+          loadMoreStatus: StatusLoadMoreStatus.inProgress,
+          statuses: const [_status],
+          nextCursor: 'cursor-a',
+        ),
+      );
 
-        final skeleton = tester.widget<StatusListSkeleton>(
-          find.byType(StatusListSkeleton),
-        );
+      final skeleton = tester.widget<StatusListSkeleton>(
+        find.byType(StatusListSkeleton),
+      );
 
-        expect(skeleton.itemCount, 1);
-        expect(skeleton.shrinkWrap, isTrue);
-        expect(find.byType(ShaderMask), findsOneWidget);
-        expect(find.byType(CircularProgressIndicator), findsNothing);
-      },
-    );
+      expect(skeleton.itemCount, 1);
+      expect(skeleton.shrinkWrap, isTrue);
+      expect(find.byType(ShaderMask), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+    });
 
     testWidgets('shows animated skeleton items during the initial load', (
       tester,
@@ -682,28 +647,27 @@ void main() {
       expect(find.text('已收藏'), findsOneWidget);
     });
 
-    testWidgets(
-      'uses the current route as the status photo Hero scope',
-      (tester) async {
-        await pumpStatusList(
-          tester,
-          StatusListState(
-            status: StatusListStatus.success,
-            statuses: const [_statusWithPhoto],
-            hasMore: false,
-          ),
-          routePath: '/mentions',
-        );
+    testWidgets('uses the current route as the status photo Hero scope', (
+      tester,
+    ) async {
+      await pumpStatusList(
+        tester,
+        StatusListState(
+          status: StatusListStatus.success,
+          statuses: const [_statusWithPhoto],
+          hasMore: false,
+        ),
+        routePath: '/mentions',
+      );
 
-        final photo = tester.widget<StatusPhoto>(find.byType(StatusPhoto));
+      final photo = tester.widget<StatusPhoto>(find.byType(StatusPhoto));
 
-        expect(
-          photo.heroTag,
-          'status-photo-mentions-${_statusWithPhoto.id}-'
-          'https://example.com/status-photo-large.png',
-        );
-      },
-    );
+      expect(
+        photo.heroTag,
+        'status-photo-mentions-${_statusWithPhoto.id}-'
+        'https://example.com/status-photo-large.png',
+      );
+    });
 
     testWidgets('uses the primary text color for the status author', (
       tester,
@@ -740,9 +704,7 @@ void main() {
       );
     });
 
-    testWidgets('uses the small photo style when selected', (
-      tester,
-    ) async {
+    testWidgets('uses the small photo style when selected', (tester) async {
       await pumpStatusList(
         tester,
         StatusListState(
@@ -816,10 +778,7 @@ void main() {
     testWidgets('keeps an empty feed pull-to-refreshable', (tester) async {
       await pumpStatusList(
         tester,
-        StatusListState(
-          status: StatusListStatus.empty,
-          hasMore: false,
-        ),
+        StatusListState(status: StatusListStatus.empty, hasMore: false),
       );
 
       expect(
@@ -858,13 +817,10 @@ void main() {
           refreshControlFinder,
         );
         final refresh = refreshControl.onRefresh!();
-        verify(
-          () => statusListBloc.add(const StatusListRefreshRequested()),
-        ).called(1);
+        verify(() => statusListBloc.add(const StatusListRefreshRequested()))
+            .called(1);
         states
-          ..add(
-            state.copyWith(refreshStatus: StatusRefreshStatus.inProgress),
-          )
+          ..add(state.copyWith(refreshStatus: StatusRefreshStatus.inProgress))
           ..add(state);
         await tester.pump(const Duration(milliseconds: 1000));
         await refresh;

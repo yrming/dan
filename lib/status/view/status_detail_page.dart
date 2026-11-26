@@ -17,7 +17,7 @@ import 'package:user_repository/user_repository.dart';
 /// Shows a single status.
 class StatusDetailPage extends StatelessWidget {
   /// Creates a status detail page.
-  const StatusDetailPage({
+  const new({
     required this.userId,
     required this.statusId,
     this.initialStatus,
@@ -52,10 +52,7 @@ class StatusDetailPage extends StatelessWidget {
           unawaited(cubit.load());
           return cubit;
         },
-        child: StatusDetailView(
-          userId: userId,
-          statusId: statusId,
-        ),
+        child: StatusDetailView(userId: userId, statusId: statusId),
       ),
     );
   }
@@ -64,11 +61,7 @@ class StatusDetailPage extends StatelessWidget {
 /// Renders one status detail.
 class StatusDetailView extends StatelessWidget {
   /// Creates a status detail view.
-  const StatusDetailView({
-    required this.userId,
-    required this.statusId,
-    super.key,
-  });
+  const new({required this.userId, required this.statusId, super.key});
 
   /// User id from the route path.
   final String userId;
@@ -108,9 +101,7 @@ class StatusDetailView extends StatelessWidget {
             StatusDetailStatus.failure => _StatusDetailFailure(
               onRetry: () => context.read<StatusDetailCubit>().retry(),
             ),
-            StatusDetailStatus.success => _StatusDetailContent(
-              state: state,
-            ),
+            StatusDetailStatus.success => _StatusDetailContent(state: state),
           };
         },
       ),
@@ -119,7 +110,7 @@ class StatusDetailView extends StatelessWidget {
 }
 
 class _StatusDetailContent extends StatelessWidget {
-  const _StatusDetailContent({required this.state});
+  const new({required this.state});
 
   final StatusDetailState state;
 
@@ -209,7 +200,7 @@ class _StatusDetailContent extends StatelessWidget {
 }
 
 class _StatusDetailFailure extends StatelessWidget {
-  const _StatusDetailFailure({required this.onRetry});
+  const new({required this.onRetry});
 
   final VoidCallback onRetry;
 

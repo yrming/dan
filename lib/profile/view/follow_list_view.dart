@@ -11,11 +11,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// Renders following or followers with incremental loading.
 class FollowListView extends StatelessWidget {
-  const FollowListView({
-    required this.followers,
-    this.personal = false,
-    super.key,
-  });
+  const new({required this.followers, this.personal = false, super.key});
 
   final bool followers;
   final bool personal;
@@ -43,10 +39,8 @@ class FollowListView extends StatelessWidget {
         BlocListener<FollowListCubit, FollowListState>(
           listenWhen: (previous, current) =>
               previous.requestSentCount != current.requestSentCount,
-          listener: (context, state) => _showFeedback(
-            context,
-            context.l10n.followActionRequestSent,
-          ),
+          listener: (context, state) =>
+              _showFeedback(context, context.l10n.followActionRequestSent),
         ),
       ],
       child: BlocBuilder<FollowListCubit, FollowListState>(
@@ -181,9 +175,7 @@ class FollowListView extends StatelessWidget {
                     );
                   },
                 ),
-                const SliverToBoxAdapter(
-                  child: Divider(height: 1),
-                ),
+                const SliverToBoxAdapter(child: Divider(height: 1)),
                 if (state.loadingMore || state.loadMoreError || state.hasMore)
                   SliverToBoxAdapter(
                     child: state.loadingMore

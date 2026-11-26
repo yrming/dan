@@ -8,7 +8,7 @@ import 'package:material_ui/material_ui.dart';
 @immutable
 final class AppSizing extends ThemeExtension<AppSizing> {
   /// Creates application sizing tokens for [scale].
-  const AppSizing({required this.scale});
+  const new({required this.scale});
 
   /// Scale relative to the default application font-size baseline.
   final double scale;
@@ -53,24 +53,20 @@ final class AppSizing extends ThemeExtension<AppSizing> {
   double get navigationIconSize => scaled(26);
 
   /// Central create-status button width.
-  double get createStatusButtonWidth => scaled(
-    AppLayout.createStatusButtonWidth,
-  );
+  double get createStatusButtonWidth =>
+      scaled(AppLayout.createStatusButtonWidth);
 
   /// Central create-status button height.
-  double get createStatusButtonHeight => scaled(
-    AppLayout.createStatusButtonHeight,
-  );
+  double get createStatusButtonHeight =>
+      scaled(AppLayout.createStatusButtonHeight);
 
   /// Central create-status button plus-sign length.
-  double get createStatusButtonPlusSize => scaled(
-    AppLayout.createStatusButtonPlusSize,
-  );
+  double get createStatusButtonPlusSize =>
+      scaled(AppLayout.createStatusButtonPlusSize);
 
   /// Shared stroke width for the create-status border and plus sign.
-  double get createStatusButtonStrokeWidth => scaled(
-    AppLayout.createStatusButtonStrokeWidth,
-  );
+  double get createStatusButtonStrokeWidth =>
+      scaled(AppLayout.createStatusButtonStrokeWidth);
 
   @override
   AppSizing copyWith({double? scale}) => AppSizing(scale: scale ?? this.scale);

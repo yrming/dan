@@ -12,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// Displays a bundled Markdown document using the active application theme.
 class MarkdownDocumentView extends StatefulWidget {
   /// Creates a reader for the Markdown asset at [assetPath].
-  const MarkdownDocumentView({
+  const new({
     required this.title,
     required this.assetPath,
     this.footer,

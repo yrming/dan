@@ -43,9 +43,7 @@ void main() {
 
     group('save', () {
       test('writes the complete $AppearanceSettings', () async {
-        const settings = AppearanceSettings(
-          themeMode: AppThemeMode.light,
-        );
+        const settings = AppearanceSettings(themeMode: AppThemeMode.light);
         when(() => storage.write(settings)).thenAnswer((_) async {});
 
         await subject.save(settings);

@@ -11,7 +11,9 @@ void main() {
       directory = await Directory.systemTemp.createTemp('dan_draft_test_');
       storage = StatusDraftStorage(directory: () async => directory);
     });
-    tearDown(() async => directory.delete(recursive: true));
+    tearDown(() async {
+      await directory.delete(recursive: true);
+    });
     group('read and write', () {
       test('returns null when no draft was saved', () async {
         expect(await storage.read('author'), isNull);

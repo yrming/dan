@@ -12,9 +12,7 @@ void main() {
       testWidgets('uses the status renderer with the supplied message', (
         tester,
       ) async {
-        await tester.pumpApp(
-          const Scaffold(body: FontSizePreview()),
-        );
+        await tester.pumpApp(const Scaffold(body: FontSizePreview()));
 
         const text = '早上和旦哥领证了，刚才我挣扎了半天对着她叫了声太太，她立马掐住我的脖子说太你妈。';
         const avatarUrl =

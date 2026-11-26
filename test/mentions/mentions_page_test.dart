@@ -14,13 +14,13 @@ import '../helpers/helpers.dart';
 
 class _MockAuthenticationBloc
     extends MockBloc<AuthenticationEvent, AuthenticationState>
-    implements AuthenticationBloc {}
+    implements AuthenticationBloc;
 
 class _MockStatusRepository extends Mock
-    implements status_repository.StatusRepository {}
+    implements status_repository.StatusRepository;
 
 class _MockNotificationCountsCubit extends MockCubit<NotificationCountsState>
-    implements NotificationCountsCubit {}
+    implements NotificationCountsCubit;
 
 void main() {
   late AuthenticationBloc authenticationBloc;
@@ -32,18 +32,13 @@ void main() {
     statusRepository = _MockStatusRepository();
     notificationCountsCubit = _MockNotificationCountsCubit();
     when(() => authenticationBloc.state).thenReturn(_authenticatedState);
-    when(
-      () => statusRepository.statusChanges,
-    ).thenAnswer((_) => const Stream.empty());
-    when(
-      () => statusRepository.getMentions(),
-    ).thenAnswer((_) async => _emptyMentionsPage);
-    when(
-      () => notificationCountsCubit.refresh(),
-    ).thenAnswer((_) async {});
-    when(
-      () => notificationCountsCubit.state,
-    ).thenReturn(const NotificationCountsInitial());
+    when(() => statusRepository.statusChanges)
+        .thenAnswer((_) => const Stream.empty());
+    when(() => statusRepository.getMentions())
+        .thenAnswer((_) async => _emptyMentionsPage);
+    when(() => notificationCountsCubit.refresh()).thenAnswer((_) async {});
+    when(() => notificationCountsCubit.state)
+        .thenReturn(const NotificationCountsInitial());
   });
 
   Future<void> pumpMentionsPage(
@@ -73,19 +68,18 @@ void main() {
     );
   }
 
-  testWidgets(
-    'refreshes notification counters after the first timeline load',
-    (tester) async {
-      await pumpMentionsPage(tester, selectedTab: AppShellTab.mentions);
-      await tester.pump();
-      await tester.pump();
+  testWidgets('refreshes notification counters after the first timeline load', (
+    tester,
+  ) async {
+    await pumpMentionsPage(tester, selectedTab: AppShellTab.mentions);
+    await tester.pump();
+    await tester.pump();
 
-      verifyInOrder([
-        () => statusRepository.getMentions(),
-        () => notificationCountsCubit.refresh(),
-      ]);
-    },
-  );
+    verifyInOrder([
+      () => statusRepository.getMentions(),
+      () => notificationCountsCubit.refresh(),
+    ]);
+  });
 
   testWidgets('reloads the timeline when the tab is activated again', (
     tester,
@@ -103,19 +97,18 @@ void main() {
     verify(() => statusRepository.getMentions()).called(2);
   });
 
-  testWidgets(
-    'keeps the timeline when rebuilds keep the tab active',
-    (tester) async {
-      await pumpMentionsPage(tester, selectedTab: AppShellTab.mentions);
-      await tester.pump();
-      await tester.pump();
-      await pumpMentionsPage(tester, selectedTab: AppShellTab.mentions);
-      await tester.pump();
-      await tester.pump();
+  testWidgets('keeps the timeline when rebuilds keep the tab active', (
+    tester,
+  ) async {
+    await pumpMentionsPage(tester, selectedTab: AppShellTab.mentions);
+    await tester.pump();
+    await tester.pump();
+    await pumpMentionsPage(tester, selectedTab: AppShellTab.mentions);
+    await tester.pump();
+    await tester.pump();
 
-      verify(() => statusRepository.getMentions()).called(1);
-    },
-  );
+    verify(() => statusRepository.getMentions()).called(1);
+  });
 
   testWidgets(
     'refreshes notification counters in timeline order on every reload',

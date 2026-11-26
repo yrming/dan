@@ -16,7 +16,7 @@ import 'package:remixicon/remixicon.dart';
 /// Renders the conversation states, including the peer-titled app bar.
 class ConversationView extends StatelessWidget {
   /// Creates the conversation view.
-  const ConversationView({
+  const new({
     required this.activeAccountId,
     this.peerAvatarUrl,
     this.activeAccountAvatarUrl,
@@ -80,10 +80,7 @@ class ConversationView extends StatelessWidget {
             message: message,
             onRetry: () => unawaited(context.read<ConversationCubit>().load()),
           ),
-          ConversationLoadSuccess(
-            :final messages,
-            :final historyLoadStatus,
-          ) =>
+          ConversationLoadSuccess(:final messages, :final historyLoadStatus) =>
             messages.isEmpty
                 ? _StatusView(
                     label: context.l10n.directMessageConversationEmptyLabel,
@@ -122,7 +119,7 @@ class ConversationView extends StatelessWidget {
 }
 
 class _MessageComposer extends StatefulWidget {
-  const _MessageComposer();
+  const new();
 
   @override
   State<_MessageComposer> createState() => _MessageComposerState();
@@ -153,12 +150,7 @@ class _MessageComposerState extends State<_MessageComposer> {
       key: const Key('conversation-message-composer'),
       decoration: BoxDecoration(
         color: colors.bgBase,
-        border: Border(
-          top: BorderSide(
-            color: colors.divider,
-            width: 0,
-          ),
-        ),
+        border: Border(top: BorderSide(color: colors.divider, width: 0)),
       ),
       child: SafeArea(
         top: false,
@@ -301,7 +293,7 @@ class _MessageComposerState extends State<_MessageComposer> {
 }
 
 class _MessageList extends StatelessWidget {
-  const _MessageList({
+  const new({
     required this.messages,
     required this.activeAccountId,
     required this.historyLoadStatus,
@@ -355,9 +347,7 @@ class _MessageList extends StatelessWidget {
         itemCount: messages.length + 1,
         itemBuilder: (context, index) {
           if (index == messages.length) {
-            return _HistoryLoadMoreFooter(
-              status: historyLoadStatus,
-            );
+            return _HistoryLoadMoreFooter(status: historyLoadStatus);
           }
           final message = messages[index];
           final isSent = message.senderId == activeAccountId;
@@ -390,9 +380,8 @@ class _MessageList extends StatelessWidget {
                 child: DirectMessageBubble(
                   message: message,
                   isSentByActiveAccount: isSent,
-                  onLongPress: () => unawaited(
-                    _showDirectMessageActions(context, message),
-                  ),
+                  onLongPress: () =>
+                      unawaited(_showDirectMessageActions(context, message)),
                 ),
               ),
             ],
@@ -408,10 +397,7 @@ class _MessageList extends StatelessWidget {
         ? messages[index + 1]
         : null;
     if (olderNeighbor == null) return true;
-    return _exceedsTimeDividerGap(
-      olderNeighbor.createdAt,
-      message.createdAt,
-    );
+    return _exceedsTimeDividerGap(olderNeighbor.createdAt, message.createdAt);
   }
 
   bool _exceedsTimeDividerGap(String older, String newer) {
@@ -423,7 +409,7 @@ class _MessageList extends StatelessWidget {
 }
 
 class _HistoryLoadMoreFooter extends StatelessWidget {
-  const _HistoryLoadMoreFooter({required this.status});
+  const new({required this.status});
 
   final ConversationHistoryLoadStatus status;
 
@@ -446,9 +432,7 @@ class _HistoryLoadMoreFooter extends StatelessWidget {
 }
 
 class _StatusView extends StatelessWidget {
-  const _StatusView({
-    required this.label,
-  });
+  const new({required this.label});
 
   final String label;
 
@@ -490,9 +474,7 @@ Future<void> _showDirectMessageActions(
             label: l10n.statusCopyTextLabel,
             icon: RemixIcons.file_copy_line,
             onPressed: () {
-              unawaited(
-                Clipboard.setData(ClipboardData(text: message.text)),
-              );
+              unawaited(Clipboard.setData(ClipboardData(text: message.text)));
               showAppToast(context, copiedMessage);
             },
           ),

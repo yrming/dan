@@ -26,10 +26,7 @@ class DirectMessageRepository {
     return DirectMessageRepository._(clientFactory, activeAccountIdProvider);
   }
 
-  DirectMessageRepository._(
-    this._clientFactory,
-    this._activeAccountIdProvider,
-  );
+  DirectMessageRepository._(this._clientFactory, this._activeAccountIdProvider);
 
   final DirectMessageClientFactory _clientFactory;
   final DirectMessageActiveAccountIdProvider _activeAccountIdProvider;

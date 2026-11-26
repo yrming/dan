@@ -45,7 +45,7 @@ enum ConversationRefreshStatus {
 /// State of the direct message conversation list.
 final class ConversationListState extends Equatable {
   /// Creates a conversation list state.
-  const ConversationListState({
+  const new({
     this.status = ConversationListStatus.initial,
     this.conversations = const [],
     this.hasMore = false,

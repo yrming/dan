@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 @immutable
 final class AppTypography extends ThemeExtension<AppTypography> {
   /// Creates application typography tokens.
-  const AppTypography({
+  const new({
     required this.navigationTitle,
     required this.navigationLabel,
     required this.selectedNavigationLabel,
@@ -31,7 +31,7 @@ final class AppTypography extends ThemeExtension<AppTypography> {
   });
 
   /// Creates typography for the active sizing and color scheme.
-  factory AppTypography.fromTheme({
+  factory fromTheme({
     required AppSizing sizing,
     required ColorScheme colorScheme,
     required AppColors colors,
@@ -50,7 +50,7 @@ final class AppTypography extends ThemeExtension<AppTypography> {
     );
   }
 
-  factory AppTypography._create({
+  factory _create({
     required AppSizing sizing,
     required ColorScheme colorScheme,
     required AppColors colors,
@@ -81,10 +81,7 @@ final class AppTypography extends ThemeExtension<AppTypography> {
         navigationFontSize,
         fontWeight: navigationTitleWeight,
       ),
-      navigationLabel: style(
-        navigationFontSize,
-        color: colors.textSecondary,
-      ),
+      navigationLabel: style(navigationFontSize, color: colors.textSecondary),
       selectedNavigationLabel: style(
         navigationFontSize,
         color: colors.textBase,
@@ -117,11 +114,7 @@ final class AppTypography extends ThemeExtension<AppTypography> {
       ),
       statusBody: style(statusBodyFontSize, height: statusBodyHeight),
       dialogTitle: style(16, fontWeight: FontWeight.w500, height: 1.4),
-      dialogContent: style(
-        15,
-        color: colors.textSecondary,
-        height: 1.4,
-      ),
+      dialogContent: style(15, color: colors.textSecondary, height: 1.4),
       dialogAction: style(16),
       actionSheetItem: style(16, fontWeight: FontWeight.w500),
       routeIdentifier: style(12),
@@ -279,16 +272,8 @@ final class AppTypography extends ThemeExtension<AppTypography> {
       )!,
       menuTitle: TextStyle.lerp(menuTitle, other.menuTitle, t)!,
       menuSubtitle: TextStyle.lerp(menuSubtitle, other.menuSubtitle, t)!,
-      statusAuthor: TextStyle.lerp(
-        statusAuthor,
-        other.statusAuthor,
-        t,
-      )!,
-      statusHandle: TextStyle.lerp(
-        statusHandle,
-        other.statusHandle,
-        t,
-      )!,
+      statusAuthor: TextStyle.lerp(statusAuthor, other.statusAuthor, t)!,
+      statusHandle: TextStyle.lerp(statusHandle, other.statusHandle, t)!,
       statusBody: TextStyle.lerp(statusBody, other.statusBody, t)!,
       dialogTitle: TextStyle.lerp(dialogTitle, other.dialogTitle, t)!,
       dialogContent: TextStyle.lerp(dialogContent, other.dialogContent, t)!,

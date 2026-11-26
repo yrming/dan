@@ -14,7 +14,7 @@ import 'package:remixicon/remixicon.dart';
 import '../../helpers/helpers.dart';
 
 class _MockAppearanceCubit extends MockCubit<AppearanceState>
-    implements AppearanceCubit {}
+    implements AppearanceCubit;
 
 void main() {
   group(SettingsView, () {
@@ -28,15 +28,12 @@ void main() {
     setUp(() {
       appearanceCubit = _MockAppearanceCubit();
       when(() => appearanceCubit.state).thenReturn(_defaultState);
-      when(
-        () => appearanceCubit.updateFontSize(any()),
-      ).thenAnswer((_) async {});
-      when(
-        () => appearanceCubit.updateThemeMode(any()),
-      ).thenAnswer((_) async {});
-      when(
-        () => appearanceCubit.updateStatusPhotoStyle(any()),
-      ).thenAnswer((_) async {});
+      when(() => appearanceCubit.updateFontSize(any()))
+          .thenAnswer((_) async {});
+      when(() => appearanceCubit.updateThemeMode(any()))
+          .thenAnswer((_) async {});
+      when(() => appearanceCubit.updateStatusPhotoStyle(any()))
+          .thenAnswer((_) async {});
     });
 
     Future<void> pumpView(
@@ -86,10 +83,7 @@ void main() {
       expect(find.text('开源许可'), findsNothing);
       expect(find.byIcon(RemixIcons.code_s_slash_line), findsNothing);
       expect(find.byType(Slider), findsNothing);
-      expect(
-        find.text(context.l10n.appearanceFontSizeValue(16)),
-        findsNothing,
-      );
+      expect(find.text(context.l10n.appearanceFontSizeValue(16)), findsNothing);
       expect(find.text(context.l10n.appearanceThemeModeTitle), findsOneWidget);
       expect(
         find.text(context.l10n.appearanceStatusPhotoStyleTitle),
@@ -102,18 +96,17 @@ void main() {
       );
     });
 
-    testWidgets(
-      'opens the blacklist from its own settings group',
-      (tester) async {
-        var opened = false;
-        await pumpView(tester, onBlacklistPressed: () => opened = true);
+    testWidgets('opens the blacklist from its own settings group', (
+      tester,
+    ) async {
+      var opened = false;
+      await pumpView(tester, onBlacklistPressed: () => opened = true);
 
-        await tester.tap(find.byKey(const Key('settings-blacklist-row')));
-        await tester.pump();
+      await tester.tap(find.byKey(const Key('settings-blacklist-row')));
+      await tester.pump();
 
-        expect(opened, isTrue);
-      },
-    );
+      expect(opened, isTrue);
+    });
 
     testWidgets('opens About and hides the legal entries in settings', (
       tester,
@@ -222,9 +215,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(BottomSheet), findsNothing);
 
-      verify(
-        () => appearanceCubit.updateThemeMode(AppThemeMode.dark),
-      ).called(1);
+      verify(() => appearanceCubit.updateThemeMode(AppThemeMode.dark))
+          .called(1);
     });
 
     testWidgets('selects photo style from the shared action sheet', (
@@ -253,9 +245,7 @@ void main() {
         await pumpView(tester);
         final context = tester.element(find.byType(SettingsView));
         final titleLeft = tester
-            .getTopLeft(
-              find.text(context.l10n.appearanceFontSizeTitle),
-            )
+            .getTopLeft(find.text(context.l10n.appearanceFontSizeTitle))
             .dx;
 
         for (final label in [
@@ -281,73 +271,68 @@ void main() {
       });
     });
 
-    testWidgets(
-      'invokes account actions when their rows are tapped',
-      (tester) async {
-        var switchAccountPressed = false;
-        var signOutPressed = false;
-        await tester.pumpApp(
-          BlocProvider.value(
-            value: appearanceCubit,
-            child: Scaffold(
-              body: SettingsView(
-                onSwitchAccountPressed: () => switchAccountPressed = true,
-                onSignOutPressed: () => signOutPressed = true,
-              ),
-            ),
-          ),
-          theme: AppTheme.light(),
-        );
-        final context = tester.element(find.byType(SettingsView));
-        final switchAccountRow = find.ancestor(
-          of: find.text(context.l10n.accountSwitcherPageTitle),
-          matching: find.byType(InkWell),
-        );
-        final signOutRow = find.ancestor(
-          of: find.text(context.l10n.signOutLabel),
-          matching: find.byType(InkWell),
-        );
-        await tester.ensureVisible(signOutRow);
-        await tester.pumpAndSettle();
-        final switchAccountRect = tester.getRect(switchAccountRow);
-        final signOutRect = tester.getRect(signOutRow);
-
-        await tester.tapAt(
-          Offset(switchAccountRect.left + 1, switchAccountRect.center.dy),
-        );
-        await tester.tapAt(
-          Offset(signOutRect.right - 1, signOutRect.center.dy),
-        );
-
-        expect(switchAccountPressed, isTrue);
-        expect(signOutPressed, isTrue);
-        expect(find.byType(Divider), findsNWidgets(3));
-        expect(
-          tester.widget<InkWell>(switchAccountRow).splashFactory ??
-              Theme.of(tester.element(switchAccountRow)).splashFactory,
-          NoSplash.splashFactory,
-        );
-        expect(
-          tester.widget<InkWell>(signOutRow).splashFactory ??
-              Theme.of(tester.element(signOutRow)).splashFactory,
-          NoSplash.splashFactory,
-        );
-        expect(
-          tester.widget<InkWell>(switchAccountRow).highlightColor ??
-              Theme.of(tester.element(switchAccountRow)).highlightColor,
-          Colors.transparent,
-        );
-        expect(
-          tester.widget<InkWell>(signOutRow).highlightColor ??
-              Theme.of(tester.element(signOutRow)).highlightColor,
-          Colors.transparent,
-        );
-      },
-    );
-
-    testWidgets('shows a localized message when saving fails', (
+    testWidgets('invokes account actions when their rows are tapped', (
       tester,
     ) async {
+      var switchAccountPressed = false;
+      var signOutPressed = false;
+      await tester.pumpApp(
+        BlocProvider.value(
+          value: appearanceCubit,
+          child: Scaffold(
+            body: SettingsView(
+              onSwitchAccountPressed: () => switchAccountPressed = true,
+              onSignOutPressed: () => signOutPressed = true,
+            ),
+          ),
+        ),
+        theme: AppTheme.light(),
+      );
+      final context = tester.element(find.byType(SettingsView));
+      final switchAccountRow = find.ancestor(
+        of: find.text(context.l10n.accountSwitcherPageTitle),
+        matching: find.byType(InkWell),
+      );
+      final signOutRow = find.ancestor(
+        of: find.text(context.l10n.signOutLabel),
+        matching: find.byType(InkWell),
+      );
+      await tester.ensureVisible(signOutRow);
+      await tester.pumpAndSettle();
+      final switchAccountRect = tester.getRect(switchAccountRow);
+      final signOutRect = tester.getRect(signOutRow);
+
+      await tester.tapAt(
+        Offset(switchAccountRect.left + 1, switchAccountRect.center.dy),
+      );
+      await tester.tapAt(Offset(signOutRect.right - 1, signOutRect.center.dy));
+
+      expect(switchAccountPressed, isTrue);
+      expect(signOutPressed, isTrue);
+      expect(find.byType(Divider), findsNWidgets(3));
+      expect(
+        tester.widget<InkWell>(switchAccountRow).splashFactory ??
+            Theme.of(tester.element(switchAccountRow)).splashFactory,
+        NoSplash.splashFactory,
+      );
+      expect(
+        tester.widget<InkWell>(signOutRow).splashFactory ??
+            Theme.of(tester.element(signOutRow)).splashFactory,
+        NoSplash.splashFactory,
+      );
+      expect(
+        tester.widget<InkWell>(switchAccountRow).highlightColor ??
+            Theme.of(tester.element(switchAccountRow)).highlightColor,
+        Colors.transparent,
+      );
+      expect(
+        tester.widget<InkWell>(signOutRow).highlightColor ??
+            Theme.of(tester.element(signOutRow)).highlightColor,
+        Colors.transparent,
+      );
+    });
+
+    testWidgets('shows a localized message when saving fails', (tester) async {
       await pumpView(
         tester,
         states: Stream.value(

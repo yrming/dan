@@ -8,7 +8,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _MockSharedPreferencesAsync extends Mock
-    implements SharedPreferencesAsync {}
+    implements SharedPreferencesAsync;
 
 void main() {
   group(SharedPreferencesAuthenticationSessionStorage, () {
@@ -27,16 +27,15 @@ void main() {
         operations.add('read:$key');
         return key == _stateKey ? storedState : null;
       });
-      when(
-        () => preferences.setString(any(), any()),
-      ).thenAnswer((invocation) async {
-        final key = invocation.positionalArguments.first as String;
-        final value = invocation.positionalArguments[1] as String;
-        operations.add('write:$key');
-        if (key == _stateKey) {
-          storedState = value;
-        }
-      });
+      when(() => preferences.setString(any(), any()))
+          .thenAnswer((invocation) async {
+            final key = invocation.positionalArguments.first as String;
+            final value = invocation.positionalArguments[1] as String;
+            operations.add('write:$key');
+            if (key == _stateKey) {
+              storedState = value;
+            }
+          });
       when(() => preferences.remove(any())).thenAnswer((invocation) async {
         final key = invocation.positionalArguments.first as String;
         operations.add('delete:$key');
@@ -93,17 +92,14 @@ void main() {
 
         final accounts = await subject.readAccounts();
 
-        expect(
-          accounts,
-          [
-            AuthenticatedAccount(
-              id: _account1.id,
-              name: _account1.name,
-              screenName: _account1.screenName,
-              avatarUrl: _account1.avatarUrl,
-            ),
-          ],
-        );
+        expect(accounts, [
+          AuthenticatedAccount(
+            id: _account1.id,
+            name: _account1.name,
+            screenName: _account1.screenName,
+            avatarUrl: _account1.avatarUrl,
+          ),
+        ]);
       });
 
       test(
@@ -223,10 +219,7 @@ void main() {
 
     group('upsertAccount', () {
       test('writes flat account and session fields in one document', () async {
-        await subject.upsertAccount(
-          account: _account1,
-          session: _session1,
-        );
+        await subject.upsertAccount(account: _account1, session: _session1);
 
         final state = _decodeState(storedState!);
         final accounts = state['accounts']! as List<Object?>;
@@ -293,10 +286,7 @@ void main() {
 
       test('rejects a session belonging to a different account', () async {
         expect(
-          () => subject.upsertAccount(
-            account: _account1,
-            session: _session2,
-          ),
+          () => subject.upsertAccount(account: _account1, session: _session2),
           throwsArgumentError,
         );
         verifyNever(() => preferences.setString(_stateKey, any()));
@@ -434,11 +424,7 @@ const _account1 = AuthenticatedAccount(
   createdAt: 'Wed Nov 02 07:49:55 +0000 2011',
   birthday: '1990-01-02',
 );
-const _account2 = AuthenticatedAccount(
-  id: '2',
-  name: 'Two',
-  screenName: 'two',
-);
+const _account2 = AuthenticatedAccount(id: '2', name: 'Two', screenName: 'two');
 const _session1 = AuthenticationSession(
   accountId: '1',
   token: 'token-one',

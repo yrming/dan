@@ -14,10 +14,10 @@ import '../../helpers/helpers.dart';
 
 class _MockAuthenticationBloc
     extends MockBloc<AuthenticationEvent, AuthenticationState>
-    implements AuthenticationBloc {}
+    implements AuthenticationBloc;
 
 class _MockStatusRepository extends Mock
-    implements status_repository.StatusRepository {}
+    implements status_repository.StatusRepository;
 
 void main() {
   group(BrowsePage, () {
@@ -34,16 +34,11 @@ void main() {
         authenticationStates.stream,
         initialState: _authenticatedState(_accountA),
       );
-      when(
-        () => statusRepository.statusChanges,
-      ).thenAnswer((_) => const Stream.empty());
-      when(
-        () => statusRepository.getPublicTimeline(),
-      ).thenAnswer(
-        (_) async => status_repository.StatusPage(
-          statuses: const [],
-          hasMore: false,
-        ),
+      when(() => statusRepository.statusChanges)
+          .thenAnswer((_) => const Stream.empty());
+      when(() => statusRepository.getPublicTimeline()).thenAnswer(
+        (_) async =>
+            status_repository.StatusPage(statuses: const [], hasMore: false),
       );
     });
 

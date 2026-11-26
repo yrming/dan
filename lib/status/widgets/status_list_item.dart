@@ -21,7 +21,7 @@ import 'package:user_repository/user_repository.dart';
 /// Displays one status using the application status layout.
 class StatusListItem extends StatelessWidget {
   /// Creates a style-aware status list item.
-  const StatusListItem({
+  const new({
     required this.status,
     this.enableStatusDetailNavigation = true,
     this.showSource = false,
@@ -257,7 +257,9 @@ Future<void> _showStatusActions(
                     confirmAction: AppDialogAction(
                       label: l10n.statusDeleteDialogConfirmLabel,
                       color: context.appColors.destructiveAction,
-                      onSubmit: () async => onDelete?.call(),
+                      onSubmit: () async {
+                        await onDelete?.call();
+                      },
                       failureLabel: l10n.statusDeleteFailure,
                       onPressed: onDeleted ?? () {},
                     ),
@@ -307,10 +309,7 @@ Future<void> _openUserProfile(
       photoCount: author.photoCount,
     ),
   );
-  await openUserProfileRoute(
-    context,
-    userId: author.id,
-  );
+  await openUserProfileRoute(context, userId: author.id);
 }
 
 Future<void> _openStatusDetail(

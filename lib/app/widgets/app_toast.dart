@@ -60,7 +60,7 @@ class _AppToastHandle {
 
 /// A fading, self-removing toast pill rendered inside an overlay entry.
 class _AppToast extends StatefulWidget {
-  const _AppToast({required this.message, required this.handle});
+  const new({required this.message, required this.handle});
 
   final String message;
   final _AppToastHandle handle;

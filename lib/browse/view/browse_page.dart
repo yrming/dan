@@ -8,7 +8,7 @@ import 'package:status_repository/status_repository.dart';
 /// Route boundary for the browse tab.
 class BrowsePage extends StatelessWidget {
   /// Creates a browse page.
-  const BrowsePage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

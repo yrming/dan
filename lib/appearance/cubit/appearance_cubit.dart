@@ -7,17 +7,15 @@ part 'appearance_state.dart';
 /// Controls global appearance preferences and persists user changes.
 class AppearanceCubit extends Cubit<AppearanceState> {
   /// Creates an appearance cubit.
-  factory AppearanceCubit({
+  factory({
     required AppearanceRepository appearanceRepository,
     AppearanceSettings initialSettings = const AppearanceSettings(),
   }) {
     return AppearanceCubit._(appearanceRepository, initialSettings);
   }
 
-  AppearanceCubit._(
-    this._appearanceRepository,
-    AppearanceSettings initialSettings,
-  ) : _persistedSettings = initialSettings,
+  new _(this._appearanceRepository, AppearanceSettings initialSettings)
+    : _persistedSettings = initialSettings,
       super(
         AppearanceState(
           status: AppearanceStatus.success,
@@ -37,10 +35,7 @@ class AppearanceCubit extends Cubit<AppearanceState> {
       final settings = await _appearanceRepository.load();
       _persistedSettings = settings;
       emit(
-        AppearanceState(
-          status: AppearanceStatus.success,
-          settings: settings,
-        ),
+        AppearanceState(status: AppearanceStatus.success, settings: settings),
       );
     } on Object {
       emit(state.copyWith(status: AppearanceStatus.failure));
@@ -75,12 +70,7 @@ class AppearanceCubit extends Cubit<AppearanceState> {
     }
 
     final revision = ++_saveRevision;
-    emit(
-      AppearanceState(
-        status: AppearanceStatus.saving,
-        settings: settings,
-      ),
-    );
+    emit(AppearanceState(status: AppearanceStatus.saving, settings: settings));
     final operation = _saveQueue.then(
       (_) => _appearanceRepository.save(settings),
     );
@@ -93,10 +83,7 @@ class AppearanceCubit extends Cubit<AppearanceState> {
         return;
       }
       emit(
-        AppearanceState(
-          status: AppearanceStatus.success,
-          settings: settings,
-        ),
+        AppearanceState(status: AppearanceStatus.success, settings: settings),
       );
     } on Object {
       if (revision != _saveRevision) {

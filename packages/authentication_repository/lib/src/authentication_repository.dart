@@ -91,10 +91,8 @@ class AuthenticationRepository {
       return _emit(AuthenticationSnapshot.unauthenticated());
     }
 
-    _currentAuthentication = AuthenticationSnapshot.unknown(
-      accounts: accounts,
-    );
-    return _activateFirstAvailable(
+    _currentAuthentication = AuthenticationSnapshot.unknown(accounts: accounts);
+    return await _activateFirstAvailable(
       accounts,
       preferredAccountId: activeAccountId,
     );
@@ -278,10 +276,7 @@ class AuthenticationRepository {
 
   /// Verifies and activates a stored account.
   Future<AuthenticatedAccount> switchAccount(String accountId) async {
-    final target = _accountById(
-      _currentAuthentication.accounts,
-      accountId,
-    );
+    final target = _accountById(_currentAuthentication.accounts, accountId);
     if (target == null) {
       throw AccountNotFoundFailure(accountId: accountId);
     }
@@ -332,10 +327,7 @@ class AuthenticationRepository {
   ///
   /// Removing the active account attempts to activate the next available one.
   Future<void> removeAccount(String accountId) async {
-    final account = _accountById(
-      _currentAuthentication.accounts,
-      accountId,
-    );
+    final account = _accountById(_currentAuthentication.accounts, accountId);
     if (account == null) {
       throw AccountNotFoundFailure(accountId: accountId);
     }
@@ -370,9 +362,7 @@ class AuthenticationRepository {
       return;
     }
 
-    _currentAuthentication = AuthenticationSnapshot.unknown(
-      accounts: accounts,
-    );
+    _currentAuthentication = AuthenticationSnapshot.unknown(accounts: accounts);
     await _activateFirstAvailable(accounts);
   }
 
@@ -414,10 +404,7 @@ class AuthenticationRepository {
     }
 
     try {
-      await _sessionStorage.upsertAccount(
-        account: account,
-        session: session,
-      );
+      await _sessionStorage.upsertAccount(account: account, session: session);
     } on Object catch (_) {
       throw const AuthenticationStorageFailure();
     }
@@ -467,19 +454,13 @@ class AuthenticationRepository {
     );
 
     try {
-      await _sessionStorage.upsertAccount(
-        account: account,
-        session: session,
-      );
+      await _sessionStorage.upsertAccount(account: account, session: session);
       await _sessionStorage.setActiveAccountId(account.id);
     } on Object catch (_) {
       throw const AuthenticationStorageFailure();
     }
 
-    final accounts = _upsertAccount(
-      _currentAuthentication.accounts,
-      account,
-    );
+    final accounts = _upsertAccount(_currentAuthentication.accounts, account);
     _emit(
       AuthenticationSnapshot.authenticated(
         accounts: accounts,
@@ -507,10 +488,7 @@ class AuthenticationRepository {
     for (final candidate in candidates) {
       try {
         final verifiedAccount = await _verifyStoredAccount(candidate);
-        remainingAccounts = _upsertAccount(
-          remainingAccounts,
-          verifiedAccount,
-        );
+        remainingAccounts = _upsertAccount(remainingAccounts, verifiedAccount);
         try {
           await _sessionStorage.setActiveAccountId(verifiedAccount.id);
         } on Object catch (_) {
@@ -523,10 +501,7 @@ class AuthenticationRepository {
           ),
         );
       } on AccountUnavailableFailure {
-        remainingAccounts = _withoutAccount(
-          remainingAccounts,
-          candidate.id,
-        );
+        remainingAccounts = _withoutAccount(remainingAccounts, candidate.id);
       } on AuthenticationFailure {
         _emit(AuthenticationSnapshot.unknown(accounts: remainingAccounts));
         rethrow;

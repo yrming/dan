@@ -27,7 +27,7 @@ enum StatusComposerSubmissionStatus {
 /// Immutable state for the status composer.
 final class StatusComposerState extends Equatable {
   /// Creates a status composer state.
-  const StatusComposerState({
+  const new({
     this.content = '',
     this.draftStatus = StatusDraftStatus.idle,
     this.submissionStatus = StatusComposerSubmissionStatus.initial,

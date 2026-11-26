@@ -11,7 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 class BlacklistView extends StatefulWidget {
-  const BlacklistView({super.key});
+  const new({super.key});
 
   @override
   State<BlacklistView> createState() => _BlacklistViewState();
@@ -94,9 +94,7 @@ class _BlacklistViewState extends State<BlacklistView> {
             );
           }
           if (state.users.isEmpty) {
-            return AppEmptyView(
-              semanticLabel: l10n.blacklistEmptyLabel,
-            );
+            return AppEmptyView(semanticLabel: l10n.blacklistEmptyLabel);
           }
           return NotificationListener<ScrollNotification>(
             onNotification: (notification) {

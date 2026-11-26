@@ -9,9 +9,9 @@ import 'package:status_repository/status_repository.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockStatuses extends Mock implements StatusRepository {}
+class _MockStatuses extends Mock implements StatusRepository;
 
-class _MockPicker extends Mock implements StatusPhotoPicker {}
+class _MockPicker extends Mock implements StatusPhotoPicker;
 
 const _author = StatusAuthor(id: 'friend-id', name: '饭友', screenName: '饭友');
 void main() {
@@ -115,9 +115,8 @@ void main() {
       testWidgets('closes after retry when there are no recent users', (
         tester,
       ) async {
-        when(
-          () => statuses.getMentions(limit: 60),
-        ).thenThrow(Exception('offline'));
+        when(() => statuses.getMentions(limit: 60))
+            .thenThrow(Exception('offline'));
         await pump(tester);
         await tester.enterText(editor, '@');
         await tester.pumpAndSettle();

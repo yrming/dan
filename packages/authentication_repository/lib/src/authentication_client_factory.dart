@@ -6,6 +6,4 @@ import 'package:fanfou/fanfou.dart' as fanfou;
 /// The function must use the official Fanfou endpoints and return a fresh
 /// client for every call so OAuth credentials cannot leak between accounts.
 typedef AuthenticationClientFactory =
-    fanfou.FanfouClient Function({
-      AuthenticationSession? session,
-    });
+    fanfou.FanfouClient Function({AuthenticationSession? session});

@@ -8,9 +8,9 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 import 'package:user_repository/user_repository.dart';
 
 class _MockStatusRepository extends Mock
-    implements status_repository.StatusRepository {}
+    implements status_repository.StatusRepository;
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 void main() {
   group(StatusDetailCubit, () {
@@ -22,9 +22,8 @@ void main() {
     setUp(() {
       repository = _MockStatusRepository();
       userRepository = _MockUserRepository();
-      when(
-        () => userRepository.getUser(any()),
-      ).thenAnswer((_) async => _originUser);
+      when(() => userRepository.getUser(any()))
+          .thenAnswer((_) async => _originUser);
       reply = _status.copyWith(
         id: 'reply',
         inReplyToStatusId: _status.id,
@@ -36,9 +35,8 @@ void main() {
         inReplyToUserId: 'reply-author',
       );
       when(() => repository.getStatus(any())).thenAnswer((_) async => _status);
-      when(
-        () => repository.getContextTimeline(any()),
-      ).thenAnswer((_) async => []);
+      when(() => repository.getContextTimeline(any()))
+          .thenAnswer((_) async => []);
       when(() => repository.deleteStatus(any())).thenAnswer((_) async {});
     });
 
@@ -59,9 +57,8 @@ void main() {
             'with cached=$cached',
             build: () {
               final original = _status.copyWith(inReplyToStatusId: parentId);
-              when(
-                () => repository.getStatus(_status.id),
-              ).thenAnswer((_) async => original);
+              when(() => repository.getStatus(_status.id))
+                  .thenAnswer((_) async => original);
               return buildSubject(initialStatus: cached ? original : null);
             },
             act: (cubit) async {
@@ -87,12 +84,10 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'loads context when a fetched status is a reply',
         build: () {
-          when(
-            () => repository.getStatus(reply.id),
-          ).thenAnswer((_) async => reply);
-          when(
-            () => repository.getContextTimeline(reply.id),
-          ).thenAnswer((_) async => [_status, reply]);
+          when(() => repository.getStatus(reply.id))
+              .thenAnswer((_) async => reply);
+          when(() => repository.getContextTimeline(reply.id))
+              .thenAnswer((_) async => [_status, reply]);
           return StatusDetailCubit(
             statusRepository: repository,
             userRepository: userRepository,
@@ -116,9 +111,8 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'uses the context original when an intermediate reply is missing',
         build: () {
-          when(
-            () => repository.getContextTimeline(nestedReply.id),
-          ).thenAnswer((_) async => [_status, nestedReply]);
+          when(() => repository.getContextTimeline(nestedReply.id))
+              .thenAnswer((_) async => [_status, nestedReply]);
           return buildSubject(initialStatus: nestedReply);
         },
         act: (cubit) => cubit.load(),
@@ -186,9 +180,8 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'resolves the original and deduplicates replies in parent-first order',
         build: () {
-          when(
-            () => repository.getContextTimeline(nestedReply.id),
-          ).thenAnswer((_) async => [nestedReply, reply, reply, _status]);
+          when(() => repository.getContextTimeline(nestedReply.id))
+              .thenAnswer((_) async => [nestedReply, reply, reply, _status]);
           return buildSubject(initialStatus: nestedReply);
         },
         act: (cubit) => cubit.load(),
@@ -210,15 +203,12 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'follows truncated context back to the original and keeps all replies',
         build: () {
-          when(
-            () => repository.getContextTimeline(nestedReply.id),
-          ).thenAnswer((_) async => [nestedReply]);
-          when(
-            () => repository.getContextTimeline(reply.id),
-          ).thenAnswer((_) async => [reply, nestedReply]);
-          when(
-            () => repository.getContextTimeline(_status.id),
-          ).thenAnswer((_) async => [_status, reply]);
+          when(() => repository.getContextTimeline(nestedReply.id))
+              .thenAnswer((_) async => [nestedReply]);
+          when(() => repository.getContextTimeline(reply.id))
+              .thenAnswer((_) async => [reply, nestedReply]);
+          when(() => repository.getContextTimeline(_status.id))
+              .thenAnswer((_) async => [_status, reply]);
           return buildSubject(initialStatus: nestedReply);
         },
         act: (cubit) => cubit.load(),
@@ -257,9 +247,8 @@ void main() {
         blocTest<StatusDetailCubit, StatusDetailState>(
           'keeps replies with an unavailable original for API failure $code',
           build: () {
-            when(
-              () => repository.getContextTimeline(nestedReply.id),
-            ).thenAnswer((_) async => [reply, nestedReply]);
+            when(() => repository.getContextTimeline(nestedReply.id))
+                .thenAnswer((_) async => [reply, nestedReply]);
             when(() => repository.getContextTimeline(_status.id)).thenThrow(
               status_repository.StatusRepositoryApiFailure(statusCode: code),
             );
@@ -311,9 +300,8 @@ void main() {
         },
         act: (cubit) async {
           await cubit.load();
-          when(
-            () => repository.getContextTimeline(any()),
-          ).thenAnswer((_) async => [_status, reply]);
+          when(() => repository.getContextTimeline(any()))
+              .thenAnswer((_) async => [_status, reply]);
           await cubit.retry();
         },
         expect: () => [
@@ -337,9 +325,8 @@ void main() {
         'stops a cyclic reply chain with a retryable error',
         build: () {
           final cyclic = reply.copyWith(inReplyToStatusId: nestedReply.id);
-          when(
-            () => repository.getContextTimeline(any()),
-          ).thenAnswer((_) async => [cyclic, nestedReply]);
+          when(() => repository.getContextTimeline(any()))
+              .thenAnswer((_) async => [cyclic, nestedReply]);
           return buildSubject(initialStatus: nestedReply);
         },
         act: (cubit) => cubit.load(),
@@ -358,9 +345,8 @@ void main() {
         build: () => buildSubject(initialStatus: reply),
         act: (cubit) async {
           final request = Completer<List<status_repository.Status>>();
-          when(
-            () => repository.getContextTimeline(any()),
-          ).thenAnswer((_) => request.future);
+          when(() => repository.getContextTimeline(any()))
+              .thenAnswer((_) => request.future);
           final loading = cubit.load();
           await cubit.load();
           await cubit.close();
@@ -368,9 +354,8 @@ void main() {
           await loading;
         },
         expect: () => [isA<StatusDetailState>()],
-        verify: (_) => verify(
-          () => repository.getContextTimeline(reply.id),
-        ).called(1),
+        verify: (_) =>
+            verify(() => repository.getContextTimeline(reply.id)).called(1),
       );
     });
 
@@ -384,12 +369,10 @@ void main() {
                 statusCode: 404,
               ),
             );
-            when(
-              () => userRepository.getUser(_originUser.id),
-            ).thenThrow(Exception('profile unavailable'));
-            when(
-              () => userRepository.getCachedUser(_originUser.id),
-            ).thenReturn(cached ? _originUser : null);
+            when(() => userRepository.getUser(_originUser.id))
+                .thenThrow(Exception('profile unavailable'));
+            when(() => userRepository.getCachedUser(_originUser.id))
+                .thenReturn(cached ? _originUser : null);
             return buildSubject(initialStatus: reply);
           },
           act: (cubit) => cubit.load(),
@@ -480,29 +463,25 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'reloads around the selected reply after resolving the original',
         build: () {
-          when(
-            () => repository.getContextTimeline(reply.id),
-          ).thenAnswer((_) async => [_status, reply]);
+          when(() => repository.getContextTimeline(reply.id))
+              .thenAnswer((_) async => [_status, reply]);
           return buildSubject(initialStatus: reply);
         },
         act: (cubit) async {
           await cubit.load();
-          when(
-            () => repository.getContextTimeline(reply.id),
-          ).thenAnswer((_) async => [_status, reply, nestedReply]);
+          when(() => repository.getContextTimeline(reply.id))
+              .thenAnswer((_) async => [_status, reply, nestedReply]);
           await cubit.refresh();
         },
         skip: 3,
         expect: () => [
-          isA<StatusDetailState>().having(
-            (s) => s.replies,
-            'new replies',
-            [reply, nestedReply],
-          ),
+          isA<StatusDetailState>().having((s) => s.replies, 'new replies', [
+            reply,
+            nestedReply,
+          ]),
         ],
-        verify: (_) => verify(
-          () => repository.getContextTimeline(reply.id),
-        ).called(2),
+        verify: (_) =>
+            verify(() => repository.getContextTimeline(reply.id)).called(2),
       );
     });
 
@@ -546,12 +525,10 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'skips context when deletion leaves the original selected',
         build: () {
-          when(
-            () => repository.getContextTimeline(reply.id),
-          ).thenAnswer((_) async => [_status, reply]);
-          when(
-            () => repository.getContextTimeline(_status.id),
-          ).thenAnswer((_) async => [_status]);
+          when(() => repository.getContextTimeline(reply.id))
+              .thenAnswer((_) async => [_status, reply]);
+          when(() => repository.getContextTimeline(_status.id))
+              .thenAnswer((_) async => [_status]);
           return buildSubject(initialStatus: reply);
         },
         act: (cubit) async {
@@ -574,9 +551,9 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'retains a reply when deletion fails',
         build: () {
-          when(() => repository.deleteStatus(reply.id)).thenThrow(
-            const status_repository.StatusRepositoryUnknownFailure(),
-          );
+          when(
+            () => repository.deleteStatus(reply.id),
+          ).thenThrow(const status_repository.StatusRepositoryUnknownFailure());
           return buildSubject(initialStatus: _status);
         },
         seed: () => StatusDetailState(
@@ -593,9 +570,8 @@ void main() {
       blocTest<StatusDetailCubit, StatusDetailState>(
         'deletes the displayed original rather than the route reply',
         build: () {
-          when(
-            () => repository.getContextTimeline(reply.id),
-          ).thenAnswer((_) async => [_status, reply]);
+          when(() => repository.getContextTimeline(reply.id))
+              .thenAnswer((_) async => [_status, reply]);
           return buildSubject(initialStatus: reply);
         },
         act: (cubit) async {

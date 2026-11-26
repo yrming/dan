@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 class _MockStatusRepository extends Mock
-    implements status_repository.StatusRepository {}
+    implements status_repository.StatusRepository;
 
 void main() {
   group(StatusListBloc, () {
@@ -18,9 +18,8 @@ void main() {
       statusRepository = _MockStatusRepository();
       statusChanges =
           StreamController<status_repository.StatusChange>.broadcast();
-      when(
-        () => statusRepository.statusChanges,
-      ).thenAnswer((_) => statusChanges.stream);
+      when(() => statusRepository.statusChanges)
+          .thenAnswer((_) => statusChanges.stream);
     });
 
     tearDown(() async {
@@ -76,13 +75,11 @@ void main() {
                       () => statusRepository.getPhotoTimeline(userId: 'user-b'),
                     ).thenAnswer((_) async => page);
                   case StatusFeed.favorites:
-                    when(
-                      () => statusRepository.getFavorites(userId: 'user-b'),
-                    ).thenAnswer((_) async => page);
+                    when(() => statusRepository.getFavorites(userId: 'user-b'))
+                        .thenAnswer((_) async => page);
                   case StatusFeed.home:
-                    when(
-                      () => statusRepository.getHomeTimeline(),
-                    ).thenAnswer((_) async => page);
+                    when(() => statusRepository.getHomeTimeline())
+                        .thenAnswer((_) async => page);
                   case StatusFeed.public ||
                       StatusFeed.search ||
                       StatusFeed.searchMine ||
@@ -120,9 +117,7 @@ void main() {
                       () => statusRepository.getFavorites(userId: 'user-b'),
                     ).called(1);
                   case StatusFeed.home:
-                    verify(
-                      () => statusRepository.getHomeTimeline(),
-                    ).called(1);
+                    verify(() => statusRepository.getHomeTimeline()).called(1);
                   case StatusFeed.public ||
                       StatusFeed.search ||
                       StatusFeed.searchMine ||
@@ -140,14 +135,13 @@ void main() {
         blocTest<StatusListBloc, StatusListState>(
           'preserves the mismatch only while refresh stays empty=$isEmpty',
           setUp: () {
-            when(
-              () => statusRepository.getUserTimeline(userId: 'user-b'),
-            ).thenAnswer(
-              (_) async => status_repository.StatusPage(
-                statuses: isEmpty ? const [] : const [_statusA],
-                hasMore: false,
-              ),
-            );
+            when(() => statusRepository.getUserTimeline(userId: 'user-b'))
+                .thenAnswer(
+                  (_) async => status_repository.StatusPage(
+                    statuses: isEmpty ? const [] : const [_statusA],
+                    hasMore: false,
+                  ),
+                );
           },
           build: () => buildSubject(StatusFeed.user, 'user-b', 42),
           seed: () => StatusListState(
@@ -265,19 +259,16 @@ void main() {
             hasMore: false,
           ),
         ],
-        verify: (_) => verify(
-          () => statusRepository.searchMyStatuses(query: '猫'),
-        ).called(1),
+        verify: (_) =>
+            verify(() => statusRepository.searchMyStatuses(query: '猫'))
+                .called(1),
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'uses the selected user id for a profile search',
         setUp: () {
           when(
-            () => statusRepository.searchStatuses(
-              query: '猫',
-              userId: 'user-b',
-            ),
+            () => statusRepository.searchStatuses(query: '猫', userId: 'user-b'),
           ).thenAnswer(
             (_) async => status_repository.StatusPage(
               statuses: const [_statusA],
@@ -297,10 +288,7 @@ void main() {
           ),
         ],
         verify: (_) => verify(
-          () => statusRepository.searchStatuses(
-            query: '猫',
-            userId: 'user-b',
-          ),
+          () => statusRepository.searchStatuses(query: '猫', userId: 'user-b'),
         ).called(1),
       );
 
@@ -401,17 +389,15 @@ void main() {
           build: () => buildSubject(StatusFeed.search),
           act: (bloc) async {
             final oldRequest = Completer<status_repository.StatusPage>();
-            when(
-              () => statusRepository.searchStatuses(query: 'old'),
-            ).thenAnswer((_) => oldRequest.future);
-            when(
-              () => statusRepository.searchStatuses(query: 'new'),
-            ).thenAnswer(
-              (_) async => status_repository.StatusPage(
-                statuses: const [_statusB],
-                hasMore: false,
-              ),
-            );
+            when(() => statusRepository.searchStatuses(query: 'old'))
+                .thenAnswer((_) => oldRequest.future);
+            when(() => statusRepository.searchStatuses(query: 'new'))
+                .thenAnswer(
+                  (_) async => status_repository.StatusPage(
+                    statuses: const [_statusB],
+                    hasMore: false,
+                  ),
+                );
             bloc.add(const StatusListSearchSubmitted('old'));
             await bloc.stream.firstWhere(
               (s) => s.status == StatusListStatus.loading,
@@ -457,9 +443,7 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'emits [loading, success] when the home timeline returns a page',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(),
-          ).thenAnswer(
+          when(() => statusRepository.getHomeTimeline()).thenAnswer(
             (_) async => status_repository.StatusPage(
               statuses: const [_statusA],
               hasMore: true,
@@ -478,18 +462,14 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => statusRepository.getHomeTimeline(),
-          ).called(1);
+          verify(() => statusRepository.getHomeTimeline()).called(1);
         },
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'requests the public timeline for the public feed',
         setUp: () {
-          when(
-            () => statusRepository.getPublicTimeline(),
-          ).thenAnswer(
+          when(() => statusRepository.getPublicTimeline()).thenAnswer(
             (_) async => status_repository.StatusPage(
               statuses: const [_statusA],
               hasMore: false,
@@ -506,9 +486,7 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'requests mentions for the mentions feed',
         setUp: () {
-          when(
-            () => statusRepository.getMentions(),
-          ).thenAnswer(
+          when(() => statusRepository.getMentions()).thenAnswer(
             (_) async => status_repository.StatusPage(
               statuses: const [_statusA],
               hasMore: false,
@@ -525,72 +503,64 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'requests the selected user statuses for the user feed',
         setUp: () {
-          when(
-            () => statusRepository.getUserTimeline(userId: 'user-b'),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusA],
-              hasMore: false,
-            ),
-          );
+          when(() => statusRepository.getUserTimeline(userId: 'user-b'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusA],
+                  hasMore: false,
+                ),
+              );
         },
         build: () => buildSubject(StatusFeed.user, 'user-b'),
         act: (bloc) => bloc.add(const StatusListInitialLoadRequested()),
         verify: (_) {
-          verify(
-            () => statusRepository.getUserTimeline(userId: 'user-b'),
-          ).called(1);
+          verify(() => statusRepository.getUserTimeline(userId: 'user-b'))
+              .called(1);
         },
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'requests the selected user photos for the photos feed',
         setUp: () {
-          when(
-            () => statusRepository.getPhotoTimeline(userId: 'user-b'),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusA],
-              hasMore: false,
-            ),
-          );
+          when(() => statusRepository.getPhotoTimeline(userId: 'user-b'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusA],
+                  hasMore: false,
+                ),
+              );
         },
         build: () => buildSubject(StatusFeed.photos, 'user-b'),
         act: (bloc) => bloc.add(const StatusListInitialLoadRequested()),
         verify: (_) {
-          verify(
-            () => statusRepository.getPhotoTimeline(userId: 'user-b'),
-          ).called(1);
+          verify(() => statusRepository.getPhotoTimeline(userId: 'user-b'))
+              .called(1);
         },
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'requests the selected user favorites for the favorites feed',
         setUp: () {
-          when(
-            () => statusRepository.getFavorites(userId: 'user-b'),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusA],
-              hasMore: false,
-            ),
-          );
+          when(() => statusRepository.getFavorites(userId: 'user-b'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusA],
+                  hasMore: false,
+                ),
+              );
         },
         build: () => buildSubject(StatusFeed.favorites, 'user-b'),
         act: (bloc) => bloc.add(const StatusListInitialLoadRequested()),
         verify: (_) {
-          verify(
-            () => statusRepository.getFavorites(userId: 'user-b'),
-          ).called(1);
+          verify(() => statusRepository.getFavorites(userId: 'user-b'))
+              .called(1);
         },
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'emits [loading, empty] when the repository page is empty',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(),
-          ).thenAnswer(
+          when(() => statusRepository.getHomeTimeline()).thenAnswer(
             (_) async => status_repository.StatusPage(
               statuses: const [],
               hasMore: false,
@@ -601,10 +571,7 @@ void main() {
         act: (bloc) => bloc.add(const StatusListInitialLoadRequested()),
         expect: () => [
           StatusListState(status: StatusListStatus.loading),
-          StatusListState(
-            status: StatusListStatus.empty,
-            hasMore: false,
-          ),
+          StatusListState(status: StatusListStatus.empty, hasMore: false),
         ],
         verify: (_) {
           verify(() => statusRepository.getHomeTimeline()).called(1);
@@ -616,9 +583,7 @@ void main() {
         setUp: () {
           when(
             () => statusRepository.getHomeTimeline(),
-          ).thenThrow(
-            const status_repository.StatusRepositoryUnknownFailure(),
-          );
+          ).thenThrow(const status_repository.StatusRepositoryUnknownFailure());
         },
         build: buildSubject,
         act: (bloc) => bloc.add(const StatusListInitialLoadRequested()),
@@ -626,9 +591,7 @@ void main() {
           StatusListState(status: StatusListStatus.loading),
           StatusListState(status: StatusListStatus.failure),
         ],
-        errors: () => [
-          isA<status_repository.StatusRepositoryUnknownFailure>(),
-        ],
+        errors: () => [isA<status_repository.StatusRepositoryUnknownFailure>()],
       );
     });
 
@@ -636,15 +599,14 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'keeps the pagination frontier and prepends unique refreshed values',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(sinceId: _statusA.id),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusB, _updatedStatusA],
-              hasMore: true,
-              nextCursor: 'refresh-cursor',
-            ),
-          );
+          when(() => statusRepository.getHomeTimeline(sinceId: _statusA.id))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusB, _updatedStatusA],
+                  hasMore: true,
+                  nextCursor: 'refresh-cursor',
+                ),
+              );
         },
         build: buildSubject,
         seed: () => StatusListState(
@@ -667,18 +629,15 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => statusRepository.getHomeTimeline(sinceId: _statusA.id),
-          ).called(1);
+          verify(() => statusRepository.getHomeTimeline(sinceId: _statusA.id))
+              .called(1);
         },
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'uses the refreshed page cursor when the previous feed was empty',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(),
-          ).thenAnswer(
+          when(() => statusRepository.getHomeTimeline()).thenAnswer(
             (_) async => status_repository.StatusPage(
               statuses: const [_statusA],
               hasMore: true,
@@ -687,10 +646,8 @@ void main() {
           );
         },
         build: buildSubject,
-        seed: () => StatusListState(
-          status: StatusListStatus.empty,
-          hasMore: false,
-        ),
+        seed: () =>
+            StatusListState(status: StatusListStatus.empty, hasMore: false),
         act: (bloc) => bloc.add(const StatusListRefreshRequested()),
         expect: () => [
           StatusListState(
@@ -709,15 +666,14 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'uses the newest visible mention as sinceId when refreshing',
         setUp: () {
-          when(
-            () => statusRepository.getMentions(sinceId: _statusA.id),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusB],
-              hasMore: true,
-              nextCursor: 'refresh-cursor',
-            ),
-          );
+          when(() => statusRepository.getMentions(sinceId: _statusA.id))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusB],
+                  hasMore: true,
+                  nextCursor: 'refresh-cursor',
+                ),
+              );
         },
         build: () => buildSubject(StatusFeed.mentions),
         seed: () => StatusListState(
@@ -740,24 +696,22 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => statusRepository.getMentions(sinceId: _statusA.id),
-          ).called(1);
+          verify(() => statusRepository.getMentions(sinceId: _statusA.id))
+              .called(1);
         },
       );
 
       blocTest<StatusListBloc, StatusListState>(
         'restarts page-based favorites pagination after a refresh',
         setUp: () {
-          when(
-            () => statusRepository.getFavorites(userId: 'account-a'),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusB],
-              hasMore: true,
-              nextCursor: '2',
-            ),
-          );
+          when(() => statusRepository.getFavorites(userId: 'account-a'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusB],
+                  hasMore: true,
+                  nextCursor: '2',
+                ),
+              );
         },
         build: () => buildSubject(StatusFeed.favorites),
         seed: () => StatusListState(
@@ -786,9 +740,7 @@ void main() {
         setUp: () {
           when(
             () => statusRepository.getHomeTimeline(sinceId: _statusA.id),
-          ).thenThrow(
-            const status_repository.StatusRepositoryUnknownFailure(),
-          );
+          ).thenThrow(const status_repository.StatusRepositoryUnknownFailure());
         },
         build: buildSubject,
         seed: () => StatusListState(
@@ -811,9 +763,7 @@ void main() {
             nextCursor: 'cursor-a',
           ),
         ],
-        errors: () => [
-          isA<status_repository.StatusRepositoryUnknownFailure>(),
-        ],
+        errors: () => [isA<status_repository.StatusRepositoryUnknownFailure>()],
       );
     });
 
@@ -821,17 +771,14 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'appends unique statuses using the stored cursor',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(
-              maxId: 'cursor-a',
-            ),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusA, _statusB],
-              hasMore: true,
-              nextCursor: 'cursor-b',
-            ),
-          );
+          when(() => statusRepository.getHomeTimeline(maxId: 'cursor-a'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusA, _statusB],
+                  hasMore: true,
+                  nextCursor: 'cursor-b',
+                ),
+              );
         },
         build: buildSubject,
         seed: () => StatusListState(
@@ -858,17 +805,14 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'continues pagination when a duplicate page advances the cursor',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(
-              maxId: 'cursor-a',
-            ),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusA],
-              hasMore: true,
-              nextCursor: 'cursor-b',
-            ),
-          );
+          when(() => statusRepository.getHomeTimeline(maxId: 'cursor-a'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusA],
+                  hasMore: true,
+                  nextCursor: 'cursor-b',
+                ),
+              );
         },
         build: buildSubject,
         seed: () => StatusListState(
@@ -895,17 +839,14 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'stops pagination when a duplicate page does not advance the cursor',
         setUp: () {
-          when(
-            () => statusRepository.getHomeTimeline(
-              maxId: 'cursor-a',
-            ),
-          ).thenAnswer(
-            (_) async => status_repository.StatusPage(
-              statuses: const [_statusA],
-              hasMore: true,
-              nextCursor: 'cursor-a',
-            ),
-          );
+          when(() => statusRepository.getHomeTimeline(maxId: 'cursor-a'))
+              .thenAnswer(
+                (_) async => status_repository.StatusPage(
+                  statuses: const [_statusA],
+                  hasMore: true,
+                  nextCursor: 'cursor-a',
+                ),
+              );
         },
         build: buildSubject,
         seed: () => StatusListState(
@@ -1007,10 +948,8 @@ void main() {
       blocTest<StatusListBloc, StatusListState>(
         'adds a newly favorited status to the favorites feed',
         build: () => buildSubject(StatusFeed.favorites),
-        seed: () => StatusListState(
-          status: StatusListStatus.empty,
-          hasMore: false,
-        ),
+        seed: () =>
+            StatusListState(status: StatusListStatus.empty, hasMore: false),
         act: (_) => statusChanges.add(
           const status_repository.StatusUpdated(
             accountId: 'account-a',
@@ -1059,9 +998,8 @@ void main() {
           status: StatusListStatus.success,
           statuses: const [_statusB],
         ),
-        act: (bloc) => bloc.add(
-          const StatusListStatusFavoriteToggled('status-b'),
-        ),
+        act: (bloc) =>
+            bloc.add(const StatusListStatusFavoriteToggled('status-b')),
         expect: () => [
           StatusListState(
             status: StatusListStatus.success,
@@ -1092,18 +1030,15 @@ void main() {
         setUp: () {
           when(
             () => statusRepository.deleteStatus(_statusA.id),
-          ).thenThrow(
-            const status_repository.StatusRepositoryUnknownFailure(),
-          );
+          ).thenThrow(const status_repository.StatusRepositoryUnknownFailure());
         },
         build: buildSubject,
         seed: () => StatusListState(
           status: StatusListStatus.success,
           statuses: const [_statusA],
         ),
-        act: (bloc) => bloc.add(
-          const StatusListStatusDeletionRequested('status-a'),
-        ),
+        act: (bloc) =>
+            bloc.add(const StatusListStatusDeletionRequested('status-a')),
         expect: () => [
           StatusListState(
             status: StatusListStatus.success,
@@ -1119,9 +1054,7 @@ void main() {
             ),
           ),
         ],
-        errors: () => [
-          isA<status_repository.StatusRepositoryUnknownFailure>(),
-        ],
+        errors: () => [isA<status_repository.StatusRepositoryUnknownFailure>()],
       );
     });
   });

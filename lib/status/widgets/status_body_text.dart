@@ -19,7 +19,7 @@ typedef StatusExternalLinkLauncher = Future<bool> Function(Uri uri);
 /// Displays API-formatted status HTML with supported links highlighted.
 class StatusBodyText extends StatefulWidget {
   /// Creates highlighted status body text.
-  const StatusBodyText({
+  const new({
     required this.text,
     required this.linkColor,
     this.leadingText,
@@ -147,9 +147,7 @@ class _StatusBodyTextState extends State<StatusBodyText> {
               label: context.l10n.statusCopyTextLabel,
               icon: RemixIcons.file_copy_line,
               onPressed: () {
-                unawaited(
-                  Clipboard.setData(ClipboardData(text: plainText)),
-                );
+                unawaited(Clipboard.setData(ClipboardData(text: plainText)));
                 showAppToast(context, copiedMessage);
               },
             ),

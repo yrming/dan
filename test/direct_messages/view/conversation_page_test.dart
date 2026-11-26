@@ -16,9 +16,9 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockDirectMessageRepository extends Mock
-    implements DirectMessageRepository {}
+    implements DirectMessageRepository;
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 DirectMessageHistoryPage historyPage(
   List<DirectMessage> messages, {
@@ -164,22 +164,21 @@ void main() {
       expect(find.text('fanfou_b'), findsOneWidget);
     });
 
-    testWidgets(
-      'falls back to the peer screen name from the loaded messages',
-      (tester) async {
-        when(
-          () => directMessageRepository.getConversation(
-            'user-b',
-            limit: 20,
-            page: 1,
-          ),
-        ).thenAnswer((_) async => historyPage(const [incomingMessage]));
+    testWidgets('falls back to the peer screen name from the loaded messages', (
+      tester,
+    ) async {
+      when(
+        () => directMessageRepository.getConversation(
+          'user-b',
+          limit: 20,
+          page: 1,
+        ),
+      ).thenAnswer((_) async => historyPage(const [incomingMessage]));
 
-        await pumpPage(tester);
+      await pumpPage(tester);
 
-        expect(find.text('fanfou_b'), findsOneWidget);
-      },
-    );
+      expect(find.text('fanfou_b'), findsOneWidget);
+    });
 
     testWidgets('uses the fallback title when the peer name is unknown', (
       tester,
@@ -268,9 +267,8 @@ void main() {
           page: 1,
         ),
       ).thenAnswer((_) async => historyPage(const [incomingMessage]));
-      when(
-        () => directMessageRepository.sendMessage('user-b', '新消息'),
-      ).thenAnswer((_) async => outgoingMessage);
+      when(() => directMessageRepository.sendMessage('user-b', '新消息'))
+          .thenAnswer((_) async => outgoingMessage);
 
       await pumpPage(tester);
       final textField = find.byType(TextField);
@@ -301,9 +299,8 @@ void main() {
         isTrue,
       );
 
-      verify(
-        () => directMessageRepository.sendMessage('user-b', '新消息'),
-      ).called(1);
+      verify(() => directMessageRepository.sendMessage('user-b', '新消息'))
+          .called(1);
       expect(find.text(outgoingMessage.text), findsOneWidget);
     });
 
@@ -341,66 +338,60 @@ void main() {
       },
     );
 
-    testWidgets(
-      'renders the send button as a rounded send icon button',
-      (
-        tester,
-      ) async {
-        when(
-          () => directMessageRepository.getConversation(
-            'user-b',
-            limit: 20,
-            page: 1,
-          ),
-        ).thenAnswer((_) async => historyPage(const [incomingMessage]));
+    testWidgets('renders the send button as a rounded send icon button', (
+      tester,
+    ) async {
+      when(
+        () => directMessageRepository.getConversation(
+          'user-b',
+          limit: 20,
+          page: 1,
+        ),
+      ).thenAnswer((_) async => historyPage(const [incomingMessage]));
 
-        await pumpPage(tester);
-        final context = tester.element(find.byType(ConversationView));
-        await tester.enterText(find.byType(TextField), '新消息');
-        await tester.pump();
-        final button = tester.widget<TextButton>(
+      await pumpPage(tester);
+      final context = tester.element(find.byType(ConversationView));
+      await tester.enterText(find.byType(TextField), '新消息');
+      await tester.pump();
+      final button = tester.widget<TextButton>(
+        find
+            .ancestor(
+              of: find.byIcon(RemixIcons.send_ins_line),
+              matching: find.byType(TextButton),
+            )
+            .first,
+      );
+
+      expect(
+        button.style?.backgroundColor?.resolve({}),
+        context.appColors.wechatGreen,
+      );
+      expect(
+        button.style?.foregroundColor?.resolve({}),
+        AppColors.wechatGreenForeground,
+      );
+      final shape =
+          button.style?.shape?.resolve({}) ??
+          Theme.of(context).textButtonTheme.style!.shape!.resolve({});
+      expect(
+        shape,
+        const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      );
+      expect(find.text(context.l10n.sendButtonLabel), findsNothing);
+      expect(
+        tester.getSize(
           find
               .ancestor(
                 of: find.byIcon(RemixIcons.send_ins_line),
                 matching: find.byType(TextButton),
               )
               .first,
-        );
-
-        expect(
-          button.style?.backgroundColor?.resolve({}),
-          context.appColors.wechatGreen,
-        );
-        expect(
-          button.style?.foregroundColor?.resolve({}),
-          AppColors.wechatGreenForeground,
-        );
-        final shape =
-            button.style?.shape?.resolve({}) ??
-            Theme.of(context).textButtonTheme.style!.shape!.resolve({});
-        expect(
-          shape,
-          const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-        );
-        expect(find.text(context.l10n.sendButtonLabel), findsNothing);
-        expect(
-          tester.getSize(
-            find
-                .ancestor(
-                  of: find.byIcon(RemixIcons.send_ins_line),
-                  matching: find.byType(TextButton),
-                )
-                .first,
-          ),
-          Size(
-            context.appSizing.scaled(50),
-            context.appSizing.scaled(34),
-          ),
-        );
-      },
-    );
+        ),
+        Size(context.appSizing.scaled(50), context.appSizing.scaled(34)),
+      );
+    });
 
     testWidgets('matches the bottom navigation bar content height', (
       tester,
@@ -459,12 +450,7 @@ void main() {
       );
       expect(
         (composer.decoration as BoxDecoration).border,
-        Border(
-          top: BorderSide(
-            color: context.appColors.divider,
-            width: 0,
-          ),
-        ),
+        Border(top: BorderSide(color: context.appColors.divider, width: 0)),
       );
       expect(
         padding.padding,
@@ -502,17 +488,9 @@ void main() {
       );
       expect(
         (composer.decoration as BoxDecoration).border,
-        Border(
-          top: BorderSide(
-            color: context.appColors.divider,
-            width: 0,
-          ),
-        ),
+        Border(top: BorderSide(color: context.appColors.divider, width: 0)),
       );
-      expect(
-        textField.decoration!.fillColor,
-        const Color(0xFF1E1E1E),
-      );
+      expect(textField.decoration!.fillColor, const Color(0xFF1E1E1E));
       expect(
         (textField.decoration!.border! as OutlineInputBorder).borderRadius,
         BorderRadius.circular(context.appSizing.scaled(10)),
@@ -535,10 +513,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(
-        tester.getSize(find.byType(TextField)).height,
-        greaterThan(40),
-      );
+      expect(tester.getSize(find.byType(TextField)).height, greaterThan(40));
       expect(
         tester
             .getSize(find.byKey(const Key('conversation-message-composer')))
@@ -704,9 +679,7 @@ void main() {
       expect(find.text('更早的消息 0'), findsOneWidget);
     });
 
-    testWidgets('uses the base background behind the bubbles', (
-      tester,
-    ) async {
+    testWidgets('uses the base background behind the bubbles', (tester) async {
       when(
         () => directMessageRepository.getConversation(
           'user-b',
@@ -758,10 +731,7 @@ void main() {
       await pumpPage(tester);
       final context = tester.element(find.byType(ConversationView));
 
-      expect(
-        find.text(context.l10n.retryPageMessage),
-        findsOneWidget,
-      );
+      expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
 
       when(
         () => directMessageRepository.getConversation(

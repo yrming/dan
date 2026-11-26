@@ -4,11 +4,7 @@ import 'package:material_ui/material_ui.dart';
 /// Applies the application's loading shimmer to a placeholder subtree.
 class AppShimmer extends StatefulWidget {
   /// Creates an application shimmer.
-  const AppShimmer({
-    required this.semanticLabel,
-    required this.child,
-    super.key,
-  });
+  const new({required this.semanticLabel, required this.child, super.key});
 
   /// Accessibility label announced while the content is loading.
   final String semanticLabel;
@@ -30,10 +26,7 @@ class _AppShimmerState extends State<AppShimmer>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: _shimmerDuration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: _shimmerDuration, vsync: this);
   }
 
   @override
@@ -84,9 +77,7 @@ class _AppShimmerState extends State<AppShimmer>
       container: true,
       liveRegion: true,
       label: widget.semanticLabel,
-      child: ExcludeSemantics(
-        child: RepaintBoundary(child: shimmer),
-      ),
+      child: ExcludeSemantics(child: RepaintBoundary(child: shimmer)),
     );
   }
 }

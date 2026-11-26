@@ -13,7 +13,7 @@ import 'package:material_ui/material_ui.dart';
 /// Previews and immediately saves changes to the application font size.
 class FontSizeView extends StatelessWidget {
   /// Creates the font-size adjustment view.
-  const FontSizeView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class FontSizeView extends StatelessWidget {
 }
 
 class _FontSizeControl extends StatelessWidget {
-  const _FontSizeControl({required this.state});
+  const new({required this.state});
 
   final AppearanceState state;
 
@@ -111,9 +111,7 @@ class _FontSizeControl extends StatelessWidget {
                                 unawaited(
                                   context
                                       .read<AppearanceCubit>()
-                                      .updateFontSize(
-                                        value,
-                                      ),
+                                      .updateFontSize(value),
                                 );
                               },
                       ),

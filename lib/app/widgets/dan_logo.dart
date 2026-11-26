@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 /// Theme-aware vector rendering of the Dan sunrise mark.
 class DanLogo extends StatelessWidget {
   /// Creates a Dan logo.
-  const DanLogo({
+  const new({
     required this.color,
     required this.semanticLabel,
     this.size = 96,
@@ -33,7 +33,7 @@ class DanLogo extends StatelessWidget {
 }
 
 class _DanLogoPainter extends CustomPainter {
-  const _DanLogoPainter(this.color);
+  const new(this.color);
 
   final Color color;
 
@@ -54,11 +54,7 @@ class _DanLogoPainter extends CustomPainter {
       ..clipPath(
         Path()..addOval(Rect.fromCircle(center: center, radius: radius)),
       )
-      ..drawLine(
-        Offset(0, side * 0.62),
-        Offset(size.width, side * 0.62),
-        paint,
-      )
+      ..drawLine(Offset(0, side * 0.62), Offset(size.width, side * 0.62), paint)
       ..restore();
   }
 

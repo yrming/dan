@@ -23,9 +23,5 @@ const _status = Status(
   id: 'status-a',
   text: 'hello',
   createdAt: 'Tue Jul 28 00:00:00 +0000 2026',
-  author: StatusAuthor(
-    id: 'user-a',
-    name: 'User A',
-    screenName: 'user_a',
-  ),
+  author: StatusAuthor(id: 'user-a', name: 'User A', screenName: 'user_a'),
 );

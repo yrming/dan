@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Displays the shared illustration used for empty content.
 class AppEmptyView extends StatelessWidget {
   /// Creates an empty view with an optional accessible description.
-  const AppEmptyView({this.semanticLabel, super.key});
+  const new({this.semanticLabel, super.key});
 
   /// Description announced by screen readers.
   final String? semanticLabel;

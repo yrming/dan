@@ -16,7 +16,7 @@ const xStatusPhotoBorderRadius = 16.0;
 /// Builds the X-style width-filling single-image status photo presentation.
 class XStatusPhoto extends StatelessWidget {
   /// Creates an X-style status photo presentation.
-  const XStatusPhoto({
+  const new({
     required this.sourceImageSize,
     required this.backgroundColor,
     required this.imageBuilder,
@@ -63,10 +63,7 @@ class XStatusPhoto extends StatelessWidget {
               borderRadius: BorderRadius.circular(xStatusPhotoBorderRadius),
             ),
             foregroundDecoration: BoxDecoration(
-              border: Border.all(
-                color: context.appColors.divider,
-                width: 0.5,
-              ),
+              border: Border.all(color: context.appColors.divider, width: 0.5),
               borderRadius: BorderRadius.circular(xStatusPhotoBorderRadius),
             ),
             child: SizedBox.expand(child: image),

@@ -1,11 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 class DoubleTapListener extends StatefulWidget {
-  const DoubleTapListener({
-    required this.onDoubleTap,
-    required this.child,
-    super.key,
-  });
+  const new({required this.onDoubleTap, required this.child, super.key});
 
   final VoidCallback onDoubleTap;
   final Widget child;
@@ -52,11 +48,7 @@ class ScrollToTopController {
 
 /// Makes the current status list available to an app bar.
 class ScrollToTopScope extends InheritedWidget {
-  const ScrollToTopScope({
-    required this.controller,
-    required super.child,
-    super.key,
-  });
+  const new({required this.controller, required super.child, super.key});
 
   final ScrollToTopController controller;
 

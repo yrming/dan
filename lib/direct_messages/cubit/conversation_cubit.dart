@@ -5,7 +5,7 @@ import 'package:direct_message_repository/direct_message_repository.dart';
 /// Loads the messages exchanged with one peer account.
 class ConversationCubit extends Cubit<ConversationState> {
   /// Creates a conversation cubit.
-  ConversationCubit({
+  new({
     required this._directMessageRepository,
     required this._userId,
     required this._activeAccountId,
@@ -145,9 +145,7 @@ class ConversationCubit extends Cubit<ConversationState> {
       return;
     }
 
-    emit(
-      state.copyWith(deletionStatus: ConversationDeletionStatus.inProgress),
-    );
+    emit(state.copyWith(deletionStatus: ConversationDeletionStatus.inProgress));
     try {
       await _directMessageRepository.deleteMessage(messageId);
       emit(

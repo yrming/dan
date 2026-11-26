@@ -14,11 +14,7 @@ void main() {
       ) async {
         await tester.pumpApp(
           const Center(
-            child: UserAvatar(
-              imageUrl: null,
-              semanticLabel: 'Alice',
-              size: 40,
-            ),
+            child: UserAvatar(imageUrl: null, semanticLabel: 'Alice', size: 40),
           ),
         );
         final context = tester.element(find.byType(UserAvatar));
@@ -40,10 +36,7 @@ void main() {
           ),
           findsNothing,
         );
-        expect(
-          tester.getSize(find.byType(ClipOval)),
-          const Size.square(40),
-        );
+        expect(tester.getSize(find.byType(ClipOval)), const Size.square(40));
       });
 
       testWidgets('uses a disk-cached image sized for the device pixel ratio', (
@@ -131,17 +124,11 @@ void main() {
         final semanticsHandle = tester.ensureSemantics();
         await tester.pumpApp(
           const Center(
-            child: UserAvatar(
-              imageUrl: null,
-              semanticLabel: 'Alice',
-              size: 40,
-            ),
+            child: UserAvatar(imageUrl: null, semanticLabel: 'Alice', size: 40),
           ),
         );
 
-        final semantics = tester.getSemantics(
-          find.bySemanticsLabel('Alice'),
-        );
+        final semantics = tester.getSemantics(find.bySemanticsLabel('Alice'));
 
         expect(semantics.label, 'Alice');
         expect(semantics.flagsCollection.isImage, isTrue);

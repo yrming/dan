@@ -20,7 +20,7 @@ import 'package:user_repository/user_repository.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 void main() {
   group(StatusListItem, () {
@@ -58,23 +58,20 @@ void main() {
           GoRoute(
             name: AppRouteName.statusDetail,
             path: AppRoutePath.statusDetail,
-            builder: (_, state) => Text(
-              'status-${state.pathParameters['statusId']}',
-            ),
+            builder: (_, state) =>
+                Text('status-${state.pathParameters['statusId']}'),
           ),
           GoRoute(
             name: AppRouteName.statusImageViewer,
             path: AppRoutePath.statusImageViewer,
-            builder: (_, state) => Text(
-              'image-${state.uri.queryParameters['url']}',
-            ),
+            builder: (_, state) =>
+                Text('image-${state.uri.queryParameters['url']}'),
           ),
           GoRoute(
             name: AppRouteName.userProfile,
             path: AppRoutePath.userProfile,
-            builder: (_, state) => Text(
-              'profile-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('profile-${state.pathParameters['userId']}'),
           ),
         ],
       );
@@ -104,9 +101,7 @@ void main() {
       },
     );
 
-    testWidgets('uses the small photo style when selected', (
-      tester,
-    ) async {
+    testWidgets('uses the small photo style when selected', (tester) async {
       await pumpStatusListItem(
         tester,
         appearance: const AppearanceSettings(
@@ -151,10 +146,7 @@ void main() {
       expect(find.byKey(const Key('status-action-divider-0')), findsOneWidget);
       expect(find.byKey(const Key('status-action-divider-1')), findsOneWidget);
       expect(find.text(context.l10n.statusActionReplyLabel), findsOneWidget);
-      expect(
-        find.text(context.l10n.statusActionFavoriteLabel),
-        findsOneWidget,
-      );
+      expect(find.text(context.l10n.statusActionFavoriteLabel), findsOneWidget);
       expect(find.text(context.l10n.statusActionRepostLabel), findsOneWidget);
       expect(find.byIcon(RemixIcons.message_2_line), findsOneWidget);
       expect(find.byIcon(RemixIcons.star_line), findsOneWidget);
@@ -178,10 +170,7 @@ void main() {
     testWidgets('adds a destructive delete group for a self status', (
       tester,
     ) async {
-      await pumpStatusListItem(
-        tester,
-        status: _status.copyWith(isSelf: true),
-      );
+      await pumpStatusListItem(tester, status: _status.copyWith(isSelf: true));
       final context = tester.element(find.byType(StatusActionButton));
 
       await tester.ensureVisible(find.byType(StatusActionButton));
@@ -208,10 +197,7 @@ void main() {
     });
 
     testWidgets('hides reply for a self status', (tester) async {
-      await pumpStatusListItem(
-        tester,
-        status: _status.copyWith(isSelf: true),
-      );
+      await pumpStatusListItem(tester, status: _status.copyWith(isSelf: true));
       final context = tester.element(find.byType(StatusActionButton));
       await tester.ensureVisible(find.byType(StatusActionButton));
       await tester.pump();
@@ -387,14 +373,10 @@ void main() {
       await tester.tap(find.text(_status.author.name));
       await tester.pumpTransition();
 
-      expect(
-        router.state.uri.path,
-        '/${_status.author.id}',
-      );
-      expect(
-        router.state.uri.queryParameters,
-        const {'presentation': 'pushed'},
-      );
+      expect(router.state.uri.path, '/${_status.author.id}');
+      expect(router.state.uri.queryParameters, const {
+        'presentation': 'pushed',
+      });
       expect(find.text('profile-${_status.author.id}'), findsOneWidget);
       verify(
         () => userRepository.cacheUser(
@@ -473,10 +455,7 @@ void main() {
       await tester.pumpTransition();
 
       expect(router.state.uri.path, AppRoutePath.statusImageViewer);
-      expect(
-        find.text('image-${_status.photo!.viewerUrl}'),
-        findsOneWidget,
-      );
+      expect(find.text('image-${_status.photo!.viewerUrl}'), findsOneWidget);
     });
   });
 }

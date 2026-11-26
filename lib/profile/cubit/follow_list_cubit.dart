@@ -5,7 +5,7 @@ import 'package:user_repository/user_repository.dart';
 enum FollowListAction { follow, unfollow, followBack }
 
 class FollowListState extends Equatable {
-  FollowListState({
+  new({
     List<UserProfile> users = const [],
     this.loading = true,
     this.error = false,
@@ -84,7 +84,7 @@ class FollowListState extends Equatable {
 }
 
 class FollowListCubit extends Cubit<FollowListState> {
-  FollowListCubit({
+  new({
     required this._repository,
     required this._userId,
     required this._followers,

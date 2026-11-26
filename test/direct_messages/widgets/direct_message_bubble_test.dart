@@ -155,10 +155,7 @@ void main() {
         bubbleColors,
         contains(AppColors.danLight.directMessageIncomingBubble),
       );
-      expect(
-        bubbleColors,
-        contains(AppColors.danLight.wechatGreen),
-      );
+      expect(bubbleColors, contains(AppColors.danLight.wechatGreen));
 
       final textWidgets = tester.widgetList<Text>(find.byType(Text)).toList();
       expect(
@@ -172,10 +169,7 @@ void main() {
       final linkSpan = ((textWidgets[1].textSpan! as TextSpan).children!)
           .cast<TextSpan>()
           .singleWhere((span) => span.text == message.text);
-      expect(
-        linkSpan.style!.color,
-        AppColors.danLight.directMessageLinkText,
-      );
+      expect(linkSpan.style!.color, AppColors.danLight.directMessageLinkText);
     });
 
     testWidgets('uses the dark theme direct-message colors', (tester) async {
@@ -215,10 +209,7 @@ void main() {
         bubbleColors,
         contains(AppColors.danDark.directMessageIncomingBubble),
       );
-      expect(
-        bubbleColors,
-        contains(AppColors.danDark.wechatGreen),
-      );
+      expect(bubbleColors, contains(AppColors.danDark.wechatGreen));
 
       final textWidgets = tester.widgetList<Text>(find.byType(Text)).toList();
       expect(
@@ -232,10 +223,7 @@ void main() {
       final linkSpan = ((textWidgets[1].textSpan! as TextSpan).children!)
           .cast<TextSpan>()
           .singleWhere((span) => span.text == message.text);
-      expect(
-        linkSpan.style!.color,
-        AppColors.danDark.directMessageLinkText,
-      );
+      expect(linkSpan.style!.color, AppColors.danDark.directMessageLinkText);
     });
   });
 }

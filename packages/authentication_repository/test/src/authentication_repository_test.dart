@@ -55,15 +55,15 @@ void main() {
       when(
         () => sessionStorage.readAccounts(),
       ).thenAnswer((_) async => accounts);
-      when(() => sessionStorage.readActiveAccountId()).thenAnswer(
-        (_) async => _accountA.id,
-      );
-      when(() => sessionStorage.readSession(_accountA.id)).thenAnswer(
-        (_) async => _sessionA,
-      );
-      when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-        (_) async => _fanfouUserA,
-      );
+      when(
+        () => sessionStorage.readActiveAccountId(),
+      ).thenAnswer((_) async => _accountA.id);
+      when(
+        () => sessionStorage.readSession(_accountA.id),
+      ).thenAnswer((_) async => _sessionA);
+      when(
+        () => accountApi.verifyCredentials(format: 'html'),
+      ).thenAnswer((_) async => _fanfouUserA);
       when(
         () => sessionStorage.setActiveAccountId(_accountA.id),
       ).thenAnswer((_) async {});
@@ -89,14 +89,13 @@ void main() {
         ),
       ).thenReturn(_authorizationUri.toString());
 
-      return subject.beginOAuthAuthorization(callbackUri: _oauthCallbackUri);
+      return await subject.beginOAuthAuthorization(
+        callbackUri: _oauthCallbackUri,
+      );
     }
 
     test('starts with an unknown empty authentication snapshot', () {
-      expect(
-        subject.currentAuthentication,
-        AuthenticationSnapshot.unknown(),
-      );
+      expect(subject.currentAuthentication, AuthenticationSnapshot.unknown());
     });
 
     group('createClientForActiveAccount', () {
@@ -267,9 +266,9 @@ void main() {
     group('restoreAccounts', () {
       test('emits unauthenticated when no stored accounts exist', () async {
         when(() => sessionStorage.readAccounts()).thenAnswer((_) async => []);
-        when(() => sessionStorage.readActiveAccountId()).thenAnswer(
-          (_) async => null,
-        );
+        when(
+          () => sessionStorage.readActiveAccountId(),
+        ).thenAnswer((_) async => null);
         when(
           () => sessionStorage.setActiveAccountId(null),
         ).thenAnswer((_) async {});
@@ -284,18 +283,18 @@ void main() {
       test(
         'restores the previously active account from multiple accounts',
         () async {
-          when(() => sessionStorage.readAccounts()).thenAnswer(
-            (_) async => [_accountA, _accountB],
-          );
-          when(() => sessionStorage.readActiveAccountId()).thenAnswer(
-            (_) async => _accountB.id,
-          );
-          when(() => sessionStorage.readSession(_accountB.id)).thenAnswer(
-            (_) async => _sessionB,
-          );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-            (_) async => _fanfouUserB,
-          );
+          when(
+            () => sessionStorage.readAccounts(),
+          ).thenAnswer((_) async => [_accountA, _accountB]);
+          when(
+            () => sessionStorage.readActiveAccountId(),
+          ).thenAnswer((_) async => _accountB.id);
+          when(
+            () => sessionStorage.readSession(_accountB.id),
+          ).thenAnswer((_) async => _sessionB);
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenAnswer((_) async => _fanfouUserB);
           when(
             () => sessionStorage.setActiveAccountId(_accountB.id),
           ).thenAnswer((_) async {});
@@ -319,27 +318,27 @@ void main() {
       test(
         'removes a rejected active account and falls back to the next one',
         () async {
-          when(() => sessionStorage.readAccounts()).thenAnswer(
-            (_) async => [_accountA, _accountB],
-          );
-          when(() => sessionStorage.readActiveAccountId()).thenAnswer(
-            (_) async => _accountA.id,
-          );
-          when(() => sessionStorage.readSession(_accountA.id)).thenAnswer(
-            (_) async => _sessionA,
-          );
+          when(
+            () => sessionStorage.readAccounts(),
+          ).thenAnswer((_) async => [_accountA, _accountB]);
+          when(
+            () => sessionStorage.readActiveAccountId(),
+          ).thenAnswer((_) async => _accountA.id);
+          when(
+            () => sessionStorage.readSession(_accountA.id),
+          ).thenAnswer((_) async => _sessionA);
           when(() => accountApi.verifyCredentials(format: 'html')).thenThrow(
             fanfou.FanfouApiException(401, 'sensitive response body'),
           );
-          when(() => sessionStorage.deleteAccount(_accountA.id)).thenAnswer(
-            (_) async {},
-          );
-          when(() => sessionStorage.readSession(_accountB.id)).thenAnswer(
-            (_) async => _sessionB,
-          );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-            (_) async => _fanfouUserB,
-          );
+          when(
+            () => sessionStorage.deleteAccount(_accountA.id),
+          ).thenAnswer((_) async {});
+          when(
+            () => sessionStorage.readSession(_accountB.id),
+          ).thenAnswer((_) async => _sessionB);
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenAnswer((_) async => _fanfouUserB);
           when(
             () => sessionStorage.setActiveAccountId(_accountB.id),
           ).thenAnswer((_) async {});
@@ -356,15 +355,15 @@ void main() {
       test(
         'preserves every account when active account verification is retryable',
         () async {
-          when(() => sessionStorage.readAccounts()).thenAnswer(
-            (_) async => [_accountA, _accountB],
-          );
-          when(() => sessionStorage.readActiveAccountId()).thenAnswer(
-            (_) async => _accountA.id,
-          );
-          when(() => sessionStorage.readSession(_accountA.id)).thenAnswer(
-            (_) async => _sessionA,
-          );
+          when(
+            () => sessionStorage.readAccounts(),
+          ).thenAnswer((_) async => [_accountA, _accountB]);
+          when(
+            () => sessionStorage.readActiveAccountId(),
+          ).thenAnswer((_) async => _accountA.id);
+          when(
+            () => sessionStorage.readSession(_accountA.id),
+          ).thenAnswer((_) async => _sessionA);
           when(() => accountApi.verifyCredentials(format: 'html')).thenThrow(
             fanfou.FanfouApiException(503, 'sensitive response body'),
           );
@@ -419,9 +418,9 @@ void main() {
             'oauth_token_secret': _sessionB.tokenSecret,
           },
         );
-        when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-          (_) async => _fanfouUserB,
-        );
+        when(
+          () => accountApi.verifyCredentials(format: 'html'),
+        ).thenAnswer((_) async => _fanfouUserB);
         when(
           () => sessionStorage.upsertAccount(
             account: any(named: 'account'),
@@ -492,9 +491,9 @@ void main() {
               'oauth_token_secret': 'updated-secret',
             },
           );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-            (_) async => updatedFanfouUser,
-          );
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenAnswer((_) async => updatedFanfouUser);
           when(
             () => sessionStorage.upsertAccount(
               account: any(named: 'account'),
@@ -566,9 +565,9 @@ void main() {
               'oauth_token_secret': _sessionB.tokenSecret,
             },
           );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-            (_) async => _fanfouUserB,
-          );
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenAnswer((_) async => _fanfouUserB);
           when(
             () => sessionStorage.upsertAccount(
               account: any(named: 'account'),
@@ -610,17 +609,15 @@ void main() {
         'completes OAuth when the callback does not include a verifier',
         () async {
           await beginOAuth();
-          when(
-            () => oauthClient.getAccessToken(_requestToken),
-          ).thenAnswer(
+          when(() => oauthClient.getAccessToken(_requestToken)).thenAnswer(
             (_) async => {
               'oauth_token': _sessionB.token,
               'oauth_token_secret': _sessionB.tokenSecret,
             },
           );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-            (_) async => _fanfouUserB,
-          );
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenAnswer((_) async => _fanfouUserB);
           when(
             () => sessionStorage.upsertAccount(
               account: any(named: 'account'),
@@ -639,9 +636,7 @@ void main() {
 
           expect(result, _accountB);
           expect(subject.currentAuthentication.activeAccount, _accountB);
-          verify(
-            () => oauthClient.getAccessToken(_requestToken),
-          ).called(1);
+          verify(() => oauthClient.getAccessToken(_requestToken)).called(1);
           verify(
             () => sessionStorage.upsertAccount(
               account: _accountB,
@@ -693,9 +688,7 @@ void main() {
 
         await expectLater(
           subject.completeOAuthAuthorization(
-            Uri.parse(
-              'dev.yrm.dan://oauth/callback?denied=$_requestToken',
-            ),
+            Uri.parse('dev.yrm.dan://oauth/callback?denied=$_requestToken'),
           ),
           throwsA(isA<OAuthAuthorizationDeniedFailure>()),
         );
@@ -785,12 +778,12 @@ void main() {
     group('switchAccount', () {
       test('verifies and activates the selected account', () async {
         await restoreAccountA(accounts: const [_accountA, _accountB]);
-        when(() => sessionStorage.readSession(_accountB.id)).thenAnswer(
-          (_) async => _sessionB,
-        );
-        when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-          (_) async => _fanfouUserB,
-        );
+        when(
+          () => sessionStorage.readSession(_accountB.id),
+        ).thenAnswer((_) async => _sessionB);
+        when(
+          () => accountApi.verifyCredentials(format: 'html'),
+        ).thenAnswer((_) async => _fanfouUserB);
         when(
           () => sessionStorage.setActiveAccountId(_accountB.id),
         ).thenAnswer((_) async {});
@@ -799,10 +792,10 @@ void main() {
 
         expect(result, _accountB);
         expect(subject.currentAuthentication.activeAccount, _accountB);
-        expect(
-          subject.currentAuthentication.accounts,
-          const [_accountA, _accountB],
-        );
+        expect(subject.currentAuthentication.accounts, const [
+          _accountA,
+          _accountB,
+        ]);
         expect(createdClientSessions, const [_sessionA, _sessionB]);
       });
 
@@ -810,15 +803,15 @@ void main() {
         'removes only the selected account when its session is rejected',
         () async {
           await restoreAccountA(accounts: const [_accountA, _accountB]);
-          when(() => sessionStorage.readSession(_accountB.id)).thenAnswer(
-            (_) async => _sessionB,
-          );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenThrow(
-            fanfou.FanfouApiException(401, 'expired'),
-          );
-          when(() => sessionStorage.deleteAccount(_accountB.id)).thenAnswer(
-            (_) async {},
-          );
+          when(
+            () => sessionStorage.readSession(_accountB.id),
+          ).thenAnswer((_) async => _sessionB);
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenThrow(fanfou.FanfouApiException(401, 'expired'));
+          when(
+            () => sessionStorage.deleteAccount(_accountB.id),
+          ).thenAnswer((_) async {});
 
           await expectLater(
             subject.switchAccount(_accountB.id),
@@ -847,9 +840,9 @@ void main() {
         'removes an inactive account without changing the active account',
         () async {
           await restoreAccountA(accounts: const [_accountA, _accountB]);
-          when(() => sessionStorage.deleteAccount(_accountB.id)).thenAnswer(
-            (_) async {},
-          );
+          when(
+            () => sessionStorage.deleteAccount(_accountB.id),
+          ).thenAnswer((_) async {});
 
           await subject.removeAccount(_accountB.id);
 
@@ -862,15 +855,15 @@ void main() {
         'activates the next account after removing the active account',
         () async {
           await restoreAccountA(accounts: const [_accountA, _accountB]);
-          when(() => sessionStorage.deleteAccount(_accountA.id)).thenAnswer(
-            (_) async {},
-          );
-          when(() => sessionStorage.readSession(_accountB.id)).thenAnswer(
-            (_) async => _sessionB,
-          );
-          when(() => accountApi.verifyCredentials(format: 'html')).thenAnswer(
-            (_) async => _fanfouUserB,
-          );
+          when(
+            () => sessionStorage.deleteAccount(_accountA.id),
+          ).thenAnswer((_) async {});
+          when(
+            () => sessionStorage.readSession(_accountB.id),
+          ).thenAnswer((_) async => _sessionB);
+          when(
+            () => accountApi.verifyCredentials(format: 'html'),
+          ).thenAnswer((_) async => _fanfouUserB);
           when(
             () => sessionStorage.setActiveAccountId(_accountB.id),
           ).thenAnswer((_) async {});
@@ -884,9 +877,9 @@ void main() {
 
       test('emits unauthenticated after removing the only account', () async {
         await restoreAccountA();
-        when(() => sessionStorage.deleteAccount(_accountA.id)).thenAnswer(
-          (_) async {},
-        );
+        when(
+          () => sessionStorage.deleteAccount(_accountA.id),
+        ).thenAnswer((_) async {});
 
         await subject.removeAccount(_accountA.id);
 

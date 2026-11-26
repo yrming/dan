@@ -9,20 +9,15 @@ part 'login_state.dart';
 /// Coordinates browser-based Fanfou login.
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   /// Creates a login bloc backed by [authenticationRepository].
-  factory LoginBloc({
+  factory({
     required AuthenticationRepository authenticationRepository,
     required OAuthAuthorizationService oauthAuthorizationService,
   }) {
-    return LoginBloc._(
-      authenticationRepository,
-      oauthAuthorizationService,
-    );
+    return LoginBloc._(authenticationRepository, oauthAuthorizationService);
   }
 
-  LoginBloc._(
-    this._authenticationRepository,
-    this._oauthAuthorizationService,
-  ) : super(const LoginState()) {
+  new _(this._authenticationRepository, this._oauthAuthorizationService)
+    : super(const LoginState()) {
     on<LoginOAuthRequested>(_onOAuthRequested);
   }
 

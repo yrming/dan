@@ -8,7 +8,7 @@ import 'package:material_ui/material_ui.dart';
 /// Route boundary that provides the login business logic.
 class LoginPage extends StatelessWidget {
   /// Creates a login page.
-  const LoginPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

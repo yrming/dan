@@ -44,15 +44,9 @@ void main() {
         expect(requestedAlignment, Alignment.center);
         expect(tester.getSize(frameFinder), const Size(200, 150));
         expect(frame.clipBehavior, Clip.antiAlias);
-        expect(
-          decoration.borderRadius,
-          BorderRadius.circular(8),
-        );
+        expect(decoration.borderRadius, BorderRadius.circular(8));
         expect(decoration.border, isNull);
-        expect(
-          foregroundDecoration.borderRadius,
-          BorderRadius.circular(8),
-        );
+        expect(foregroundDecoration.borderRadius, BorderRadius.circular(8));
         final border = foregroundDecoration.border! as Border;
         expect(border.top.color, AppColors.danLight.divider);
         expect(border.top.width, 0.5);
@@ -62,36 +56,28 @@ void main() {
     group(wechatStatusPhotoDisplaySize, () {
       test('fits a landscape image proportionally inside 200 by 200', () {
         expect(
-          wechatStatusPhotoDisplaySize(
-            imageSize: const Size(1200, 900),
-          ),
+          wechatStatusPhotoDisplaySize(imageSize: const Size(1200, 900)),
           const Size(200, 150),
         );
       });
 
       test('fits a portrait image proportionally inside 200 by 200', () {
         expect(
-          wechatStatusPhotoDisplaySize(
-            imageSize: const Size(900, 1200),
-          ),
+          wechatStatusPhotoDisplaySize(imageSize: const Size(900, 1200)),
           const Size(150, 200),
         );
       });
 
       test('uses the 3 to 1 crop bound for an extra-wide image', () {
         expect(
-          wechatStatusPhotoDisplaySize(
-            imageSize: const Size(4000, 500),
-          ),
+          wechatStatusPhotoDisplaySize(imageSize: const Size(4000, 500)),
           const Size(200, 70),
         );
       });
 
       test('uses the 1 to 3 crop bound for an extra-tall image', () {
         expect(
-          wechatStatusPhotoDisplaySize(
-            imageSize: const Size(500, 4000),
-          ),
+          wechatStatusPhotoDisplaySize(imageSize: const Size(500, 4000)),
           const Size(70, 200),
         );
       });

@@ -5,17 +5,13 @@ import 'package:material_ui/material_ui.dart';
 @immutable
 final class AppStyle extends ThemeExtension<AppStyle> {
   /// Creates application style tokens.
-  const AppStyle({
-    required this.statusPhotoStyle,
-  });
+  const new({required this.statusPhotoStyle});
 
   /// Current user-selected status photo layout.
   final StatusPhotoStyle statusPhotoStyle;
 
   @override
-  AppStyle copyWith({
-    StatusPhotoStyle? statusPhotoStyle,
-  }) {
+  AppStyle copyWith({StatusPhotoStyle? statusPhotoStyle}) {
     return AppStyle(
       statusPhotoStyle: statusPhotoStyle ?? this.statusPhotoStyle,
     );

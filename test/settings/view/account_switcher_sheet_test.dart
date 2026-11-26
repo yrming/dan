@@ -14,7 +14,7 @@ import '../../helpers/helpers.dart';
 
 class _MockAuthenticationBloc
     extends MockBloc<AuthenticationEvent, AuthenticationState>
-    implements AuthenticationBloc {}
+    implements AuthenticationBloc;
 
 void main() {
   group('showAccountSwitcherSheet', () {

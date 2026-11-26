@@ -19,7 +19,7 @@ import 'package:status_repository/status_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 class App extends StatelessWidget {
-  const App({
+  const new({
     required this.appearanceRepository,
     required this.authenticationRepository,
     required this.initialAppearanceSettings,
@@ -75,9 +75,8 @@ class App extends StatelessWidget {
             )..add(const AuthenticationSubscriptionRequested()),
           ),
           BlocProvider(
-            create: (_) => NotificationCountsCubit(
-              userRepository: userRepository,
-            ),
+            create: (_) =>
+                NotificationCountsCubit(userRepository: userRepository),
           ),
         ],
         child: const AppView(),
@@ -87,7 +86,7 @@ class App extends StatelessWidget {
 }
 
 class AppView extends StatefulWidget {
-  const AppView({super.key});
+  const new({super.key});
 
   @override
   State<AppView> createState() => _AppViewState();

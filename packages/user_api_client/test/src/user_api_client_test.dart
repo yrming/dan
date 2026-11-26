@@ -43,10 +43,7 @@ void main() {
         ).thenAnswer((_) async => true);
 
         expect(
-          await subject.isFollowing(
-            userId: 'peer',
-            targetUserId: 'account',
-          ),
+          await subject.isFollowing(userId: 'peer', targetUserId: 'account'),
           isTrue,
         );
         verify(
@@ -112,12 +109,12 @@ void main() {
           test(
             'extracts only error text from $body for following=$following',
             () async {
-              when(() => friendships.create('peer')).thenThrow(
-                fanfou.FanfouApiException(403, body),
-              );
-              when(() => friendships.destroy('peer')).thenThrow(
-                fanfou.FanfouApiException(403, body),
-              );
+              when(
+                () => friendships.create('peer'),
+              ).thenThrow(fanfou.FanfouApiException(403, body));
+              when(
+                () => friendships.destroy('peer'),
+              ).thenThrow(fanfou.FanfouApiException(403, body));
               await expectLater(
                 subject.setFollowing('peer', following: following),
                 throwsA(
@@ -199,9 +196,7 @@ void main() {
       test(
         'returns a typed $NotificationCountsResponse when the request succeeds',
         () async {
-          when(
-            () => accountApi.notification(),
-          ).thenAnswer(
+          when(() => accountApi.notification()).thenAnswer(
             (_) async => fanfou.NotificationCounts(
               mentions: 2,
               directMessages: 3,
@@ -241,46 +236,30 @@ void main() {
     group('getFriends', () {
       test('requests the specified user and page with the page size', () async {
         when(
-          () => usersApi.friends(
-            id: 'owner',
-            count: 60,
-            page: 2,
-            format: 'html',
-          ),
+          () =>
+              usersApi.friends(id: 'owner', count: 60, page: 2, format: 'html'),
         ).thenAnswer((_) async => [_user]);
         final users = await subject.getFriends('owner', page: 2);
         expect(users.single.id, _user.id);
         expect(users.single.avatarUrl, _user.profileImageUrlLarge);
         verify(
-          () => usersApi.friends(
-            id: 'owner',
-            count: 60,
-            page: 2,
-            format: 'html',
-          ),
+          () =>
+              usersApi.friends(id: 'owner', count: 60, page: 2, format: 'html'),
         ).called(1);
         verify(() => fanfouClient.close()).called(1);
       });
       test('returns an empty terminal page', () async {
         when(
-          () => usersApi.friends(
-            id: 'owner',
-            count: 60,
-            page: 3,
-            format: 'html',
-          ),
+          () =>
+              usersApi.friends(id: 'owner', count: 60, page: 3, format: 'html'),
         ).thenAnswer((_) async => []);
         expect(await subject.getFriends('owner', page: 3), isEmpty);
         verify(() => fanfouClient.close()).called(1);
       });
       test('sanitizes API errors and closes the client', () async {
         when(
-          () => usersApi.friends(
-            id: 'owner',
-            count: 60,
-            page: 2,
-            format: 'html',
-          ),
+          () =>
+              usersApi.friends(id: 'owner', count: 60, page: 2, format: 'html'),
         ).thenThrow(fanfou.FanfouApiException(503, 'private response'));
         await expectLater(
           subject.getFriends('owner', page: 2),

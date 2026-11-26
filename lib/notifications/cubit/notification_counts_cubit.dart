@@ -5,7 +5,7 @@ import 'package:user_repository/user_repository.dart';
 /// Loads unread notification counters for the active account.
 class NotificationCountsCubit extends Cubit<NotificationCountsState> {
   /// Creates a notification counter cubit.
-  NotificationCountsCubit({required this._userRepository})
+  new({required this._userRepository})
     : super(const NotificationCountsInitial());
 
   final UserRepository _userRepository;

@@ -13,11 +13,7 @@ import 'package:user_repository/user_repository.dart';
 /// Displays a user's following or followers list.
 class FollowListPage extends StatelessWidget {
   /// Creates a follow list page.
-  const FollowListPage({
-    required this.userId,
-    required this.followers,
-    super.key,
-  });
+  const new({required this.userId, required this.followers, super.key});
 
   final String userId;
   final bool followers;

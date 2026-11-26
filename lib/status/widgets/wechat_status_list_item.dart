@@ -10,7 +10,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 /// Displays a status using the WeChat-inspired list item layout.
 class WeChatStatusListItem extends StatelessWidget {
   /// Creates a WeChat-inspired status list item.
-  const WeChatStatusListItem({
+  const new({
     required this.status,
     required this.authorName,
     required this.onAuthorTap,
@@ -146,7 +146,7 @@ class WeChatStatusListItem extends StatelessWidget {
 }
 
 class _StatusPhoto extends StatelessWidget {
-  const _StatusPhoto({
+  const new({
     required this.style,
     required this.imageUrl,
     required this.semanticLabel,
@@ -180,7 +180,7 @@ class _StatusPhoto extends StatelessWidget {
 }
 
 class _WeChatStatusMeta extends StatelessWidget {
-  const _WeChatStatusMeta({
+  const new({
     required this.status,
     required this.showSource,
     required this.showAbsoluteTimestamp,
@@ -197,10 +197,7 @@ class _WeChatStatusMeta extends StatelessWidget {
     final sizing = context.appSizing;
     final timestamp = showAbsoluteTimestamp
         ? formatFanfouDateTime(status.createdAt)
-        : formatFanfouTimestamp(
-            status.createdAt,
-            compactCalendarDate: true,
-          );
+        : formatFanfouTimestamp(status.createdAt, compactCalendarDate: true);
     final source = showSource ? status.source : null;
     return Row(
       children: [

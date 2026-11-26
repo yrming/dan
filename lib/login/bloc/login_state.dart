@@ -30,10 +30,7 @@ enum LoginSubmissionStatus {
 /// Immutable state of browser-based Fanfou login.
 final class LoginState extends Equatable {
   /// Creates login state.
-  const LoginState({
-    this.status = LoginSubmissionStatus.initial,
-    this.errorMessage,
-  });
+  const new({this.status = LoginSubmissionStatus.initial, this.errorMessage});
 
   /// Current submission outcome.
   final LoginSubmissionStatus status;

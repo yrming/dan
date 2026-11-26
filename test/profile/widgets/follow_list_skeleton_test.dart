@@ -16,9 +16,7 @@ void main() {
           const MediaQuery(
             data: MediaQueryData(disableAnimations: true),
             child: Scaffold(
-              body: FollowListSkeleton(
-                semanticLabel: '正在加载用户列表',
-              ),
+              body: FollowListSkeleton(semanticLabel: '正在加载用户列表'),
             ),
           ),
           theme: dark ? AppTheme.dark() : AppTheme.light(),

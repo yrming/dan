@@ -5,7 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 /// Installed application metadata, loaded at the composition root.
 class AppBuildInfo {
   /// Creates metadata; empty values represent unavailable platform information.
-  const AppBuildInfo({this.version = '', this.buildNumber = ''});
+  const new({this.version = '', this.buildNumber = ''});
 
   /// User-facing release version.
   final String version;

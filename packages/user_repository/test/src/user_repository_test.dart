@@ -61,10 +61,7 @@ void main() {
         ).thenAnswer((_) async => true);
 
         expect(
-          await subject.isFollowing(
-            userId: 'peer',
-            targetUserId: 'account',
-          ),
+          await subject.isFollowing(userId: 'peer', targetUserId: 'account'),
           isTrue,
         );
         verify(
@@ -92,11 +89,7 @@ void main() {
         'forwards the requested state and invalidates the cached profile',
         () async {
           subject.cacheUser(
-            const UserProfile(
-              id: 'peer',
-              name: 'Peer',
-              screenName: 'peer',
-            ),
+            const UserProfile(id: 'peer', name: 'Peer', screenName: 'peer'),
           );
           when(
             () => userApiClient.setBlocked('peer', blocked: true),

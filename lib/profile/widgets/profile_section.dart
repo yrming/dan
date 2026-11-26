@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 /// Non-interactive grouped profile information.
 class ProfileSection extends StatelessWidget {
   /// Creates a grouped profile section.
-  const ProfileSection({required this.children, super.key});
+  const new({required this.children, super.key});
 
   /// Rows displayed by the section.
   final List<Widget> children;

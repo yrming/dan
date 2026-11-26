@@ -12,7 +12,7 @@ import 'package:status_repository/status_repository.dart';
 /// Mentions timeline page.
 class MentionsPage extends StatelessWidget {
   /// Creates a mentions page.
-  const MentionsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class MentionsPage extends StatelessWidget {
 /// `account/notification.json` follows a mentions-timeline request, so the
 /// counters are refreshed here instead of on tab activation itself.
 class _MentionsRefreshCoordinator extends StatefulWidget {
-  const _MentionsRefreshCoordinator({required this.child});
+  const new({required this.child});
 
   final Widget child;
 

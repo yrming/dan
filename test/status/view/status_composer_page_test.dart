@@ -20,7 +20,7 @@ import 'package:remixicon/remixicon.dart';
 import '../../helpers/helpers.dart';
 
 class _MockStatusComposerCubit extends MockCubit<StatusComposerState>
-    implements StatusComposerCubit {}
+    implements StatusComposerCubit;
 
 void main() {
   group(StatusComposerView, () {
@@ -29,9 +29,7 @@ void main() {
     setUp(() {
       statusComposerCubit = _MockStatusComposerCubit();
       when(() => statusComposerCubit.pickPhoto()).thenAnswer((_) async {});
-      when(
-        () => statusComposerCubit.publish(),
-      ).thenAnswer((_) async {});
+      when(() => statusComposerCubit.publish()).thenAnswer((_) async {});
     });
 
     Future<void> pumpView(
@@ -68,9 +66,7 @@ void main() {
       expect(find.byType(TextField), findsOneWidget);
       expect(
         tester
-            .widget<UserAvatar>(
-              find.byKey(const Key('status-composer-avatar')),
-            )
+            .widget<UserAvatar>(find.byKey(const Key('status-composer-avatar')))
             .imageUrl,
         isNull,
       );
@@ -137,9 +133,7 @@ void main() {
         for (final mode in StatusComposerMode.values) {
           testWidgets(
             'updates the counter and publish limit, $mode dark=$dark',
-            (
-              tester,
-            ) async {
+            (tester) async {
               final states = StreamController<StatusComposerState>();
               addTearDown(states.close);
               when(() => statusComposerCubit.contentChanged(any())).thenAnswer((
@@ -210,48 +204,45 @@ void main() {
         ('很长的正文' * 30, 16.0),
         ('第一行\n第二行', AppearanceSettings.maximumFontSize),
       ]) {
-        testWidgets(
-          'centers a single line and top-aligns multiple lines for '
-          '${multilineText.contains('\n') ? 'newlines' : 'wrapping'} '
-          'at font size $fontSize',
-          (tester) async {
-            tester.view.devicePixelRatio = 1;
-            tester.view.physicalSize = const Size(320, 800);
-            addTearDown(tester.view.reset);
-            await pumpView(
-              tester,
-              theme: AppTheme.light(
-                appearance: AppearanceSettings(fontSize: fontSize),
-              ),
-            );
+        testWidgets('centers a single line and top-aligns multiple lines for '
+            '${multilineText.contains('\n') ? 'newlines' : 'wrapping'} '
+            'at font size $fontSize', (tester) async {
+          tester.view.devicePixelRatio = 1;
+          tester.view.physicalSize = const Size(320, 800);
+          addTearDown(tester.view.reset);
+          await pumpView(
+            tester,
+            theme: AppTheme.light(
+              appearance: AppearanceSettings(fontSize: fontSize),
+            ),
+          );
 
-            final avatar = find.byKey(const Key('status-composer-avatar'));
-            final input = find.byType(TextField);
-            final editable = find.byElementPredicate(
-              (element) => element.renderObject is RenderEditable,
-            );
-            final avatarTop = tester.getTopLeft(avatar).dy;
-            expect(tester.getCenter(editable).dy, tester.getCenter(avatar).dy);
+          final avatar = find.byKey(const Key('status-composer-avatar'));
+          final input = find.byType(TextField);
+          final editable = find.byElementPredicate(
+            (element) => element.renderObject is RenderEditable,
+          );
+          final avatarTop = tester.getTopLeft(avatar).dy;
+          expect(tester.getCenter(editable).dy, tester.getCenter(avatar).dy);
 
-            await tester.enterText(input, '一行正文');
-            await tester.pump();
-            expect(tester.getCenter(editable).dy, tester.getCenter(avatar).dy);
+          await tester.enterText(input, '一行正文');
+          await tester.pump();
+          expect(tester.getCenter(editable).dy, tester.getCenter(avatar).dy);
 
-            await tester.enterText(input, multilineText);
-            await tester.pump();
-            expect(tester.getTopLeft(editable).dy, avatarTop);
-            expect(tester.getTopLeft(avatar).dy, avatarTop);
-            expect(
-              tester.getSize(editable).height,
-              greaterThan(tester.getSize(avatar).height),
-            );
+          await tester.enterText(input, multilineText);
+          await tester.pump();
+          expect(tester.getTopLeft(editable).dy, avatarTop);
+          expect(tester.getTopLeft(avatar).dy, avatarTop);
+          expect(
+            tester.getSize(editable).height,
+            greaterThan(tester.getSize(avatar).height),
+          );
 
-            await tester.enterText(input, '一行');
-            await tester.pump();
-            expect(tester.getCenter(editable).dy, tester.getCenter(avatar).dy);
-            expect(tester.takeException(), isNull);
-          },
-        );
+          await tester.enterText(input, '一行');
+          await tester.pump();
+          expect(tester.getCenter(editable).dy, tester.getCenter(avatar).dy);
+          expect(tester.takeException(), isNull);
+        });
       }
     });
 
@@ -448,9 +439,7 @@ void main() {
         );
       });
 
-      testWidgets('long pressing the photo opens no actions', (
-        tester,
-      ) async {
+      testWidgets('long pressing the photo opens no actions', (tester) async {
         await pumpView(tester, state: StatusComposerState(photo: photo));
         await tester.longPress(
           find.byKey(const Key('status-composer-photo-preview')),
@@ -485,9 +474,7 @@ void main() {
 
       testWidgets(
         'shows toolbar progress and restores the icon on cancellation',
-        (
-          tester,
-        ) async {
+        (tester) async {
           final states = StreamController<StatusComposerState>();
           addTearDown(states.close);
           await pumpView(tester, states: states.stream);
@@ -626,9 +613,7 @@ void main() {
       verify(() => statusComposerCubit.contentChanged('新的动态')).called(1);
     });
 
-    testWidgets('uses the theme primary color for the cursor', (
-      tester,
-    ) async {
+    testWidgets('uses the theme primary color for the cursor', (tester) async {
       for (final theme in [AppTheme.light(), AppTheme.dark()]) {
         await pumpView(tester, theme: theme);
         final context = tester.element(find.byType(TextField));
@@ -646,14 +631,9 @@ void main() {
     });
 
     testWidgets('submits a non-empty draft', (tester) async {
-      await pumpView(
-        tester,
-        state: const StatusComposerState(content: '新的动态'),
-      );
+      await pumpView(tester, state: const StatusComposerState(content: '新的动态'));
 
-      await tester.tap(
-        find.byKey(const Key('status-composer-publish')),
-      );
+      await tester.tap(find.byKey(const Key('status-composer-publish')));
       await tester.pump();
 
       verify(() => statusComposerCubit.publish()).called(1);
@@ -708,16 +688,11 @@ void main() {
       );
       expect(indicator.color, AppColors.wechatGreenForeground);
       expect(indicator.strokeCap, StrokeCap.round);
-      expect(
-        tester.getSize(indicatorFinder),
-        Size.square(sizing.scaled(16)),
-      );
+      expect(tester.getSize(indicatorFinder), Size.square(sizing.scaled(16)));
       expect(tester.widget<TextField>(find.byType(TextField)).enabled, isFalse);
       expect(
         tester
-            .widget<IconButton>(
-              find.byKey(const Key('status-composer-close')),
-            )
+            .widget<IconButton>(find.byKey(const Key('status-composer-close')))
             .onPressed,
         isNull,
       );

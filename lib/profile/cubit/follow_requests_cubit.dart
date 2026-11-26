@@ -5,7 +5,7 @@ import 'package:user_repository/user_repository.dart';
 enum FollowRequestAction { accept, ignore }
 
 class FollowRequestsState extends Equatable {
-  FollowRequestsState({
+  new({
     List<UserProfile> users = const [],
     this.loading = true,
     this.error = false,
@@ -81,8 +81,7 @@ class FollowRequestsState extends Equatable {
 }
 
 class FollowRequestsCubit extends Cubit<FollowRequestsState> {
-  FollowRequestsCubit({required this._repository})
-    : super(FollowRequestsState());
+  new({required this._repository}) : super(FollowRequestsState());
 
   final UserRepository _repository;
   int _nextPage = 1;

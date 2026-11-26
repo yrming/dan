@@ -16,7 +16,7 @@ const wechatStatusPhotoBorderRadius = 8.0;
 /// Builds the WeChat-style bounded single-image status photo presentation.
 class WeChatStatusPhoto extends StatelessWidget {
   /// Creates a WeChat-style status photo presentation.
-  const WeChatStatusPhoto({
+  const new({
     required this.sourceImageSize,
     required this.backgroundColor,
     required this.imageBuilder,
@@ -38,11 +38,7 @@ class WeChatStatusPhoto extends StatelessWidget {
     final displaySize = wechatStatusPhotoDisplaySize(
       imageSize: sourceImageSize,
     );
-    final image = imageBuilder(
-      displaySize,
-      BoxFit.cover,
-      Alignment.center,
-    );
+    final image = imageBuilder(displaySize, BoxFit.cover, Alignment.center);
 
     return Container(
       width: displaySize.width,
@@ -53,10 +49,7 @@ class WeChatStatusPhoto extends StatelessWidget {
         borderRadius: BorderRadius.circular(wechatStatusPhotoBorderRadius),
       ),
       foregroundDecoration: BoxDecoration(
-        border: Border.all(
-          color: context.appColors.divider,
-          width: 0.5,
-        ),
+        border: Border.all(color: context.appColors.divider, width: 0.5),
         borderRadius: BorderRadius.circular(wechatStatusPhotoBorderRadius),
       ),
       child: SizedBox.expand(child: image),
@@ -90,13 +83,7 @@ Size wechatStatusPhotoDisplaySize({required Size imageSize}) {
         );
 
   return Size(
-    size.width.clamp(
-      wechatStatusPhotoMinExtent,
-      wechatStatusPhotoMaxWidth,
-    ),
-    size.height.clamp(
-      wechatStatusPhotoMinExtent,
-      wechatStatusPhotoMaxHeight,
-    ),
+    size.width.clamp(wechatStatusPhotoMinExtent, wechatStatusPhotoMaxWidth),
+    size.height.clamp(wechatStatusPhotoMinExtent, wechatStatusPhotoMaxHeight),
   );
 }

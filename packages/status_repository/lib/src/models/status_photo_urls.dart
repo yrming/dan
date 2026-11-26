@@ -7,14 +7,11 @@ import 'package:equatable/equatable.dart';
 /// without depending on the external API field names.
 final class StatusPhotoUrls extends Equatable {
   /// Creates status photo URLs.
-  const StatusPhotoUrls({
-    this.thumbnailUrl,
-    this.imageUrl,
-    this.largeUrl,
-  }) : assert(
-         thumbnailUrl != null || imageUrl != null || largeUrl != null,
-         'At least one photo URL must be provided.',
-       );
+  const StatusPhotoUrls({this.thumbnailUrl, this.imageUrl, this.largeUrl})
+    : assert(
+        thumbnailUrl != null || imageUrl != null || largeUrl != null,
+        'At least one photo URL must be provided.',
+      );
 
   /// Thumbnail URL, usually best for compact list previews.
   final String? thumbnailUrl;

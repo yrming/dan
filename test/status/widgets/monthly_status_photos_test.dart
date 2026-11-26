@@ -114,9 +114,7 @@ void main() {
     group('navigation', () {
       testWidgets(
         'passes loaded photos in album order and swipes across months',
-        (
-          tester,
-        ) async {
+        (tester) async {
           final first = _photo('first', '2026-10-12');
           final last = _photo('last', '2026-09-12');
           final pendingImage = _PendingImageProvider();
@@ -208,10 +206,8 @@ void main() {
               pageBuilder: (_, state) => CustomTransitionPage<void>(
                 key: state.pageKey,
                 opaque: false,
-                transitionsBuilder: (_, animation, _, child) => FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
+                transitionsBuilder: (_, animation, _, child) =>
+                    FadeTransition(opacity: animation, child: child),
                 child: RepositoryProvider<StatusImageActionsService>(
                   create: (_) => _MockStatusImageActionsService(),
                   child: StatusImageViewerPage(
@@ -278,7 +274,7 @@ void main() {
           return image;
         });
         pendingImage.complete(decodedImage!);
-        addTearDown(() async => pendingImage.evict());
+        addTearDown(pendingImage.evict);
         await tester.pump();
 
         // Decoding during the flight must not paint the destination photo
@@ -293,10 +289,7 @@ void main() {
         await tester.pump();
         expect(fullImage, findsOneWidget);
         expect(flyingImage, findsNothing);
-        expect(
-          router.state.uri.queryParameters['heroTag'],
-          sourceHero.tag,
-        );
+        expect(router.state.uri.queryParameters['heroTag'], sourceHero.tag);
 
         expect(router.state.uri.path, '/status-image');
         expect(
@@ -411,7 +404,7 @@ repository.Status _photo(String id, String date) => repository.Status(
 );
 
 class _MockStatusImageActionsService extends Mock
-    implements StatusImageActionsService {}
+    implements StatusImageActionsService;
 
 class _PendingImageProvider extends ImageProvider<_PendingImageProvider> {
   final _image = Completer<ImageInfo>();

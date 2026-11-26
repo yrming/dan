@@ -10,7 +10,7 @@ import 'package:user_repository/user_repository.dart';
 /// Route boundary for the conversation with one peer account.
 class ConversationPage extends StatelessWidget {
   /// Creates the conversation page.
-  const ConversationPage({
+  const new({
     required this.userId,
     this.activeAccountId,
     this.activeAccountAvatarUrl,

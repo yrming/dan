@@ -40,7 +40,7 @@ enum ConversationDeletionStatus {
 /// States of the single conversation feature.
 sealed class ConversationState extends Equatable {
   /// Creates a conversation state.
-  const ConversationState({this.peerScreenName});
+  const new({this.peerScreenName});
 
   /// Screen name of the peer account, when it is already known.
   ///
@@ -55,19 +55,19 @@ sealed class ConversationState extends Equatable {
 /// Initial state before any load was requested.
 final class ConversationInitial extends ConversationState {
   /// Creates the initial conversation state.
-  const ConversationInitial({super.peerScreenName});
+  const new({super.peerScreenName});
 }
 
 /// A conversation load is in progress.
 final class ConversationLoadInProgress extends ConversationState {
   /// Creates the loading conversation state.
-  const ConversationLoadInProgress({super.peerScreenName});
+  const new({super.peerScreenName});
 }
 
 /// A conversation load succeeded.
 final class ConversationLoadSuccess extends ConversationState {
   /// Creates the successful conversation state.
-  const ConversationLoadSuccess({
+  const new({
     required this.messages,
     super.peerScreenName,
     this.hasMore = false,
@@ -139,7 +139,7 @@ final class ConversationLoadSuccess extends ConversationState {
 /// A conversation load failed.
 final class ConversationLoadFailure extends ConversationState {
   /// Creates the failed conversation state.
-  const ConversationLoadFailure({super.peerScreenName, this.message});
+  const new({super.peerScreenName, this.message});
 
   final String? message;
 

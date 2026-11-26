@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Displays animated placeholders matching direct-message conversations.
 class ConversationListSkeleton extends StatelessWidget {
   /// Creates a conversation-list skeleton.
-  const ConversationListSkeleton({
+  const new({
     required this.semanticLabel,
     this.itemCount = 8,
     this.shrinkWrap = false,
@@ -32,9 +32,8 @@ class ConversationListSkeleton extends StatelessWidget {
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: itemCount,
-        itemBuilder: (context, index) => _ConversationListSkeletonItem(
-          color: colors.skeletonBase,
-        ),
+        itemBuilder: (context, index) =>
+            _ConversationListSkeletonItem(color: colors.skeletonBase),
         separatorBuilder: (context, index) => const Divider(height: 1),
       ),
     );
@@ -50,7 +49,7 @@ abstract final class _ConversationSkeletonLayout {
 }
 
 class _ConversationListSkeletonItem extends StatelessWidget {
-  const _ConversationListSkeletonItem({required this.color});
+  const new({required this.color});
 
   final Color color;
 
@@ -103,17 +102,14 @@ class _ConversationListSkeletonItem extends StatelessWidget {
 }
 
 class _SkeletonShape extends StatelessWidget {
-  const _SkeletonShape._({
+  const new _({
     required this.color,
     required this.width,
     required this.height,
     required this.borderRadius,
   });
 
-  factory _SkeletonShape.circle({
-    required Color color,
-    required double diameter,
-  }) {
+  factory circle({required Color color, required double diameter}) {
     return _SkeletonShape._(
       color: color,
       width: diameter,
@@ -122,7 +118,7 @@ class _SkeletonShape extends StatelessWidget {
     );
   }
 
-  factory _SkeletonShape.rounded({
+  factory rounded({
     required Color color,
     required double width,
     required double height,

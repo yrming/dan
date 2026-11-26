@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// Loading placeholders matching the avatar, description and follow button.
 class FollowListSkeleton extends StatelessWidget {
-  const FollowListSkeleton({
+  const new({
     required this.semanticLabel,
     this.itemCount = 8,
     this.shrinkWrap = false,
@@ -78,7 +78,7 @@ class FollowListSkeleton extends StatelessWidget {
 }
 
 class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.height, this.width, this.radius = 4});
+  const new({required this.height, this.width, this.radius = 4});
 
   final double height;
   final double? width;

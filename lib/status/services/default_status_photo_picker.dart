@@ -6,7 +6,7 @@ import 'package:status_repository/status_repository.dart';
 /// Opens the system gallery without requesting full photo metadata.
 class DefaultStatusPhotoPicker implements StatusPhotoPicker {
   /// Creates a picker with an injectable platform implementation.
-  DefaultStatusPhotoPicker(this._imagePicker);
+  new(this._imagePicker);
 
   final ImagePicker _imagePicker;
 

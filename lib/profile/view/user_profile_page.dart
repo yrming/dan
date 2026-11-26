@@ -21,7 +21,7 @@ import 'package:user_repository/user_repository.dart';
 /// Shell route boundary for the active account profile.
 class MinePage extends StatelessWidget {
   /// Creates the active account profile page.
-  const MinePage({required this.activeAccount, super.key});
+  const new({required this.activeAccount, super.key});
 
   /// Currently authenticated account.
   final AuthenticatedAccount activeAccount;
@@ -43,10 +43,7 @@ class MinePage extends StatelessWidget {
         unawaited(cubit.load());
         return cubit;
       },
-      child: _UserProfileContent(
-        userId: activeAccount.id,
-        isCurrentUser: true,
-      ),
+      child: _UserProfileContent(userId: activeAccount.id, isCurrentUser: true),
     );
   }
 }
@@ -54,7 +51,7 @@ class MinePage extends StatelessWidget {
 /// Independent route boundary for any user's profile.
 class UserProfilePage extends StatelessWidget {
   /// Creates a user profile page.
-  const UserProfilePage({
+  const new({
     required this.userId,
     this.activeAccount,
     this.initialProfile,
@@ -99,10 +96,7 @@ class UserProfilePage extends StatelessWidget {
           userId: userId,
           toolbarHeight: context.appSizing.appBarToolbarHeight,
         ),
-        body: _UserProfileContent(
-          userId: userId,
-          isCurrentUser: isCurrentUser,
-        ),
+        body: _UserProfileContent(userId: userId, isCurrentUser: isCurrentUser),
       ),
     );
   }
@@ -110,7 +104,7 @@ class UserProfilePage extends StatelessWidget {
 
 class _UserProfileAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const _UserProfileAppBar({
+  const new({
     required this.isCurrentUser,
     required this.userId,
     required this.toolbarHeight,
@@ -135,16 +129,11 @@ class _UserProfileAppBar extends StatelessWidget
       title: null,
       toolbarHeight: toolbarHeight,
       showBottomDivider: false,
-      actionsPadding: const EdgeInsetsDirectional.only(
-        end: AppSpacing.xxs,
-      ),
+      actionsPadding: const EdgeInsetsDirectional.only(end: AppSpacing.xxs),
       actions: [
         IconButton(
           tooltip: context.l10n.userProfileSearchLabel,
-          icon: Icon(
-            RemixIcons.search_line,
-            color: context.appColors.textBase,
-          ),
+          icon: Icon(RemixIcons.search_line, color: context.appColors.textBase),
           onPressed: () => unawaited(
             context.pushNamed<void>(
               AppRouteName.search,
@@ -158,19 +147,13 @@ class _UserProfileAppBar extends StatelessWidget
         if (isCurrentUser) ...[
           IconButton(
             tooltip: context.l10n.directMessagesPageTitle,
-            icon: Icon(
-              RemixIcons.mail_line,
-              color: context.appColors.textBase,
-            ),
+            icon: Icon(RemixIcons.mail_line, color: context.appColors.textBase),
             onPressed: () => unawaited(openDirectMessageListRoute(context)),
           ),
         ] else ...[
           IconButton(
             tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
-            icon: Icon(
-              RemixIcons.more_line,
-              color: context.appColors.textBase,
-            ),
+            icon: Icon(RemixIcons.more_line, color: context.appColors.textBase),
             onPressed: () => unawaited(_showUserActions(context)),
           ),
         ],
@@ -211,10 +194,7 @@ Future<void> _showUserActions(BuildContext context) async {
 }
 
 class _UserProfileContent extends StatelessWidget {
-  const _UserProfileContent({
-    required this.userId,
-    required this.isCurrentUser,
-  });
+  const new({required this.userId, required this.isCurrentUser});
 
   final String userId;
   final bool isCurrentUser;

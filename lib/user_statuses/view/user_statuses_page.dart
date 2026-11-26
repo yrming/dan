@@ -11,11 +11,7 @@ import 'package:status_repository/status_repository.dart';
 /// Statuses posted by one user.
 class UserStatusesPage extends StatelessWidget {
   /// Creates a user statuses page.
-  const UserStatusesPage({
-    required this.userId,
-    this.profileItemCount,
-    super.key,
-  });
+  const new({required this.userId, this.profileItemCount, super.key});
 
   /// Identifier of the user whose statuses are displayed.
   final String userId;
@@ -50,9 +46,7 @@ class UserStatusesPage extends StatelessWidget {
             userId: userId,
             profileItemCount: profileItemCount,
           )..add(const StatusListInitialLoadRequested()),
-          child: const StatusList(
-            layout: StatusListLayout.moments,
-          ),
+          child: const StatusList(layout: StatusListLayout.moments),
         ),
       ),
     );

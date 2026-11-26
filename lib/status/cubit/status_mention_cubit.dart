@@ -4,7 +4,7 @@ import 'package:status_repository/status_repository.dart';
 
 /// Immutable results for the mention picker.
 final class StatusMentionState extends Equatable {
-  StatusMentionState({
+  new({
     this.query = '',
     List<StatusAuthor> users = const [],
     this.hasRecentUsers = false,
@@ -26,7 +26,7 @@ final class StatusMentionState extends Equatable {
 
 /// Suggests distinct authors from the latest messages mentioning this account.
 class StatusMentionCubit extends Cubit<StatusMentionState> {
-  StatusMentionCubit({required StatusRepository statusRepository})
+  new({required StatusRepository statusRepository})
     : _repository = statusRepository,
       super(StatusMentionState());
 

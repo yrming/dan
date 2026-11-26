@@ -29,9 +29,7 @@ void main() {
         );
 
         final button = find.byType(StatusActionButton);
-        final target = find.byKey(
-          const Key('wechat-status-action-hit-target'),
-        );
+        final target = find.byKey(const Key('wechat-status-action-hit-target'));
         final rect = tester.getRect(target);
         expect(tester.getSize(button), const Size(17, 3));
         expect(rect.size, const Size.square(40));
@@ -76,9 +74,7 @@ void main() {
           ),
         );
 
-        final target = find.byKey(
-          const Key('wechat-status-action-hit-target'),
-        );
+        final target = find.byKey(const Key('wechat-status-action-hit-target'));
         await tester.drag(target, const Offset(0, -50));
         await tester.pumpAndSettle();
         expect(controller.offset, greaterThan(0));
@@ -104,9 +100,7 @@ void main() {
             body: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => taps++,
-              child: const Center(
-                child: StatusActionButton(onPressed: null),
-              ),
+              child: const Center(child: StatusActionButton(onPressed: null)),
             ),
           ),
         );

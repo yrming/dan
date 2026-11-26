@@ -60,11 +60,8 @@ void main() {
             },
           );
           addTearDown(
-            () =>
-                tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-                  channel,
-                  null,
-                ),
+            () => tester.binding.defaultBinaryMessenger
+                .setMockMethodCallHandler(channel, null),
           );
 
           rootBundle.evict('assets/$asset.md');

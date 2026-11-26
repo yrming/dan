@@ -19,9 +19,11 @@ void main() {
 
     test('formats a same-year date with digit-Chinese spacing', () {
       final now = DateTime.now();
-      final created = DateTime(now.year, now.month, now.day).subtract(
-        const Duration(days: 10),
-      );
+      final created = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(const Duration(days: 10));
       final source = created.toIso8601String();
       expect(
         formatFanfouTimestamp(source, compactCalendarDate: true),

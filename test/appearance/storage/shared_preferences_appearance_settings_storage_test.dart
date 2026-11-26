@@ -8,7 +8,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _MockSharedPreferencesAsync extends Mock
-    implements SharedPreferencesAsync {}
+    implements SharedPreferencesAsync;
 
 void main() {
   group(SharedPreferencesAppearanceSettingsStorage, () {
@@ -19,17 +19,15 @@ void main() {
     setUp(() {
       preferences = _MockSharedPreferencesAsync();
       storedSettings = null;
-      when(() => preferences.getString(_settingsKey)).thenAnswer(
-        (_) async => storedSettings,
-      );
+      when(() => preferences.getString(_settingsKey))
+          .thenAnswer((_) async => storedSettings);
       when(() => preferences.remove(_settingsKey)).thenAnswer((_) async {
         storedSettings = null;
       });
-      when(
-        () => preferences.setString(_settingsKey, any()),
-      ).thenAnswer((invocation) async {
-        storedSettings = invocation.positionalArguments[1] as String;
-      });
+      when(() => preferences.setString(_settingsKey, any()))
+          .thenAnswer((invocation) async {
+            storedSettings = invocation.positionalArguments[1] as String;
+          });
       subject = SharedPreferencesAppearanceSettingsStorage(
         preferences: preferences,
       );
@@ -116,9 +114,7 @@ void main() {
 
     group('write', () {
       test('stores all settings in one versioned JSON document', () async {
-        const settings = AppearanceSettings(
-          themeMode: AppThemeMode.light,
-        );
+        const settings = AppearanceSettings(themeMode: AppThemeMode.light);
 
         await subject.write(settings);
 

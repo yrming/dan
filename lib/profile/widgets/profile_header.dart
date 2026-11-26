@@ -13,7 +13,7 @@ typedef ProfileExternalLinkLauncher = Future<bool> Function(Uri uri);
 /// WeChat-inspired account header shared by current and other users.
 class ProfileHeader extends StatelessWidget {
   /// Creates a profile header.
-  const ProfileHeader({
+  const new({
     required this.id,
     required this.name,
     required this.screenName,
@@ -225,9 +225,7 @@ class ProfileHeader extends StatelessWidget {
               runSpacing: sizing.scaled(AppSpacing.sm),
               children: [
                 if (hasRegisteredAt)
-                  _ProfileRegistrationTag(
-                    registeredAt: displayRegisteredAt!,
-                  ),
+                  _ProfileRegistrationTag(registeredAt: displayRegisteredAt!),
                 if (hasLocation)
                   _ProfileTag(
                     tagKey: const Key('user-profile-location'),
@@ -282,9 +280,7 @@ class ProfileHeader extends StatelessWidget {
                     InkWell(
                       onTap: onFollowRequestsTap,
                       child: Text(
-                        context.l10n.userProfileFollowRequestsCount(
-                          count,
-                        ),
+                        context.l10n.userProfileFollowRequestsCount(count),
                         style: context.appTypography.accountDescription
                             .copyWith(color: context.appColors.textSecondary),
                       ),
@@ -354,10 +350,7 @@ class ProfileHeader extends StatelessWidget {
             color: surfaceColor,
           ),
         ),
-        Material(
-          color: surfaceColor,
-          child: content,
-        ),
+        Material(color: surfaceColor, child: content),
       ],
     );
   }
@@ -366,7 +359,7 @@ class ProfileHeader extends StatelessWidget {
 const _followActionHeight = 34.0;
 
 class _ProfileFollowAction extends StatelessWidget {
-  const _ProfileFollowAction({
+  const new({
     required this.label,
     required this.icon,
     required this.loading,
@@ -421,7 +414,7 @@ class _ProfileFollowAction extends StatelessWidget {
 }
 
 class _ProfileMessageAction extends StatelessWidget {
-  const _ProfileMessageAction({required this.onPressed});
+  const new({required this.onPressed});
 
   final VoidCallback onPressed;
 
@@ -441,10 +434,7 @@ class _ProfileMessageAction extends StatelessWidget {
           horizontal: sizing.scaled(AppSpacing.sm),
         ),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        side: BorderSide(
-          color: context.appColors.divider,
-          width: 0.5,
-        ),
+        side: BorderSide(color: context.appColors.divider, width: 0.5),
       ),
       onPressed: onPressed,
       child: Row(
@@ -460,7 +450,7 @@ class _ProfileMessageAction extends StatelessWidget {
 }
 
 class _FollowCount extends StatelessWidget {
-  const _FollowCount({required this.label, required this.value, this.onTap});
+  const new({required this.label, required this.value, this.onTap});
 
   final String label;
   final int value;
@@ -486,7 +476,7 @@ class _FollowCount extends StatelessWidget {
 }
 
 class _ProfileUrl extends StatelessWidget {
-  const _ProfileUrl({
+  const new({
     required this.url,
     required this.uri,
     required this.externalLinkLauncher,
@@ -500,11 +490,7 @@ class _ProfileUrl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = Text(
-      url,
-      key: const Key('user-profile-url'),
-      style: style,
-    );
+    final text = Text(url, key: const Key('user-profile-url'), style: style);
     final minimumTargetSize = context.appSizing.scaled(
       AppSpacing.lg,
       minimum: AppSpacing.lg,
@@ -531,7 +517,7 @@ class _ProfileUrl extends StatelessWidget {
 }
 
 class _ProfileRegistrationTag extends StatelessWidget {
-  const _ProfileRegistrationTag({required this.registeredAt});
+  const new({required this.registeredAt});
 
   final String registeredAt;
 
@@ -612,7 +598,7 @@ class _ProfileRegistrationTag extends StatelessWidget {
 }
 
 class _ProfileTag extends StatelessWidget {
-  const _ProfileTag({required this.tagKey, required this.label});
+  const new({required this.tagKey, required this.label});
 
   final Key tagKey;
 

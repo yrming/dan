@@ -9,7 +9,7 @@ import '../../helpers/helpers.dart';
 
 /// Host that shows a toast with a fixed message when its button is tapped.
 class _ToastLauncher extends StatelessWidget {
-  const _ToastLauncher({required this.buttonLabel, required this.message});
+  const new({required this.buttonLabel, required this.message});
 
   final String buttonLabel;
   final String message;

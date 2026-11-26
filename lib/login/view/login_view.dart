@@ -15,7 +15,7 @@ import 'package:remixicon/remixicon.dart';
 /// Renders the login experience and dispatches user actions.
 class LoginView extends StatelessWidget {
   /// Creates a login view.
-  const LoginView({this.onClose, super.key});
+  const new({this.onClose, super.key});
 
   /// Optional callback used by a full-screen add-account presentation.
   final VoidCallback? onClose;
@@ -87,7 +87,7 @@ class LoginView extends StatelessWidget {
 }
 
 class _Brand extends StatelessWidget {
-  const _Brand({required this.logoLabel, required this.tagline});
+  const new({required this.logoLabel, required this.tagline});
 
   final String logoLabel;
   final String tagline;
@@ -119,7 +119,7 @@ class _Brand extends StatelessWidget {
 }
 
 class _OAuthOptions extends StatelessWidget {
-  const _OAuthOptions({required this.state});
+  const new({required this.state});
 
   final LoginState state;
 
@@ -140,9 +140,8 @@ class _OAuthOptions extends StatelessWidget {
         FilledButton.icon(
           onPressed: state.isInProgress
               ? null
-              : () => context.read<LoginBloc>().add(
-                  const LoginOAuthRequested(),
-                ),
+              : () =>
+                    context.read<LoginBloc>().add(const LoginOAuthRequested()),
           icon: isOAuthInProgress
               ? _ProgressIndicator(
                   semanticLabel: context.l10n.loginOAuthSubmittingLabel,
@@ -158,7 +157,7 @@ class _OAuthOptions extends StatelessWidget {
 }
 
 class _LoginConsent extends StatefulWidget {
-  const _LoginConsent();
+  const new();
 
   @override
   State<_LoginConsent> createState() => _LoginConsentState();
@@ -205,13 +204,11 @@ class _LoginConsentState extends State<_LoginConsent> {
       decorationStyle: TextDecorationStyle.solid,
     );
     final agreementRecognizer = TapGestureRecognizer()
-      ..onTap = () => unawaited(
-        context.pushNamed<void>(AppRouteName.publicUserAgreement),
-      );
+      ..onTap = () =>
+          unawaited(context.pushNamed<void>(AppRouteName.publicUserAgreement));
     final privacyRecognizer = TapGestureRecognizer()
-      ..onTap = () => unawaited(
-        context.pushNamed<void>(AppRouteName.publicPrivacyPolicy),
-      );
+      ..onTap = () =>
+          unawaited(context.pushNamed<void>(AppRouteName.publicPrivacyPolicy));
     _recognizers
       ..add(agreementRecognizer)
       ..add(privacyRecognizer);
@@ -241,7 +238,7 @@ class _LoginConsentState extends State<_LoginConsent> {
 }
 
 class _ProgressIndicator extends StatelessWidget {
-  const _ProgressIndicator({required this.semanticLabel});
+  const new({required this.semanticLabel});
 
   final String semanticLabel;
 
@@ -262,7 +259,7 @@ class _ProgressIndicator extends StatelessWidget {
 }
 
 class _SubmissionError extends StatelessWidget {
-  const _SubmissionError({required this.message});
+  const new({required this.message});
 
   final String message;
 

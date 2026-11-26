@@ -57,7 +57,7 @@ Future<void> showAccountSwitcherSheet(
 }
 
 class _AccountSwitcherSheet extends StatelessWidget {
-  const _AccountSwitcherSheet({
+  const new({
     required this.accounts,
     required this.activeAccountId,
     required this.onAccountSelected,
@@ -92,7 +92,7 @@ class _AccountSwitcherSheet extends StatelessWidget {
 }
 
 class _AccountSwitcherGroup extends StatelessWidget {
-  const _AccountSwitcherGroup({required this.children});
+  const new({required this.children});
 
   final List<Widget> children;
 
@@ -121,7 +121,7 @@ class _AccountSwitcherGroup extends StatelessWidget {
 }
 
 class _AccountSwitcherAccountItem extends StatelessWidget {
-  const _AccountSwitcherAccountItem({
+  const new({
     required this.account,
     required this.selected,
     required this.onPressed,
@@ -198,7 +198,7 @@ class _AccountSwitcherAccountItem extends StatelessWidget {
 }
 
 class _AccountSwitcherAddItem extends StatelessWidget {
-  const _AccountSwitcherAddItem({required this.onPressed});
+  const new({required this.onPressed});
 
   final VoidCallback onPressed;
 
@@ -221,10 +221,7 @@ class _AccountSwitcherAddItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.appColors.groupedBackground,
             shape: BoxShape.circle,
-            border: Border.all(
-              color: context.appColors.divider,
-              width: 0.5,
-            ),
+            border: Border.all(color: context.appColors.divider, width: 0.5),
           ),
           child: Icon(
             RemixIcons.add_line,

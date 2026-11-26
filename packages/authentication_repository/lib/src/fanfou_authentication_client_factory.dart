@@ -43,7 +43,7 @@ final class FanfouAuthenticationClientFactory {
       // redirect authentication traffic.
       // ignore: avoid_redundant_argument_values
       baseUrl: _apiBaseUrl,
-      // Pin the OAuth host for the same reason as the API host above.
+      // Keep OAuth requests on the official host independently of SDK defaults.
       // ignore: avoid_redundant_argument_values
       oauthBaseUrl: _oauthBaseUrl,
     );

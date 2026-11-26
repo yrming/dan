@@ -16,7 +16,7 @@ import 'package:material_ui/material_ui.dart';
 /// Main authenticated application shell.
 class AppShell extends StatefulWidget {
   /// Creates an authenticated shell around [navigationShell].
-  const AppShell({
+  const new({
     required this.navigationShell,
     required this.showBottomNavigationBar,
     required this.activeUserId,
@@ -101,9 +101,8 @@ class _AppShellState extends State<AppShell> {
                         onBrowseSearchPressed: () => unawaited(
                           context.pushNamed<void>(AppRouteName.search),
                         ),
-                        onMineAccountManagementPressed: () => unawaited(
-                          openDirectMessageListRoute(context),
-                        ),
+                        onMineAccountManagementPressed: () =>
+                            unawaited(openDirectMessageListRoute(context)),
                       ),
                     ),
               ),

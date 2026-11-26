@@ -36,7 +36,7 @@ double statusPhotoBorderRadiusFor(StatusPhotoStyle style) {
 /// Displays a cached status photo thumbnail.
 class StatusPhoto extends StatefulWidget {
   /// Creates an X-style width-filling status photo thumbnail.
-  const StatusPhoto.x({
+  const new x({
     required this.imageUrl,
     required this.semanticLabel,
     required this.heroTag,
@@ -47,7 +47,7 @@ class StatusPhoto extends StatefulWidget {
        style = StatusPhotoStyle.x;
 
   /// Creates a WeChat-style bounded single-image thumbnail.
-  const StatusPhoto.wechat({
+  const new wechat({
     required this.imageUrl,
     required this.semanticLabel,
     required this.heroTag,
@@ -58,7 +58,7 @@ class StatusPhoto extends StatefulWidget {
        style = StatusPhotoStyle.wechat;
 
   /// Creates a square thumbnail for a personal Moments album.
-  const StatusPhoto.moments({
+  const new moments({
     required this.imageUrl,
     required this.semanticLabel,
     required this.heroTag,
@@ -151,10 +151,7 @@ class _StatusPhotoState extends State<StatusPhoto> {
         // first Hero transition to fail.
         if (widget.heroTag.trim().isNotEmpty && widget.onTap != null) {
           unawaited(
-            precacheImage(
-              CachedNetworkImageProvider(widget.imageUrl),
-              context,
-            ),
+            precacheImage(CachedNetworkImageProvider(widget.imageUrl), context),
           );
         }
       },

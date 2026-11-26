@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 void main() {
   group(BlacklistCubit, () {
@@ -63,9 +63,8 @@ void main() {
     blocTest<BlacklistCubit, BlacklistState>(
       'emits success with blocked users when loading succeeds',
       setUp: () {
-        when(() => repository.getBlockedUsers()).thenAnswer(
-          (_) async => [_user],
-        );
+        when(() => repository.getBlockedUsers())
+            .thenAnswer((_) async => [_user]);
       },
       build: () => BlacklistCubit(repository: repository),
       act: (cubit) => cubit.load(),
@@ -85,9 +84,8 @@ void main() {
     blocTest<BlacklistCubit, BlacklistState>(
       'emits failure when loading fails',
       setUp: () {
-        when(() => repository.getBlockedUsers()).thenThrow(
-          StateError('network'),
-        );
+        when(() => repository.getBlockedUsers())
+            .thenThrow(StateError('network'));
       },
       build: () => BlacklistCubit(repository: repository),
       act: (cubit) => cubit.load(),
@@ -100,9 +98,8 @@ void main() {
     blocTest<BlacklistCubit, BlacklistState>(
       'removes a user after the repository confirms the request',
       build: () {
-        when(() => repository.removeBlockedUser(_user.id)).thenAnswer(
-          (_) async => _user,
-        );
+        when(() => repository.removeBlockedUser(_user.id))
+            .thenAnswer((_) async => _user);
         return BlacklistCubit(repository: repository);
       },
       seed: () => const BlacklistState(
@@ -118,10 +115,7 @@ void main() {
           hasMore: false,
           removingIds: {_userId},
         ),
-        const BlacklistState(
-          status: BlacklistStatus.success,
-          hasMore: false,
-        ),
+        const BlacklistState(status: BlacklistStatus.success, hasMore: false),
       ],
       verify: (_) {
         verify(() => repository.removeBlockedUser(_user.id)).called(1);
@@ -131,9 +125,8 @@ void main() {
     blocTest<BlacklistCubit, BlacklistState>(
       'keeps a user and reports an action failure when removal fails',
       build: () {
-        when(() => repository.removeBlockedUser(_user.id)).thenThrow(
-          StateError('network'),
-        );
+        when(() => repository.removeBlockedUser(_user.id))
+            .thenThrow(StateError('network'));
         return BlacklistCubit(repository: repository);
       },
       seed: () => const BlacklistState(

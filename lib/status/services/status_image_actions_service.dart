@@ -9,17 +9,17 @@ abstract interface class StatusImageActionsService {
 
 /// Base type for sanitized status image action failures.
 sealed class StatusImageActionFailure implements Exception {
-  const StatusImageActionFailure();
+  const new();
 }
 
 /// Thrown when the status image cannot be shared.
 final class StatusImageShareFailure extends StatusImageActionFailure {
   /// Creates a sanitized share failure.
-  const StatusImageShareFailure();
+  const new();
 }
 
 /// Thrown when the status image cannot be saved to the gallery.
 final class StatusImageGallerySaveFailure extends StatusImageActionFailure {
   /// Creates a sanitized gallery save failure.
-  const StatusImageGallerySaveFailure();
+  const new();
 }

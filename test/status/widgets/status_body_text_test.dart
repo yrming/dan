@@ -13,7 +13,7 @@ import 'package:user_repository/user_repository.dart';
 
 import '../../helpers/helpers.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 void main() {
   group(StatusBodyText, () {
@@ -39,9 +39,8 @@ void main() {
           GoRoute(
             name: AppRouteName.userProfile,
             path: AppRoutePath.userProfile,
-            builder: (_, state) => Text(
-              'profile-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('profile-${state.pathParameters['userId']}'),
           ),
         ],
       );
@@ -52,18 +51,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(router.state.uri.path, '/user-id');
-      expect(
-        router.state.uri.queryParameters,
-        const {'presentation': 'pushed'},
-      );
+      expect(router.state.uri.queryParameters, const {
+        'presentation': 'pushed',
+      });
       expect(find.text('profile-user-id'), findsOneWidget);
       verify(
         () => userRepository.cacheUser(
-          const UserProfile(
-            id: 'user-id',
-            name: '',
-            screenName: 'user_a',
-          ),
+          const UserProfile(id: 'user-id', name: '', screenName: 'user_a'),
         ),
       ).called(1);
     });

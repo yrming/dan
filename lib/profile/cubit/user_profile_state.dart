@@ -4,7 +4,7 @@ import 'package:user_repository/user_repository.dart';
 /// Base state for loading a user profile.
 sealed class UserProfileState extends Equatable {
   /// Creates a user profile state.
-  const UserProfileState({this.profile});
+  const new({this.profile});
 
   /// Profile available for display, including a cached summary.
   final UserProfile? profile;
@@ -16,19 +16,19 @@ sealed class UserProfileState extends Equatable {
 /// Profile loading has not started.
 final class UserProfileInitial extends UserProfileState {
   /// Creates an initial profile state.
-  const UserProfileInitial({super.profile});
+  const new({super.profile});
 }
 
 /// Profile loading is in progress.
 final class UserProfileLoadInProgress extends UserProfileState {
   /// Creates an in-progress profile state.
-  const UserProfileLoadInProgress({super.profile});
+  const new({super.profile});
 }
 
 /// Profile loading completed successfully.
 final class UserProfileLoadSuccess extends UserProfileState {
   /// Creates a successful profile state.
-  const UserProfileLoadSuccess({
+  const new({
     required UserProfile profile,
     this.followedBy,
     this.isFollowingUpdating = false,
@@ -128,5 +128,5 @@ final class UserProfileLoadSuccess extends UserProfileState {
 /// Profile loading failed.
 final class UserProfileLoadFailure extends UserProfileState {
   /// Creates a failed profile state.
-  const UserProfileLoadFailure({super.profile});
+  const new({super.profile});
 }

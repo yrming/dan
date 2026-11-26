@@ -4,7 +4,7 @@ import 'package:dan/appearance/appearance.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class _MockAppearanceRepository extends Mock implements AppearanceRepository {}
+class _MockAppearanceRepository extends Mock implements AppearanceRepository;
 
 void main() {
   group(AppearanceCubit, () {
@@ -43,13 +43,11 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'emits [loading, success] when repository loading succeeds',
         setUp: () {
-          when(appearanceRepository.load).thenAnswer(
-            (_) async => storedSettings,
-          );
+          when(appearanceRepository.load)
+              .thenAnswer((_) async => storedSettings);
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.load(),
         expect: () => const [
           AppearanceState(
@@ -71,9 +69,8 @@ void main() {
         setUp: () {
           when(appearanceRepository.load).thenThrow(Exception('failed'));
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.load(),
         expect: () => const [
           AppearanceState(
@@ -98,13 +95,10 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'emits [saving, success] and persists the new font size',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenAnswer(
-            (_) async {},
-          );
+          when(() => appearanceRepository.save(any())).thenAnswer((_) async {});
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.updateFontSize(17),
         expect: () => const [
           AppearanceState(
@@ -128,13 +122,10 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'constrains a font size above the supported range',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenAnswer(
-            (_) async {},
-          );
+          when(() => appearanceRepository.save(any())).thenAnswer((_) async {});
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.updateFontSize(100),
         expect: () => const [
           AppearanceState(
@@ -151,13 +142,10 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'constrains a font size below the supported range',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenAnswer(
-            (_) async {},
-          );
+          when(() => appearanceRepository.save(any())).thenAnswer((_) async {});
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.updateFontSize(0),
         expect: () => const [
           AppearanceState(
@@ -174,18 +162,16 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'applies rapid changes immediately and persists them in order',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenAnswer((
-            invocation,
-          ) async {
-            savedSettings.add(
-              invocation.positionalArguments.single as AppearanceSettings,
-            );
-            await Future<void>.delayed(Duration.zero);
-          });
+          when(() => appearanceRepository.save(any()))
+              .thenAnswer((invocation) async {
+                savedSettings.add(
+                  invocation.positionalArguments.single as AppearanceSettings,
+                );
+                await Future<void>.delayed(Duration.zero);
+              });
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) async {
           final firstUpdate = cubit.updateFontSize(15);
           final secondUpdate = cubit.updateFontSize(17);
@@ -218,13 +204,10 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'persists the selected theme mode',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenAnswer(
-            (_) async {},
-          );
+          when(() => appearanceRepository.save(any())).thenAnswer((_) async {});
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.updateThemeMode(AppThemeMode.dark),
         expect: () => const [
           AppearanceState(
@@ -243,13 +226,10 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'persists the selected status photo style',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenAnswer(
-            (_) async {},
-          );
+          when(() => appearanceRepository.save(any())).thenAnswer((_) async {});
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.updateStatusPhotoStyle(StatusPhotoStyle.wechat),
         expect: () => const [
           AppearanceState(
@@ -270,13 +250,11 @@ void main() {
       blocTest<AppearanceCubit, AppearanceState>(
         'rolls back and emits failure when persistence fails',
         setUp: () {
-          when(() => appearanceRepository.save(any())).thenThrow(
-            Exception('failed'),
-          );
+          when(() => appearanceRepository.save(any()))
+              .thenThrow(Exception('failed'));
         },
-        build: () => AppearanceCubit(
-          appearanceRepository: appearanceRepository,
-        ),
+        build: () =>
+            AppearanceCubit(appearanceRepository: appearanceRepository),
         act: (cubit) => cubit.updateStatusPhotoStyle(StatusPhotoStyle.wechat),
         expect: () => const [
           AppearanceState(

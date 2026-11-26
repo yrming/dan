@@ -5,10 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 class _MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+    implements AuthenticationRepository;
 
 void main() {
   setUpAll(() {
@@ -22,9 +22,7 @@ void main() {
     setUp(() {
       userRepository = _MockUserRepository();
       authenticationRepository = _MockAuthenticationRepository();
-      when(
-        () => authenticationRepository.updateAccount(any()),
-      ).thenAnswer(
+      when(() => authenticationRepository.updateAccount(any())).thenAnswer(
         (invocation) async =>
             invocation.positionalArguments.single as AuthenticatedAccount,
       );
@@ -45,9 +43,8 @@ void main() {
       blocTest<UserProfileCubit, UserProfileState>(
         'loads whether the displayed user follows the active account',
         setUp: () {
-          when(
-            () => userRepository.getUser(_profile.id),
-          ).thenAnswer((_) async => _profile);
+          when(() => userRepository.getUser(_profile.id))
+              .thenAnswer((_) async => _profile);
           when(
             () => userRepository.isFollowing(
               userId: _profile.id,
@@ -70,9 +67,8 @@ void main() {
       blocTest<UserProfileCubit, UserProfileState>(
         'refreshes the supplied existing profile',
         setUp: () {
-          when(
-            () => userRepository.getUser(_profile.id),
-          ).thenAnswer((_) async => _refreshedProfile);
+          when(() => userRepository.getUser(_profile.id))
+              .thenAnswer((_) async => _refreshedProfile);
         },
         build: () => UserProfileCubit(
           userRepository: userRepository,
@@ -96,12 +92,10 @@ void main() {
       blocTest<UserProfileCubit, UserProfileState>(
         'keeps the refreshed profile when account persistence fails',
         setUp: () {
-          when(
-            () => userRepository.getUser(_profile.id),
-          ).thenAnswer((_) async => _refreshedProfile);
-          when(
-            () => authenticationRepository.updateAccount(_refreshedAccount),
-          ).thenThrow(const AuthenticationStorageFailure());
+          when(() => userRepository.getUser(_profile.id))
+              .thenAnswer((_) async => _refreshedProfile);
+          when(() => authenticationRepository.updateAccount(_refreshedAccount))
+              .thenThrow(const AuthenticationStorageFailure());
         },
         build: () => UserProfileCubit(
           userRepository: userRepository,
@@ -119,9 +113,8 @@ void main() {
       blocTest<UserProfileCubit, UserProfileState>(
         'emits loading and success when the repository returns data',
         setUp: () {
-          when(
-            () => userRepository.getUser(_profile.id),
-          ).thenAnswer((_) async => _profile);
+          when(() => userRepository.getUser(_profile.id))
+              .thenAnswer((_) async => _profile);
         },
         build: () => UserProfileCubit(
           userRepository: userRepository,
@@ -142,9 +135,8 @@ void main() {
       blocTest<UserProfileCubit, UserProfileState>(
         'retains the summary when the repository throws',
         setUp: () {
-          when(
-            () => userRepository.getUser(_profile.id),
-          ).thenThrow(StateError('offline'));
+          when(() => userRepository.getUser(_profile.id))
+              .thenThrow(StateError('offline'));
         },
         build: () => UserProfileCubit(
           userRepository: userRepository,
@@ -170,14 +162,12 @@ void main() {
         ),
         seed: () => const UserProfileLoadSuccess(profile: _profile),
         act: (cubit) async {
-          when(
-            () => userRepository.setFollowing(_profile.id, following: true),
-          ).thenThrow(const FollowActionFailure(message: '请等待确认'));
+          when(() => userRepository.setFollowing(_profile.id, following: true))
+              .thenThrow(const FollowActionFailure(message: '请等待确认'));
           await cubit.toggleFollowing();
           await cubit.toggleFollowing();
-          when(
-            () => userRepository.setFollowing(_profile.id, following: true),
-          ).thenThrow(StateError('offline'));
+          when(() => userRepository.setFollowing(_profile.id, following: true))
+              .thenThrow(StateError('offline'));
           await cubit.toggleFollowing();
         },
         expect: () => [
@@ -204,18 +194,16 @@ void main() {
       blocTest<UserProfileCubit, UserProfileState>(
         'follows the displayed user and updates the profile',
         setUp: () {
-          when(
-            () => userRepository.getUser(_profile.id),
-          ).thenAnswer((_) async => _profile);
+          when(() => userRepository.getUser(_profile.id))
+              .thenAnswer((_) async => _profile);
           when(
             () => userRepository.isFollowing(
               userId: _profile.id,
               targetUserId: 'active-account',
             ),
           ).thenAnswer((_) async => true);
-          when(
-            () => userRepository.setFollowing(_profile.id, following: true),
-          ).thenAnswer((_) async => true);
+          when(() => userRepository.setFollowing(_profile.id, following: true))
+              .thenAnswer((_) async => true);
         },
         build: () => UserProfileCubit(
           userRepository: userRepository,
@@ -262,19 +250,16 @@ void main() {
               targetUserId: 'active-account',
             ),
           ).thenAnswer((_) async => false);
-          when(
-            () => userRepository.setBlocked(_profile.id, blocked: true),
-          ).thenAnswer((_) async => true);
+          when(() => userRepository.setBlocked(_profile.id, blocked: true))
+              .thenAnswer((_) async => true);
           return UserProfileCubit(
             userRepository: userRepository,
             userId: _profile.id,
             activeAccountId: 'active-account',
           );
         },
-        seed: () => const UserProfileLoadSuccess(
-          profile: _profile,
-          isBlocked: false,
-        ),
+        seed: () =>
+            const UserProfileLoadSuccess(profile: _profile, isBlocked: false),
         act: (cubit) => cubit.toggleBlocked(),
         expect: () => [
           const UserProfileLoadSuccess(
@@ -302,28 +287,24 @@ void main() {
               targetUserId: 'active-account',
             ),
           ).called(1);
-          verify(
-            () => userRepository.setBlocked(_profile.id, blocked: true),
-          ).called(1);
+          verify(() => userRepository.setBlocked(_profile.id, blocked: true))
+              .called(1);
         },
       );
 
       blocTest<UserProfileCubit, UserProfileState>(
         'reports server feedback when blocking fails',
         build: () {
-          when(
-            () => userRepository.setBlocked(_profile.id, blocked: false),
-          ).thenThrow(const BlockActionFailure(message: '无法取消拉黑'));
+          when(() => userRepository.setBlocked(_profile.id, blocked: false))
+              .thenThrow(const BlockActionFailure(message: '无法取消拉黑'));
           return UserProfileCubit(
             userRepository: userRepository,
             userId: _profile.id,
             activeAccountId: 'active-account',
           );
         },
-        seed: () => const UserProfileLoadSuccess(
-          profile: _profile,
-          isBlocked: true,
-        ),
+        seed: () =>
+            const UserProfileLoadSuccess(profile: _profile, isBlocked: true),
         act: (cubit) => cubit.toggleBlocked(),
         expect: () => const [
           UserProfileLoadSuccess(

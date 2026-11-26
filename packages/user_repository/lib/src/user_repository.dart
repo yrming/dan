@@ -134,7 +134,7 @@ class UserRepository {
 
   /// Returns blocked users for the active account and caches their profiles.
   Future<List<UserProfile>> getBlockedUsers({int page = 1}) async =>
-      _loadUsers(() => _userApiClient.getBlockedUsers(page: page));
+      await _loadUsers(() => _userApiClient.getBlockedUsers(page: page));
 
   /// Removes [userId] from the active account's blacklist.
   Future<UserProfile> removeBlockedUser(String userId) async {
@@ -149,7 +149,7 @@ class UserRepository {
 
   /// Returns incoming follow requests for the active account.
   Future<List<UserProfile>> getFollowRequests({int page = 1}) async =>
-      _loadUsers(() => _userApiClient.getFollowRequests(page: page));
+      await _loadUsers(() => _userApiClient.getFollowRequests(page: page));
 
   /// Accepts an incoming follow request.
   Future<UserProfile> acceptFollowRequest(String userId) async {
@@ -177,11 +177,11 @@ class UserRepository {
 
   /// Returns accounts followed by [userId].
   Future<List<UserProfile>> getFriends(String userId, {int page = 1}) async =>
-      _loadUsers(() => _userApiClient.getFriends(userId, page: page));
+      await _loadUsers(() => _userApiClient.getFriends(userId, page: page));
 
   /// Returns accounts following [userId].
   Future<List<UserProfile>> getFollowers(String userId, {int page = 1}) async =>
-      _loadUsers(() => _userApiClient.getFollowers(userId, page: page));
+      await _loadUsers(() => _userApiClient.getFollowers(userId, page: page));
 
   Future<List<UserProfile>> _loadUsers(
     Future<List<UserResponse>> Function() fetch,

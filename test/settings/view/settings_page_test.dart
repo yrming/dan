@@ -17,11 +17,11 @@ import 'package:mocktail/mocktail.dart';
 import '../../helpers/helpers.dart';
 
 class _MockAppearanceCubit extends MockCubit<AppearanceState>
-    implements AppearanceCubit {}
+    implements AppearanceCubit;
 
 class _MockAuthenticationBloc
     extends MockBloc<AuthenticationEvent, AuthenticationState>
-    implements AuthenticationBloc {}
+    implements AuthenticationBloc;
 
 void main() {
   group(SettingsPage, () {
@@ -84,10 +84,8 @@ void main() {
         addTearDown(router.dispose);
         await tester.pumpRouterApp(
           router,
-          wrapper: (child) => BlocProvider.value(
-            value: appearanceCubit,
-            child: child,
-          ),
+          wrapper: (child) =>
+              BlocProvider.value(value: appearanceCubit, child: child),
         );
         await tester.pumpTransition();
         await tester.tap(find.byKey(const Key('settings-about-row')));
@@ -101,13 +99,11 @@ void main() {
           await tester.pumpAndSettle();
           expect(find.byType(MarkdownBody), findsOneWidget);
           expect(
-            find.text(
-              switch (document) {
-                'why' => '一些说明',
-                'user-agreement' => '一、协议范围与服务性质',
-                _ => '一、适用范围',
-              },
-            ),
+            find.text(switch (document) {
+              'why' => '一些说明',
+              'user-agreement' => '一、协议范围与服务性质',
+              _ => '一、适用范围',
+            }),
             findsOneWidget,
           );
           await tester.tap(find.byType(BackButton));
@@ -147,9 +143,7 @@ void main() {
       await tester.tap(find.text(context.l10n.signOutDialogCancelLabel));
       await tester.pump();
       verifyNever(
-        () => authenticationBloc.add(
-          const AuthenticationSignOutRequested(),
-        ),
+        () => authenticationBloc.add(const AuthenticationSignOutRequested()),
       );
 
       await tester.tap(find.text(context.l10n.signOutLabel).first);
@@ -158,9 +152,7 @@ void main() {
       await tester.pump();
 
       verify(
-        () => authenticationBloc.add(
-          const AuthenticationSignOutRequested(),
-        ),
+        () => authenticationBloc.add(const AuthenticationSignOutRequested()),
       ).called(1);
     });
   });

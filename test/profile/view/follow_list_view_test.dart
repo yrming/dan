@@ -14,7 +14,7 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockFollowListCubit extends MockCubit<FollowListState>
-    implements FollowListCubit {}
+    implements FollowListCubit;
 
 void main() {
   group(FollowListView, () {
@@ -25,11 +25,7 @@ void main() {
       cubit = _MockFollowListCubit();
       users = List.generate(
         20,
-        (i) => UserProfile(
-          id: '$i',
-          name: 'User $i',
-          screenName: 'user$i',
-        ),
+        (i) => UserProfile(id: '$i', name: 'User $i', screenName: 'user$i'),
       );
       when(() => cubit.toggleFollowing(any())).thenAnswer((_) async {});
       when(() => cubit.load()).thenAnswer((_) async {});
@@ -346,10 +342,7 @@ void main() {
       ) async {
         await pumpView(
           tester,
-          FollowListState(
-            users: users.take(1).toList(),
-            loading: false,
-          ),
+          FollowListState(users: users.take(1).toList(), loading: false),
         );
         final tile = tester.widget<ListTile>(find.byType(ListTile));
         expect((tile.subtitle! as Text).data, isEmpty);
@@ -361,10 +354,7 @@ void main() {
       ) async {
         await pumpView(
           tester,
-          FollowListState(
-            users: users.take(3).toList(),
-            loading: false,
-          ),
+          FollowListState(users: users.take(3).toList(), loading: false),
         );
         expect(find.byType(ListTile), findsNWidgets(3));
         expect(find.byType(Divider), findsNWidgets(3));
@@ -434,23 +424,17 @@ void main() {
         expect(find.text('User 0'), findsOneWidget);
       });
       for (final followers in [true, false]) {
-        testWidgets(
-          'shows the empty illustration for followers=$followers',
-          (tester) async {
-            await pumpView(
-              tester,
-              FollowListState(loading: false, hasMore: false),
-              followers: followers,
-            );
-            expect(find.byType(AppEmptyView), findsOneWidget);
-            expect(
-              find.text(
-                '这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪',
-              ),
-              findsNothing,
-            );
-          },
-        );
+        testWidgets('shows the empty illustration for followers=$followers', (
+          tester,
+        ) async {
+          await pumpView(
+            tester,
+            FollowListState(loading: false, hasMore: false),
+            followers: followers,
+          );
+          expect(find.byType(AppEmptyView), findsOneWidget);
+          expect(find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'), findsNothing);
+        });
       }
       testWidgets('ends the list without a footer or pagination prompt', (
         tester,

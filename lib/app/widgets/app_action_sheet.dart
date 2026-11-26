@@ -33,14 +33,11 @@ Future<void> showAppActionSheet(
 /// A rounded group of action-sheet items separated by hairline dividers.
 class AppActionSheetGroup extends StatelessWidget {
   /// Creates an action-sheet group.
-  const AppActionSheetGroup({
-    required this.children,
-    this.dividerKeys = const [],
-    super.key,
-  }) : assert(
-         dividerKeys.length == 0 || dividerKeys.length == children.length - 1,
-         'Provide one divider key for each gap between action-sheet items.',
-       );
+  const new({required this.children, this.dividerKeys = const [], super.key})
+    : assert(
+        dividerKeys.length == 0 || dividerKeys.length == children.length - 1,
+        'Provide one divider key for each gap between action-sheet items.',
+      );
 
   /// Actions displayed in this group.
   final List<AppActionSheetItem> children;
@@ -76,7 +73,7 @@ class AppActionSheetGroup extends StatelessWidget {
 /// One tappable row within an [AppActionSheetGroup].
 class AppActionSheetItem extends StatelessWidget {
   /// Creates an action-sheet item.
-  const AppActionSheetItem({
+  const new({
     required this.label,
     this.icon,
     this.foregroundColor,

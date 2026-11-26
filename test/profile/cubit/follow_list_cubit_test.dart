@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 const _first = UserProfile(id: 'a', name: 'A', screenName: 'a');
 const _second = UserProfile(id: 'b', name: 'B', screenName: 'b');
@@ -60,9 +60,9 @@ void main() {
           for (final count in [1, 4, UserRepository.relationPageSize - 1]) {
             blocTest<FollowListCubit, FollowListState>(
               'ends pagination after a first page with $count users',
-              setUp: () => when(() => fetch(1)).thenAnswer(
-                (_) async => fullPage.take(count).toList(),
-              ),
+              setUp: () =>
+                  when(() => fetch(1))
+                      .thenAnswer((_) async => fullPage.take(count).toList()),
               build: build,
               act: (cubit) async {
                 await cubit.load();
@@ -226,9 +226,8 @@ void main() {
           );
           blocTest<FollowListCubit, FollowListState>(
             'ends pagination after a short last page without another request',
-            setUp: () => when(() => fetch(2)).thenAnswer(
-              (_) async => [_first, _second],
-            ),
+            setUp: () =>
+                when(() => fetch(2)).thenAnswer((_) async => [_first, _second]),
             build: build,
             act: (cubit) async {
               await cubit.load();
@@ -379,13 +378,11 @@ void main() {
               'following=$following',
               setUp: () {
                 if (followers) {
-                  when(
-                    () => repository.getFollowers(owner),
-                  ).thenAnswer((_) async => [user]);
+                  when(() => repository.getFollowers(owner))
+                      .thenAnswer((_) async => [user]);
                 } else {
-                  when(
-                    () => repository.getFriends(owner),
-                  ).thenAnswer((_) async => [user]);
+                  when(() => repository.getFriends(owner))
+                      .thenAnswer((_) async => [user]);
                 }
               },
               build: () => FollowListCubit(
@@ -406,9 +403,7 @@ void main() {
               ],
               verify: (_) {
                 if (followers) {
-                  verify(
-                    () => repository.getFollowers(owner),
-                  ).called(1);
+                  verify(() => repository.getFollowers(owner)).called(1);
                 } else {
                   verify(() => repository.getFriends(owner)).called(1);
                 }
@@ -459,12 +454,10 @@ void main() {
         build: build,
         seed: ready,
         setUp: () {
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenAnswer((_) async => true);
-          when(
-            () => repository.setFollowing('a', following: false),
-          ).thenAnswer((_) async => false);
+          when(() => repository.setFollowing('a', following: true))
+              .thenAnswer((_) async => true);
+          when(() => repository.setFollowing('a', following: false))
+              .thenAnswer((_) async => false);
         },
         act: (cubit) async {
           await cubit.toggleFollowing('a');
@@ -481,9 +474,8 @@ void main() {
         ],
         verify: (_) {
           verify(() => repository.setFollowing('a', following: true)).called(1);
-          verify(
-            () => repository.setFollowing('a', following: false),
-          ).called(1);
+          verify(() => repository.setFollowing('a', following: false))
+              .called(1);
           verifyNoMoreInteractions(repository);
         },
       );
@@ -492,13 +484,11 @@ void main() {
         build: build,
         seed: ready,
         act: (cubit) async {
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenThrow(const FollowActionFailure(message: '请等待确认'));
+          when(() => repository.setFollowing('a', following: true))
+              .thenThrow(const FollowActionFailure(message: '请等待确认'));
           await cubit.toggleFollowing('a');
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenAnswer((_) async => true);
+          when(() => repository.setFollowing('a', following: true))
+              .thenAnswer((_) async => true);
           await cubit.toggleFollowing('a');
         },
         expect: () => [
@@ -522,13 +512,11 @@ void main() {
         build: build,
         seed: ready,
         act: (cubit) async {
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenThrow(StateError('offline'));
+          when(() => repository.setFollowing('a', following: true))
+              .thenThrow(StateError('offline'));
           await cubit.toggleFollowing('a');
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenAnswer((_) async => true);
+          when(() => repository.setFollowing('a', following: true))
+              .thenAnswer((_) async => true);
           await cubit.toggleFollowing('a');
         },
         expect: () => [
@@ -548,12 +536,10 @@ void main() {
         act: (cubit) async {
           final mutation = Completer<bool>();
           final page = Completer<List<UserProfile>>();
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenAnswer((_) => mutation.future);
-          when(
-            () => repository.getFollowers('me'),
-          ).thenAnswer((_) => page.future);
+          when(() => repository.setFollowing('a', following: true))
+              .thenAnswer((_) => mutation.future);
+          when(() => repository.getFollowers('me'))
+              .thenAnswer((_) => page.future);
           final more = cubit.loadMore();
           final update = cubit.toggleFollowing('a');
           await cubit.toggleFollowing('a');
@@ -573,9 +559,9 @@ void main() {
         'keeps pending requests as follow back',
         build: build,
         seed: ready,
-        setUp: () => when(
-          () => repository.setFollowing('a', following: true),
-        ).thenAnswer((_) async => false),
+        setUp: () =>
+            when(() => repository.setFollowing('a', following: true))
+                .thenAnswer((_) async => false),
         act: (cubit) => cubit.toggleFollowing('a'),
         expect: () => [
           ready().copyWith(updatingIds: {'a'}),
@@ -588,9 +574,8 @@ void main() {
         seed: ready,
         act: (cubit) async {
           final request = Completer<bool>();
-          when(
-            () => repository.setFollowing('a', following: true),
-          ).thenAnswer((_) => request.future);
+          when(() => repository.setFollowing('a', following: true))
+              .thenAnswer((_) => request.future);
           final update = cubit.toggleFollowing('a');
           await cubit.close();
           request.complete(true);

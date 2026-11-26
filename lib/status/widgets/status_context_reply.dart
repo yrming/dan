@@ -7,7 +7,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 /// A compact, tappable conversation comment with inline author and content.
 class StatusContextReply extends StatelessWidget {
   /// Creates a conversation comment.
-  const StatusContextReply({
+  const new({
     required this.status,
     required this.authorName,
     required this.onAuthorTap,
@@ -44,9 +44,8 @@ class StatusContextReply extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       splashFactory: InkRipple.splashFactory,
-      splashColor: Theme.of(context).colorScheme.onSurface.withValues(
-        alpha: 0.12,
-      ),
+      splashColor: Theme.of(context).colorScheme.onSurface
+          .withValues(alpha: 0.12),
       child: Padding(
         padding: EdgeInsetsDirectional.symmetric(
           horizontal: context.appSizing.scaled(AppSpacing.sm),

@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 @immutable
 final class AppColors extends ThemeExtension<AppColors> {
   /// Creates application color tokens.
-  const AppColors({
+  const new({
     required this.wechatGreen,
     required this.bgBase,
     required this.groupedBackground,
@@ -257,21 +257,13 @@ final class AppColors extends ThemeExtension<AppColors> {
         other.directMessageInputBackground,
         t,
       )!,
-      skeletonBase: Color.lerp(
-        skeletonBase,
-        other.skeletonBase,
-        t,
-      )!,
+      skeletonBase: Color.lerp(skeletonBase, other.skeletonBase, t)!,
       skeletonHighlight: Color.lerp(
         skeletonHighlight,
         other.skeletonHighlight,
         t,
       )!,
-      wechatLinkText: Color.lerp(
-        wechatLinkText,
-        other.wechatLinkText,
-        t,
-      ),
+      wechatLinkText: Color.lerp(wechatLinkText, other.wechatLinkText, t),
       directMessageLinkText: Color.lerp(
         directMessageLinkText,
         other.directMessageLinkText,
@@ -283,16 +275,8 @@ final class AppColors extends ThemeExtension<AppColors> {
         t,
       ),
       divider: Color.lerp(divider, other.divider, t)!,
-      toastBackground: Color.lerp(
-        toastBackground,
-        other.toastBackground,
-        t,
-      )!,
-      toastForeground: Color.lerp(
-        toastForeground,
-        other.toastForeground,
-        t,
-      )!,
+      toastBackground: Color.lerp(toastBackground, other.toastBackground, t)!,
+      toastForeground: Color.lerp(toastForeground, other.toastForeground, t)!,
     );
   }
 }

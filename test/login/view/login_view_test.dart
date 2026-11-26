@@ -18,7 +18,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../helpers/helpers.dart';
 
 class _MockLoginBloc extends MockBloc<LoginEvent, LoginState>
-    implements LoginBloc {}
+    implements LoginBloc;
 
 void main() {
   group(LoginView, () {
@@ -43,10 +43,7 @@ void main() {
         whenListen(loginBloc, states, initialState: state);
       }
       await tester.pumpApp(
-        BlocProvider.value(
-          value: loginBloc,
-          child: const LoginView(),
-        ),
+        BlocProvider.value(value: loginBloc, child: const LoginView()),
         theme: theme,
         darkTheme: darkTheme,
         themeMode: themeMode,
@@ -151,10 +148,7 @@ void main() {
               label: context.l10n.settingsUserAgreementLabel,
               content: '一、协议范围与服务性质',
             ),
-            (
-              label: context.l10n.settingsPrivacyPolicyLabel,
-              content: '一、适用范围',
-            ),
+            (label: context.l10n.settingsPrivacyPolicyLabel, content: '一、适用范围'),
           ]) {
             await tester.tapOnText(find.textRange.ofSubstring(document.label));
             await tester.pumpAndSettle();
@@ -196,10 +190,7 @@ void main() {
               span.style?.decorationColor,
               context.appTypography.loginConsent.color,
             );
-            expect(
-              span.style?.decorationStyle,
-              TextDecorationStyle.solid,
-            );
+            expect(span.style?.decorationStyle, TextDecorationStyle.solid);
           }
         });
       }
@@ -241,21 +232,12 @@ void main() {
       LoginSubmissionStatus.oauthFailure,
       LoginSubmissionStatus.failure,
     ]) {
-      testWidgets(
-        'renders the localized $status failure',
-        (tester) async {
-          await pumpLoginView(
-            tester,
-            state: LoginState(status: status),
-          );
-          final context = tester.element(find.byType(LoginView));
+      testWidgets('renders the localized $status failure', (tester) async {
+        await pumpLoginView(tester, state: LoginState(status: status));
+        final context = tester.element(find.byType(LoginView));
 
-          expect(
-            find.text(_failureText(context, status)),
-            findsOneWidget,
-          );
-        },
-      );
+        expect(find.text(_failureText(context, status)), findsOneWidget);
+      });
     }
   });
 }

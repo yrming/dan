@@ -9,14 +9,11 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   /// Creates an application-level authentication bloc.
-  factory AuthenticationBloc({
-    required AuthenticationRepository authenticationRepository,
-  }) {
+  factory({required AuthenticationRepository authenticationRepository}) {
     return AuthenticationBloc._(authenticationRepository);
   }
 
-  AuthenticationBloc._(this._authenticationRepository)
-    : super(const AuthenticationInitial()) {
+  new _(this._authenticationRepository) : super(const AuthenticationInitial()) {
     on<AuthenticationSubscriptionRequested>(_onSubscriptionRequested);
     on<AuthenticationSignOutRequested>(_onSignOutRequested);
     on<AuthenticationAccountSwitchRequested>(_onAccountSwitchRequested);

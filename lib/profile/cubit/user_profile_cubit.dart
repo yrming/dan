@@ -6,7 +6,7 @@ import 'package:user_repository/user_repository.dart';
 /// Loads one Fanfou user profile.
 class UserProfileCubit extends Cubit<UserProfileState> {
   /// Creates a user profile cubit.
-  factory UserProfileCubit({
+  factory({
     required UserRepository userRepository,
     required String userId,
     UserProfile? initialProfile,
@@ -22,7 +22,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     );
   }
 
-  UserProfileCubit._(
+  new _(
     this._userRepository,
     this._userId,
     UserProfile? initialProfile,
@@ -52,12 +52,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       await _persistAuthenticatedAccount(profile);
       final followedBy = await _loadFollowedBy();
       if (isClosed) return;
-      emit(
-        UserProfileLoadSuccess(
-          profile: profile,
-          followedBy: followedBy,
-        ),
-      );
+      emit(UserProfileLoadSuccess(profile: profile, followedBy: followedBy));
     } on Object catch (_) {
       if (isClosed) return;
       emit(UserProfileLoadFailure(profile: currentProfile));

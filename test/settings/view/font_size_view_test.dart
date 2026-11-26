@@ -14,7 +14,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../helpers/helpers.dart';
 
 class _MockAppearanceCubit extends MockCubit<AppearanceState>
-    implements AppearanceCubit {}
+    implements AppearanceCubit;
 
 void main() {
   group(FontSizeView, () {
@@ -50,9 +50,7 @@ void main() {
     InlineSpan previewText(WidgetTester tester) {
       final context = tester.element(find.byType(FontSizeView));
       return tester
-          .widget<Text>(
-            find.text(context.l10n.appearanceFontPreviewText),
-          )
+          .widget<Text>(find.text(context.l10n.appearanceFontPreviewText))
           .textSpan!;
     }
 
@@ -92,9 +90,7 @@ void main() {
     group('adjustment', () {
       testWidgets(
         'scales the preview heading and instructions with font size',
-        (
-          tester,
-        ) async {
+        (tester) async {
           await pumpView(tester);
           final l10n = tester.element(find.byType(FontSizeView)).l10n;
           final labels = [
@@ -227,9 +223,7 @@ void main() {
             themeMode: mode,
             initialState: const AppearanceState(
               status: AppearanceStatus.success,
-              settings: AppearanceSettings(
-                fontSize: 20,
-              ),
+              settings: AppearanceSettings(fontSize: 20),
             ),
           );
           expect(tester.takeException(), isNull);

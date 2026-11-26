@@ -6,10 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+    implements AuthenticationRepository;
 
 class _MockOAuthAuthorizationService extends Mock
-    implements OAuthAuthorizationService {}
+    implements OAuthAuthorizationService;
 
 void main() {
   group(LoginBloc, () {
@@ -23,9 +23,8 @@ void main() {
     setUp(() {
       authenticationRepository = _MockAuthenticationRepository();
       oauthAuthorizationService = _MockOAuthAuthorizationService();
-      when(() => oauthAuthorizationService.callbackUri).thenReturn(
-        _callbackUri,
-      );
+      when(() => oauthAuthorizationService.callbackUri)
+          .thenReturn(_callbackUri);
     });
 
     LoginBloc buildSubject() => LoginBloc(
@@ -59,26 +58,23 @@ void main() {
               callbackUri: _callbackUri,
             ),
           ).called(1);
-          verify(
-            () => oauthAuthorizationService.authorize(_authorizationUri),
-          ).called(1);
+          verify(() => oauthAuthorizationService.authorize(_authorizationUri))
+              .called(1);
           verify(
             () => authenticationRepository.completeOAuthAuthorization(
               _successfulCallbackUri,
             ),
           ).called(1);
-          verify(
-            () => authenticationRepository.cancelOAuthAuthorization(),
-          ).called(1);
+          verify(() => authenticationRepository.cancelOAuthAuthorization())
+              .called(1);
         },
       );
 
       blocTest<LoginBloc, LoginState>(
         'ignores duplicate requests while OAuth is already in progress',
         build: buildSubject,
-        seed: () => const LoginState(
-          status: LoginSubmissionStatus.oauthInProgress,
-        ),
+        seed: () =>
+            const LoginState(status: LoginSubmissionStatus.oauthInProgress),
         act: (bloc) => bloc.add(const LoginOAuthRequested()),
         expect: () => const <LoginState>[],
         verify: (_) {
@@ -97,9 +93,8 @@ void main() {
         'returns to initial state when browser authorization is cancelled',
         setUp: () {
           _stubOAuthStart(authenticationRepository);
-          when(
-            () => oauthAuthorizationService.authorize(_authorizationUri),
-          ).thenThrow(const OAuthAuthorizationCancelled());
+          when(() => oauthAuthorizationService.authorize(_authorizationUri))
+              .thenThrow(const OAuthAuthorizationCancelled());
         },
         build: buildSubject,
         act: (bloc) => bloc.add(const LoginOAuthRequested()),
@@ -111,9 +106,8 @@ void main() {
           verifyNever(
             () => authenticationRepository.completeOAuthAuthorization(any()),
           );
-          verify(
-            () => authenticationRepository.cancelOAuthAuthorization(),
-          ).called(1);
+          verify(() => authenticationRepository.cancelOAuthAuthorization())
+              .called(1);
         },
       );
 
@@ -121,9 +115,8 @@ void main() {
         'emits oauthFailure when authorization launch fails',
         setUp: () {
           _stubOAuthStart(authenticationRepository);
-          when(
-            () => oauthAuthorizationService.authorize(_authorizationUri),
-          ).thenThrow(const OAuthAuthorizationLaunchFailure());
+          when(() => oauthAuthorizationService.authorize(_authorizationUri))
+              .thenThrow(const OAuthAuthorizationLaunchFailure());
         },
         build: buildSubject,
         act: (bloc) => bloc.add(const LoginOAuthRequested()),
@@ -150,18 +143,14 @@ void main() {
           const AuthenticationStorageFailure(),
           LoginSubmissionStatus.storageFailure,
         ),
-        (
-          const InvalidCredentialsFailure(),
-          LoginSubmissionStatus.failure,
-        ),
+        (const InvalidCredentialsFailure(), LoginSubmissionStatus.failure),
       ]) {
         blocTest<LoginBloc, LoginState>(
           'emits ${testCase.$2} when OAuth throws ${testCase.$1.runtimeType}',
           setUp: () {
             _stubOAuthStart(authenticationRepository);
-            when(
-              () => oauthAuthorizationService.authorize(_authorizationUri),
-            ).thenAnswer((_) async => _successfulCallbackUri);
+            when(() => oauthAuthorizationService.authorize(_authorizationUri))
+                .thenAnswer((_) async => _successfulCallbackUri);
             when(
               () => authenticationRepository.completeOAuthAuthorization(
                 _successfulCallbackUri,
@@ -180,9 +169,7 @@ void main() {
   });
 }
 
-void _stubOAuthStart(
-  AuthenticationRepository authenticationRepository,
-) {
+void _stubOAuthStart(AuthenticationRepository authenticationRepository) {
   when(
     () => authenticationRepository.beginOAuthAuthorization(
       callbackUri: _callbackUri,
@@ -195,9 +182,8 @@ void _stubOAuthSuccess(
   OAuthAuthorizationService oauthAuthorizationService,
 ) {
   _stubOAuthStart(authenticationRepository);
-  when(
-    () => oauthAuthorizationService.authorize(_authorizationUri),
-  ).thenAnswer((_) async => _successfulCallbackUri);
+  when(() => oauthAuthorizationService.authorize(_authorizationUri))
+      .thenAnswer((_) async => _successfulCallbackUri);
   when(
     () => authenticationRepository.completeOAuthAuthorization(
       _successfulCallbackUri,

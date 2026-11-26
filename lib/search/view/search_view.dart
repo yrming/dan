@@ -10,7 +10,7 @@ import 'package:remixicon/remixicon.dart';
 
 /// Search input and paginated status results.
 class SearchView extends StatefulWidget {
-  const SearchView({
+  const new({
     this.initialQuery,
     this.initialScope = SearchScope.all,
     this.mineBloc,
@@ -297,7 +297,7 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class _SearchAction extends StatelessWidget {
-  const _SearchAction({
+  const new({
     required this.label,
     required this.enabled,
     required this.onSubmit,
@@ -322,9 +322,7 @@ class _SearchAction extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
         ),
       ),
     ),

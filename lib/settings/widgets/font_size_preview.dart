@@ -6,7 +6,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 /// Previews font changes using the same message renderer as the timeline.
 class FontSizePreview extends StatelessWidget {
   /// Creates a sample message with no navigation or status actions.
-  const FontSizePreview({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

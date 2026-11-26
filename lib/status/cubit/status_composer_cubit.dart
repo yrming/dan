@@ -10,7 +10,7 @@ part 'status_composer_state.dart';
 /// Coordinates composing and publishing a new status.
 class StatusComposerCubit extends Cubit<StatusComposerState> {
   /// Creates a status composer cubit.
-  factory StatusComposerCubit({
+  factory({
     required StatusRepository statusRepository,
     required StatusPhotoPicker photoPicker,
     String initialContent = '',
@@ -30,7 +30,7 @@ class StatusComposerCubit extends Cubit<StatusComposerState> {
     );
   }
 
-  StatusComposerCubit._(
+  new _(
     this._statusRepository,
     this._photoPicker,
     String initialContent,

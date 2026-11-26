@@ -10,7 +10,7 @@ import 'package:status_repository/status_repository.dart';
 
 /// Provides account-scoped search results.
 class SearchPage extends StatelessWidget {
-  const SearchPage({
+  const new({
     this.initialQuery,
     this.initialScope = SearchScope.all,
     this.userId,
@@ -42,7 +42,7 @@ class SearchPage extends StatelessWidget {
 }
 
 class _SearchSession extends StatefulWidget {
-  const _SearchSession({
+  const new({
     required this.accountId,
     required this.initialScope,
     this.userId,

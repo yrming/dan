@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 /// Error boundary shown when stored authentication cannot be restored.
 class AuthenticationFailurePage extends StatelessWidget {
   /// Creates an authentication failure page.
-  const AuthenticationFailurePage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

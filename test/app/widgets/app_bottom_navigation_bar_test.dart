@@ -42,14 +42,10 @@ void main() {
         const Key('app-bottom-navigation-create-status-visual'),
       );
       final horizontalPlus = find.byKey(
-        const Key(
-          'app-bottom-navigation-create-status-plus-horizontal',
-        ),
+        const Key('app-bottom-navigation-create-status-plus-horizontal'),
       );
       final verticalPlus = find.byKey(
-        const Key(
-          'app-bottom-navigation-create-status-plus-vertical',
-        ),
+        const Key('app-bottom-navigation-create-status-plus-vertical'),
       );
       expect(tester.getSize(createStatusVisual), const Size(34, 26));
       expect(tester.getSize(horizontalPlus), const Size(14, 2));
@@ -68,10 +64,7 @@ void main() {
       expect(createStatusDecoration.color, isNull);
       expect(
         createStatusDecoration.border,
-        Border.all(
-          color: context.appColors.textBase,
-          width: 2,
-        ),
+        Border.all(color: context.appColors.textBase, width: 2),
       );
       expect(
         createStatusDecoration.borderRadius,
@@ -98,10 +91,7 @@ void main() {
         find.bySemanticsLabel(context.l10n.mentionsPageTitle),
       );
 
-      expect(
-        find.bySemanticsLabel(context.l10n.homePageTitle),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel(context.l10n.homePageTitle), findsOneWidget);
       expect(
         find.bySemanticsLabel(context.l10n.browsePageTitle),
         findsOneWidget,
@@ -115,10 +105,7 @@ void main() {
         findsOneWidget,
       );
       expect(selectedSemantics.flagsCollection.isButton, isTrue);
-      expect(
-        selectedSemantics.flagsCollection.isSelected,
-        Tristate.isTrue,
-      );
+      expect(selectedSemantics.flagsCollection.isSelected, Tristate.isTrue);
       semanticsHandle.dispose();
     });
 
@@ -243,10 +230,7 @@ void main() {
       expect(createStatusDecoration.color, isNull);
       expect(
         createStatusDecoration.border,
-        Border.all(
-          color: context.appColors.textBase,
-          width: 2,
-        ),
+        Border.all(color: context.appColors.textBase, width: 2),
       );
     });
 
@@ -277,15 +261,11 @@ void main() {
         ),
       );
 
-      await tester.tap(
-        find.byKey(const Key('app-bottom-navigation-browse')),
-      );
+      await tester.tap(find.byKey(const Key('app-bottom-navigation-browse')));
 
       expect(tappedTab, AppShellTab.browse);
       expect(
-        platformCalls.where(
-          (call) => call.method == 'HapticFeedback.vibrate',
-        ),
+        platformCalls.where((call) => call.method == 'HapticFeedback.vibrate'),
         isEmpty,
       );
     });
@@ -328,11 +308,7 @@ void main() {
         platformCalls,
         contains(
           isA<MethodCall>()
-              .having(
-                (call) => call.method,
-                'method',
-                'HapticFeedback.vibrate',
-              )
+              .having((call) => call.method, 'method', 'HapticFeedback.vibrate')
               .having(
                 (call) => call.arguments,
                 'arguments',
@@ -374,9 +350,7 @@ void main() {
       );
 
       expect(
-        platformCalls.where(
-          (call) => call.method == 'HapticFeedback.vibrate',
-        ),
+        platformCalls.where((call) => call.method == 'HapticFeedback.vibrate'),
         isEmpty,
       );
     });

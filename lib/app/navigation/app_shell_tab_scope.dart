@@ -7,11 +7,7 @@ import 'package:flutter/widgets.dart';
 /// page cannot rely on being rebuilt to notice that its tab became active.
 class AppShellTabScope extends InheritedWidget {
   /// Creates a scope around the shell navigation branches.
-  const AppShellTabScope({
-    required this.selectedTab,
-    required super.child,
-    super.key,
-  });
+  const new({required this.selectedTab, required super.child, super.key});
 
   /// Tab that is currently displayed by the shell.
   final AppShellTab selectedTab;

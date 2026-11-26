@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockStatusImageActionsService extends Mock
-    implements StatusImageActionsService {}
+    implements StatusImageActionsService;
 
 void main() {
   const imageUrl = 'https://example.com/status-photo-large.png';
@@ -19,15 +19,12 @@ void main() {
     setUp(() {
       imageActionsService = _MockStatusImageActionsService();
       when(() => imageActionsService.share(any())).thenAnswer((_) async {});
-      when(
-        () => imageActionsService.saveToGallery(any()),
-      ).thenAnswer((_) async {});
+      when(() => imageActionsService.saveToGallery(any()))
+          .thenAnswer((_) async {});
     });
 
     StatusImageViewerCubit buildCubit() {
-      return StatusImageViewerCubit(
-        imageActionsService: imageActionsService,
-      );
+      return StatusImageViewerCubit(imageActionsService: imageActionsService);
     }
 
     group('shareRequested', () {
@@ -43,9 +40,8 @@ void main() {
       blocTest<StatusImageViewerCubit, StatusImageViewerState>(
         'emits a share failure when sharing fails',
         setUp: () {
-          when(() => imageActionsService.share(any())).thenThrow(
-            const StatusImageShareFailure(),
-          );
+          when(() => imageActionsService.share(any()))
+              .thenThrow(const StatusImageShareFailure());
         },
         build: buildCubit,
         act: (cubit) => cubit.shareRequested(imageUrl),
@@ -84,18 +80,15 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => imageActionsService.saveToGallery(imageUrl),
-          ).called(1);
+          verify(() => imageActionsService.saveToGallery(imageUrl)).called(1);
         },
       );
 
       blocTest<StatusImageViewerCubit, StatusImageViewerState>(
         'emits [inProgress, failure] when saving fails',
         setUp: () {
-          when(() => imageActionsService.saveToGallery(any())).thenThrow(
-            const StatusImageGallerySaveFailure(),
-          );
+          when(() => imageActionsService.saveToGallery(any()))
+              .thenThrow(const StatusImageGallerySaveFailure());
         },
         build: buildCubit,
         act: (cubit) => cubit.saveToGalleryRequested(imageUrl),
@@ -114,9 +107,8 @@ void main() {
       blocTest<StatusImageViewerCubit, StatusImageViewerState>(
         'ignores requests while another action is still running',
         setUp: () {
-          when(() => imageActionsService.saveToGallery(any())).thenAnswer(
-            (_) => Completer<void>().future,
-          );
+          when(() => imageActionsService.saveToGallery(any()))
+              .thenAnswer((_) => Completer<void>().future);
         },
         build: buildCubit,
         act: (cubit) {
@@ -130,9 +122,7 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => imageActionsService.saveToGallery(imageUrl),
-          ).called(1);
+          verify(() => imageActionsService.saveToGallery(imageUrl)).called(1);
         },
       );
 

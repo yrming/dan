@@ -17,7 +17,7 @@ import 'package:user_repository/user_repository.dart';
 /// Displays a refreshable, paginated list of direct message conversations.
 class ConversationListView extends StatefulWidget {
   /// Creates the conversation list view.
-  const ConversationListView({super.key});
+  const new({super.key});
 
   @override
   State<ConversationListView> createState() => _ConversationListViewState();
@@ -157,7 +157,7 @@ class _ConversationListViewState extends State<ConversationListView> {
 }
 
 class _ConversationListView extends StatelessWidget {
-  const _ConversationListView({
+  const new({
     required this.scrollController,
     required this.conversations,
     required this.loadMoreStatus,
@@ -181,12 +181,9 @@ class _ConversationListView extends StatelessWidget {
             return ConversationListItem(
               key: ValueKey(conversation.otherUserId),
               conversation: conversation,
-              onUserTap: () => unawaited(
-                _openUserProfile(context, conversation),
-              ),
-              onTap: () => unawaited(
-                _openConversation(context, conversation),
-              ),
+              onUserTap: () =>
+                  unawaited(_openUserProfile(context, conversation)),
+              onTap: () => unawaited(_openConversation(context, conversation)),
             );
           },
           separatorBuilder: (context, index) => const Divider(height: 1),
@@ -194,9 +191,7 @@ class _ConversationListView extends StatelessWidget {
         ),
         const SliverToBoxAdapter(child: Divider(height: 1)),
         SliverToBoxAdapter(
-          child: _ConversationListFooter(
-            status: loadMoreStatus,
-          ),
+          child: _ConversationListFooter(status: loadMoreStatus),
         ),
       ],
     );
@@ -247,7 +242,7 @@ Future<void> _openUserProfile(
 }
 
 class _RefreshableConversationListMessage extends StatelessWidget {
-  const _RefreshableConversationListMessage({
+  const new({
     required this.scrollController,
     required this.onRefresh,
     required this.child,
@@ -262,18 +257,13 @@ class _RefreshableConversationListMessage extends StatelessWidget {
     return _PlatformRefreshableScrollView(
       scrollController: scrollController,
       onRefresh: onRefresh,
-      slivers: [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: child,
-        ),
-      ],
+      slivers: [SliverFillRemaining(hasScrollBody: false, child: child)],
     );
   }
 }
 
 class _PlatformRefreshableScrollView extends StatelessWidget {
-  const _PlatformRefreshableScrollView({
+  const new({
     required this.scrollController,
     required this.onRefresh,
     required this.slivers,
@@ -301,7 +291,7 @@ class _PlatformRefreshableScrollView extends StatelessWidget {
 }
 
 class _ConversationListFailure extends StatelessWidget {
-  const _ConversationListFailure({required this.onRetry});
+  const new({required this.onRetry});
 
   final VoidCallback onRetry;
 
@@ -310,9 +300,7 @@ class _ConversationListFailure extends StatelessWidget {
 }
 
 class _ConversationListFooter extends StatelessWidget {
-  const _ConversationListFooter({
-    required this.status,
-  });
+  const new({required this.status});
 
   final ConversationLoadMoreStatus status;
 

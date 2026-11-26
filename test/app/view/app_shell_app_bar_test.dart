@@ -24,10 +24,7 @@ void main() {
     ) async {
       final controller = ScrollToTopController();
       var scrollToTopCalled = false;
-      controller.register(
-        AppShellTab.home,
-        () => scrollToTopCalled = true,
-      );
+      controller.register(AppShellTab.home, () => scrollToTopCalled = true);
       await tester.pumpApp(
         ScrollToTopScope(
           controller: controller,
@@ -46,9 +43,7 @@ void main() {
 
     testWidgets('shows 发现 for the browse tab', (tester) async {
       await tester.pumpApp(
-        const Scaffold(
-          appBar: AppShellAppBar(selectedTab: AppShellTab.browse),
-        ),
+        const Scaffold(appBar: AppShellAppBar(selectedTab: AppShellTab.browse)),
       );
 
       expect(find.text('发现'), findsOneWidget);
@@ -107,15 +102,11 @@ void main() {
       tester,
     ) async {
       await tester.pumpApp(
-        const Scaffold(
-          appBar: AppShellAppBar(selectedTab: AppShellTab.mine),
-        ),
+        const Scaffold(appBar: AppShellAppBar(selectedTab: AppShellTab.mine)),
       );
 
       final actionIcons = tester
-          .widget<AppBar>(
-            find.byType(AppBar),
-          )
+          .widget<AppBar>(find.byType(AppBar))
           .actions!
           .cast<IconButton>()
           .map((action) => (action.icon as Icon).icon);

@@ -12,7 +12,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:remixicon/remixicon.dart';
 
 class FollowRequestsView extends StatelessWidget {
-  const FollowRequestsView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,8 @@ class FollowRequestsView extends StatelessWidget {
         BlocListener<FollowRequestsCubit, FollowRequestsState>(
           listenWhen: (previous, current) =>
               previous.actionSuccessCount != current.actionSuccessCount,
-          listener: (context, state) => unawaited(
-            context.read<NotificationCountsCubit>().refresh(),
-          ),
+          listener: (context, state) =>
+              unawaited(context.read<NotificationCountsCubit>().refresh()),
         ),
       ],
       child: BlocBuilder<FollowRequestsCubit, FollowRequestsState>(
@@ -54,15 +53,12 @@ class FollowRequestsView extends StatelessWidget {
           }
           if (state.error) {
             return AppRetryView(
-              onRetry: () => unawaited(
-                context.read<FollowRequestsCubit>().load(),
-              ),
+              onRetry: () =>
+                  unawaited(context.read<FollowRequestsCubit>().load()),
             );
           }
           if (state.users.isEmpty) {
-            return AppEmptyView(
-              semanticLabel: l10n.followRequestsEmpty,
-            );
+            return AppEmptyView(semanticLabel: l10n.followRequestsEmpty);
           }
           return NotificationListener<ScrollNotification>(
             onNotification: (notification) {
@@ -143,9 +139,7 @@ class FollowRequestsView extends StatelessWidget {
                                   )
                                 : Tooltip(
                                     message: l10n.followRequestAccept,
-                                    child: const Icon(
-                                      RemixIcons.check_line,
-                                    ),
+                                    child: const Icon(RemixIcons.check_line),
                                   ),
                           ),
                           const SizedBox(width: AppSpacing.space10),
@@ -164,9 +158,7 @@ class FollowRequestsView extends StatelessWidget {
                                   )
                                 : Tooltip(
                                     message: l10n.followRequestIgnore,
-                                    child: const Icon(
-                                      RemixIcons.close_line,
-                                    ),
+                                    child: const Icon(RemixIcons.close_line),
                                   ),
                           ),
                         ],
@@ -174,9 +166,7 @@ class FollowRequestsView extends StatelessWidget {
                     );
                   },
                 ),
-                const SliverToBoxAdapter(
-                  child: Divider(height: 1),
-                ),
+                const SliverToBoxAdapter(child: Divider(height: 1)),
                 if (state.loadingMore || state.loadMoreError || state.hasMore)
                   SliverToBoxAdapter(
                     child: state.loadingMore

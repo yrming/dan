@@ -28,7 +28,7 @@ const _zoomComparisonTolerance = 0.01;
 /// Shows a status image in an immersive viewer.
 class StatusImageViewerPage extends StatelessWidget {
   /// Creates a status image viewer page.
-  const StatusImageViewerPage({
+  const new({
     required this.imageUrl,
     required this.heroTag,
     this.semanticLabel,
@@ -113,7 +113,7 @@ class StatusImageViewerPage extends StatelessWidget {
 }
 
 class _StatusImageGalleryView extends StatefulWidget {
-  const _StatusImageGalleryView({
+  const new({
     required this.photos,
     required this.initialIndex,
     this.imageProvider,
@@ -191,7 +191,7 @@ class _StatusImageGalleryViewState extends State<_StatusImageGalleryView> {
 
 /// Renders the immersive viewer state and dispatches image actions.
 class StatusImageViewerView extends StatefulWidget {
-  const StatusImageViewerView({
+  const new({
     required this.imageUrl,
     required this.heroTag,
     this.semanticLabel,
@@ -205,7 +205,7 @@ class StatusImageViewerView extends StatefulWidget {
   }) : onClose = null;
 
   /// Uses the status viewer interactions for a local, unpublished image.
-  const StatusImageViewerView.local({
+  const new local({
     required this.imageProvider,
     required this.onClose,
     required this.heroTag,
@@ -570,9 +570,8 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
                       child: FilledButton(
                         onPressed: widget.onViewStatus,
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF737373).withValues(
-                            alpha: 0.6,
-                          ),
+                          backgroundColor: const Color(0xFF737373)
+                              .withValues(alpha: 0.6),
                           foregroundColor: Colors.white,
                           tapTargetSize: MaterialTapTargetSize.padded,
                           textStyle: context.appTypography.statusHandle
@@ -589,9 +588,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
                           mainAxisSize: MainAxisSize.min,
                           spacing: context.appSizing.scaled(AppSpacing.xxs),
                           children: [
-                            Text(
-                              context.l10n.statusImageViewerViewStatusLabel,
-                            ),
+                            Text(context.l10n.statusImageViewerViewStatusLabel),
                             Image.asset(
                               'assets/icons/arrow-right.png',
                               height: context.appSizing.scaled(8),
@@ -767,10 +764,7 @@ class _StatusImageViewerViewState extends State<StatusImageViewerView> {
     final viewportHeight = _viewportSize?.height ?? 0;
     if (viewportHeight <= 0) return;
 
-    final slideOffset = (_slideOffset + delta.dy).clamp(
-      0.0,
-      viewportHeight,
-    );
+    final slideOffset = (_slideOffset + delta.dy).clamp(0.0, viewportHeight);
     setState(() {
       _isSlidingOut = true;
       _isSlideResetAnimating = false;
@@ -1055,20 +1049,14 @@ Widget _buildRoundedHeroShuttle({
 }
 
 class _StatusImageViewerClipper extends CustomClipper<RRect> {
-  const _StatusImageViewerClipper({
-    required this.imageBounds,
-    required this.borderRadius,
-  });
+  const new({required this.imageBounds, required this.borderRadius});
 
   final Rect imageBounds;
   final double borderRadius;
 
   @override
   RRect getClip(Size size) {
-    return RRect.fromRectAndRadius(
-      imageBounds,
-      Radius.circular(borderRadius),
-    );
+    return RRect.fromRectAndRadius(imageBounds, Radius.circular(borderRadius));
   }
 
   @override
@@ -1079,7 +1067,7 @@ class _StatusImageViewerClipper extends CustomClipper<RRect> {
 }
 
 class _ImageViewerFailureIcon extends StatelessWidget {
-  const _ImageViewerFailureIcon({this.onTap});
+  const new({this.onTap});
 
   final VoidCallback? onTap;
 
@@ -1087,9 +1075,8 @@ class _ImageViewerFailureIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: IconButton(
-        tooltip: MaterialLocalizations.of(
-          context,
-        ).refreshIndicatorSemanticLabel,
+        tooltip: MaterialLocalizations.of(context)
+            .refreshIndicatorSemanticLabel,
         color: AppColors.imageViewerForeground,
         onPressed: onTap,
         icon: Icon(

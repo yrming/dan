@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 /// Group of profile menu rows matching the profile page visual language.
 class ProfileMenuSection extends StatelessWidget {
   /// Creates a profile menu section.
-  const ProfileMenuSection({required this.children, super.key});
+  const new({required this.children, super.key});
 
   /// Rows displayed by the section.
   final List<Widget> children;
@@ -28,7 +28,7 @@ class ProfileMenuSection extends StatelessWidget {
 /// One action or count-bearing row in a [ProfileMenuSection].
 class ProfileTile extends StatelessWidget {
   /// Creates a profile menu row.
-  const ProfileTile({
+  const new({
     required this.icon,
     required this.iconColor,
     required this.title,
@@ -72,11 +72,7 @@ class ProfileTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              icon,
-              color: iconColor,
-              size: sizing.scaled(26),
-            ),
+            Icon(icon, color: iconColor, size: sizing.scaled(26)),
             SizedBox(width: sizing.scaled(AppSpacing.md)),
             Expanded(
               child: Text(title, style: context.appTypography.menuTitle),
@@ -97,10 +93,6 @@ class ProfileTile extends StatelessWidget {
 
     return onTap == null
         ? row
-        : InkWell(
-            onTap: onTap,
-            hoverColor: AppColors.transparent,
-            child: row,
-          );
+        : InkWell(onTap: onTap, hoverColor: AppColors.transparent, child: row);
   }
 }

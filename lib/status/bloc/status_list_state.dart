@@ -54,11 +54,7 @@ enum StatusAction {
 /// Sanitized failure for one status mutation.
 final class StatusActionFailure extends Equatable {
   /// Creates a status action failure.
-  const StatusActionFailure({
-    required this.statusId,
-    required this.action,
-    this.message,
-  });
+  const new({required this.statusId, required this.action, this.message});
 
   /// Status whose mutation failed.
   final String statusId;
@@ -74,10 +70,7 @@ final class StatusActionFailure extends Equatable {
 
 /// Result of a successful favorite toggle.
 final class StatusFavoriteSuccess extends Equatable {
-  const StatusFavoriteSuccess({
-    required this.statusId,
-    required this.isFavorited,
-  });
+  const new({required this.statusId, required this.isFavorited});
 
   final String statusId;
   final bool isFavorited;
@@ -89,7 +82,7 @@ final class StatusFavoriteSuccess extends Equatable {
 /// Immutable state for a timeline-like status list.
 final class StatusListState extends Equatable {
   /// Creates status list state.
-  StatusListState({
+  new({
     this.status = StatusListStatus.initial,
     this.searchQuery = '',
     this.hasProfileCountMismatch = false,

@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 /// Loading placeholders for an original status and its reply context.
 class StatusDetailSkeleton extends StatelessWidget {
   /// Creates a status-detail skeleton.
-  const StatusDetailSkeleton({
+  const new({
     required this.semanticLabel,
     required this.contextSemanticLabel,
     super.key,
@@ -62,7 +62,7 @@ class StatusDetailSkeleton extends StatelessWidget {
 }
 
 class _ReplySkeletonLine extends StatelessWidget {
-  const _ReplySkeletonLine({required this.widthFactor});
+  const new({required this.widthFactor});
 
   final double widthFactor;
 

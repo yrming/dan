@@ -8,12 +8,12 @@ import 'package:mocktail/mocktail.dart';
 import 'package:status_repository/status_repository.dart' as status_repository;
 
 class _MockStatusRepository extends Mock
-    implements status_repository.StatusRepository {}
+    implements status_repository.StatusRepository;
 
 class _MockDraftRepository extends Mock
-    implements status_repository.StatusDraftRepository {}
+    implements status_repository.StatusDraftRepository;
 
-class _MockStatusPhotoPicker extends Mock implements StatusPhotoPicker {}
+class _MockStatusPhotoPicker extends Mock implements StatusPhotoPicker;
 
 void main() {
   group(StatusComposerCubit, () {
@@ -135,9 +135,9 @@ void main() {
       }
       blocTest<StatusComposerCubit, StatusComposerState>(
         'clears a successfully published draft',
-        setUp: () => when(
-          () => statusRepository.createStatus('草稿'),
-        ).thenAnswer((_) async => _status),
+        setUp: () =>
+            when(() => statusRepository.createStatus('草稿'))
+                .thenAnswer((_) async => _status),
         build: buildDraftSubject,
         seed: () => const StatusComposerState(content: '草稿'),
         act: (cubit) => cubit.publish(),
@@ -155,9 +155,9 @@ void main() {
       );
       blocTest<StatusComposerCubit, StatusComposerState>(
         'retains the saved draft after a failed publication',
-        setUp: () => when(
-          () => statusRepository.createStatus('草稿'),
-        ).thenThrow(Exception('network')),
+        setUp: () =>
+            when(() => statusRepository.createStatus('草稿'))
+                .thenThrow(Exception('network')),
         build: buildDraftSubject,
         seed: () => const StatusComposerState(content: '草稿'),
         act: (cubit) => cubit.publish(),
@@ -177,9 +177,8 @@ void main() {
       blocTest<StatusComposerCubit, StatusComposerState>(
         'keeps publication successful if local cleanup fails',
         setUp: () {
-          when(
-            () => statusRepository.createStatus('草稿'),
-          ).thenAnswer((_) async => _status);
+          when(() => statusRepository.createStatus('草稿'))
+              .thenAnswer((_) async => _status);
           when(() => drafts.clear('account')).thenThrow(Exception('disk'));
         },
         build: buildDraftSubject,
@@ -222,9 +221,8 @@ void main() {
       blocTest<StatusComposerCubit, StatusComposerState>(
         'publishes a prefilled draft without requiring an edit',
         setUp: () {
-          when(
-            () => statusRepository.createStatus('@饭友 正文'),
-          ).thenAnswer((_) async => _status);
+          when(() => statusRepository.createStatus('@饭友 正文'))
+              .thenAnswer((_) async => _status);
         },
         build: () => StatusComposerCubit(
           statusRepository: statusRepository,
@@ -397,9 +395,9 @@ void main() {
 
       blocTest<StatusComposerCubit, StatusComposerState>(
         'blocks duplicate selection and publishing until selection completes',
-        setUp: () => when(
-          () => photoPicker.pickPhoto(),
-        ).thenAnswer((_) => selection.future),
+        setUp: () =>
+            when(() => photoPicker.pickPhoto())
+                .thenAnswer((_) => selection.future),
         build: buildSubject,
         seed: () => const StatusComposerState(content: '草稿'),
         act: (cubit) async {
@@ -609,9 +607,9 @@ void main() {
 
       blocTest<StatusComposerCubit, StatusComposerState>(
         'allows publishing after reducing an overlong draft to 140 characters',
-        setUp: () => when(
-          () => statusRepository.createStatus('字' * 140),
-        ).thenAnswer((_) async => _status),
+        setUp: () =>
+            when(() => statusRepository.createStatus('字' * 140))
+                .thenAnswer((_) async => _status),
         build: buildSubject,
         seed: () => StatusComposerState(content: '字' * 141),
         act: (cubit) async {
@@ -629,9 +627,8 @@ void main() {
             submissionStatus: StatusComposerSubmissionStatus.success,
           ),
         ],
-        verify: (_) => verify(
-          () => statusRepository.createStatus('字' * 140),
-        ).called(1),
+        verify: (_) =>
+            verify(() => statusRepository.createStatus('字' * 140)).called(1),
       );
 
       for (final reply in [true, false]) {
@@ -702,9 +699,8 @@ void main() {
       blocTest<StatusComposerCubit, StatusComposerState>(
         'emits [inProgress, success] when the repository creates the status',
         setUp: () {
-          when(
-            () => statusRepository.createStatus('新的动态'),
-          ).thenAnswer((_) async => _status);
+          when(() => statusRepository.createStatus('新的动态'))
+              .thenAnswer((_) async => _status);
         },
         build: buildSubject,
         seed: () => const StatusComposerState(content: '  新的动态  '),
@@ -720,9 +716,7 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => statusRepository.createStatus('新的动态'),
-          ).called(1);
+          verify(() => statusRepository.createStatus('新的动态')).called(1);
         },
       );
 
@@ -731,9 +725,7 @@ void main() {
         setUp: () {
           when(
             () => statusRepository.createStatus('新的动态'),
-          ).thenThrow(
-            const status_repository.StatusRepositoryUnknownFailure(),
-          );
+          ).thenThrow(const status_repository.StatusRepositoryUnknownFailure());
         },
         build: buildSubject,
         seed: () => const StatusComposerState(content: '新的动态'),
@@ -748,9 +740,7 @@ void main() {
             submissionStatus: StatusComposerSubmissionStatus.failure,
           ),
         ],
-        errors: () => [
-          isA<status_repository.StatusRepositoryUnknownFailure>(),
-        ],
+        errors: () => [isA<status_repository.StatusRepositoryUnknownFailure>()],
       );
 
       blocTest<StatusComposerCubit, StatusComposerState>(

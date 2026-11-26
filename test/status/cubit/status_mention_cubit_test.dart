@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:status_repository/status_repository.dart';
 
-class _MockStatusRepository extends Mock implements StatusRepository {}
+class _MockStatusRepository extends Mock implements StatusRepository;
 
 const _author = StatusAuthor(
   id: 'friend',
@@ -65,9 +65,9 @@ void main() {
       );
       blocTest<StatusMentionCubit, StatusMentionState>(
         'retries failures',
-        setUp: () => when(
-          () => repository.getMentions(limit: 60),
-        ).thenThrow(Exception('offline')),
+        setUp: () =>
+            when(() => repository.getMentions(limit: 60))
+                .thenThrow(Exception('offline')),
         build: build,
         act: (cubit) async {
           await cubit.load();
@@ -119,9 +119,8 @@ void main() {
         build: build,
         act: (cubit) async {
           final pending = Completer<StatusPage>();
-          when(
-            () => repository.getMentions(limit: 60),
-          ).thenAnswer((_) => pending.future);
+          when(() => repository.getMentions(limit: 60))
+              .thenAnswer((_) => pending.future);
           final load = cubit.load();
           cubit.queryChanged('饭友');
           pending.complete(

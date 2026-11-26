@@ -160,32 +160,29 @@ void main() {
       expect(find.byType(ShaderMask), findsNothing);
     });
 
-    testWidgets(
-      'renders the X placeholder before image dimensions resolve',
-      (
-        tester,
-      ) async {
-        await tester.pumpApp(
-          const Align(
-            alignment: Alignment.topLeft,
-            child: SizedBox(
-              width: 300,
-              child: StatusPhoto.x(
-                imageUrl: _imageUrl,
-                semanticLabel: _semanticLabel,
-                heroTag: _heroTag,
-              ),
+    testWidgets('renders the X placeholder before image dimensions resolve', (
+      tester,
+    ) async {
+      await tester.pumpApp(
+        const Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: 300,
+            child: StatusPhoto.x(
+              imageUrl: _imageUrl,
+              semanticLabel: _semanticLabel,
+              heroTag: _heroTag,
             ),
           ),
-        );
+        ),
+      );
 
-        expect(find.byType(CachedNetworkImage), findsNothing);
-        expect(find.byType(AppShimmer), findsOneWidget);
-        expect(find.bySemanticsLabel(_semanticLabel), findsOneWidget);
-        expect(find.byType(Hero), findsOneWidget);
-        expect(tester.widget<Hero>(find.byType(Hero)).tag, _heroTag);
-      },
-    );
+      expect(find.byType(CachedNetworkImage), findsNothing);
+      expect(find.byType(AppShimmer), findsOneWidget);
+      expect(find.bySemanticsLabel(_semanticLabel), findsOneWidget);
+      expect(find.byType(Hero), findsOneWidget);
+      expect(tester.widget<Hero>(find.byType(Hero)).tag, _heroTag);
+    });
 
     testWidgets('calls onTap when the thumbnail is tapped', (tester) async {
       var tapCount = 0;

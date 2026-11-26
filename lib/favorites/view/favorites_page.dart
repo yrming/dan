@@ -11,11 +11,7 @@ import 'package:status_repository/status_repository.dart';
 /// Favorite statuses page.
 class FavoritesPage extends StatelessWidget {
   /// Creates a favorites page.
-  const FavoritesPage({
-    required this.userId,
-    this.profileItemCount,
-    super.key,
-  });
+  const new({required this.userId, this.profileItemCount, super.key});
 
   /// Identifier of the user whose favorites are displayed.
   final String userId;

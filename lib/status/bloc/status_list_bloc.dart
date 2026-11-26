@@ -12,7 +12,7 @@ part 'status_list_state.dart';
 /// Coordinates loading, pagination, and mutations for one account feed.
 class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
   /// Creates a status list bloc.
-  factory StatusListBloc({
+  factory({
     required StatusRepository statusRepository,
     required StatusFeed feed,
     required String accountId,
@@ -28,7 +28,7 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
     );
   }
 
-  StatusListBloc._(
+  new _(
     this._statusRepository,
     this._feed,
     this._accountId,
@@ -51,10 +51,7 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
       _onLoadMoreRequested,
       transformer: droppable(),
     );
-    on<StatusListStatusChanged>(
-      _onStatusChanged,
-      transformer: sequential(),
-    );
+    on<StatusListStatusChanged>(_onStatusChanged, transformer: sequential());
     on<StatusListStatusDeletionRequested>(_onStatusDeletionRequested);
     on<StatusListStatusFavoriteToggled>(_onStatusFavoriteToggled);
 
@@ -413,10 +410,7 @@ class StatusListBloc extends Bloc<StatusListEvent, StatusListState> {
     );
   }
 
-  List<Status> _mergeStatuses(
-    Iterable<Status> first,
-    Iterable<Status> second,
-  ) {
+  List<Status> _mergeStatuses(Iterable<Status> first, Iterable<Status> second) {
     final statusesById = <String, Status>{};
     for (final status in first) {
       statusesById[status.id] = status;

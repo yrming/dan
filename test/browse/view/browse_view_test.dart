@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/helpers.dart';
 
 class _MockStatusListBloc extends MockBloc<StatusListEvent, StatusListState>
-    implements StatusListBloc {}
+    implements StatusListBloc;
 
 void main() {
   group(BrowseView, () {
@@ -24,10 +24,7 @@ void main() {
 
     testWidgets('renders the shared status list', (tester) async {
       await tester.pumpApp(
-        BlocProvider.value(
-          value: statusListBloc,
-          child: const BrowseView(),
-        ),
+        BlocProvider.value(value: statusListBloc, child: const BrowseView()),
       );
 
       expect(find.byType(StatusList), findsOneWidget);

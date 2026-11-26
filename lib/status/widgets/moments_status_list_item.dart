@@ -9,7 +9,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 /// Displays a message in a personal Moments album, with its date on the left.
 class MomentsStatusListItem extends StatelessWidget {
   /// Creates a personal album message.
-  const MomentsStatusListItem({
+  const new({
     required this.status,
     required this.onStatusTap,
     this.previousCreatedAt,
@@ -152,11 +152,7 @@ class MomentsStatusListItem extends StatelessWidget {
 }
 
 class _MomentsDate extends StatelessWidget {
-  const _MomentsDate({
-    required this.date,
-    required this.source,
-    required this.now,
-  });
+  const new({required this.date, required this.source, required this.now});
 
   final DateTime? date;
   final String source;

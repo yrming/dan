@@ -9,7 +9,7 @@ part 'status_detail_state.dart';
 /// Loads an original status and its conversation.
 class StatusDetailCubit extends Cubit<StatusDetailState> {
   /// Creates a status detail cubit.
-  factory StatusDetailCubit({
+  factory({
     required StatusRepository statusRepository,
     required UserRepository userRepository,
     required String statusId,
@@ -21,7 +21,7 @@ class StatusDetailCubit extends Cubit<StatusDetailState> {
     initialStatus,
   );
 
-  StatusDetailCubit._(
+  new _(
     this._statusRepository,
     this._userRepository,
     this._statusId,
@@ -218,9 +218,7 @@ class StatusDetailCubit extends Cubit<StatusDetailState> {
     final status = state.statusDetail;
     if (status == null) return;
     emit(
-      state.copyWith(
-        favoriteActionStatus: StatusFavoriteActionStatus.initial,
-      ),
+      state.copyWith(favoriteActionStatus: StatusFavoriteActionStatus.initial),
     );
     try {
       final updated = status.isFavorited
@@ -257,9 +255,8 @@ class StatusDetailCubit extends Cubit<StatusDetailState> {
   }
 
   /// Deletes the original status displayed at the top of the page.
-  Future<void> delete() => _statusRepository.deleteStatus(
-    state.statusDetail?.id ?? _statusId,
-  );
+  Future<void> delete() =>
+      _statusRepository.deleteStatus(state.statusDetail?.id ?? _statusId);
 
   /// Deletes a conversation reply and removes it without leaving the page.
   Future<void> deleteReply(String statusId) async {
@@ -274,10 +271,6 @@ class StatusDetailCubit extends Cubit<StatusDetailState> {
           ? replies.firstOrNull
           : state.statusDetail;
     }
-    emit(
-      state.copyWith(
-        replies: replies,
-      ),
-    );
+    emit(state.copyWith(replies: replies));
   }
 }

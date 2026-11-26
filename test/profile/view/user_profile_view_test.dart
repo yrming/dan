@@ -17,7 +17,7 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockUserProfileCubit extends MockCubit<UserProfileState>
-    implements UserProfileCubit {}
+    implements UserProfileCubit;
 
 void main() {
   group(UserProfileView, () {
@@ -68,37 +68,32 @@ void main() {
           GoRoute(
             name: AppRouteName.userStatuses,
             path: AppRoutePath.userStatuses,
-            builder: (_, state) => Text(
-              'statuses-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('statuses-${state.pathParameters['userId']}'),
           ),
           GoRoute(
             name: AppRouteName.userPhotos,
             path: AppRoutePath.userPhotos,
-            builder: (_, state) => Text(
-              'photos-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('photos-${state.pathParameters['userId']}'),
           ),
           GoRoute(
             name: AppRouteName.favorites,
             path: AppRoutePath.favorites,
-            builder: (_, state) => Text(
-              'favorites-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('favorites-${state.pathParameters['userId']}'),
           ),
           GoRoute(
             name: AppRouteName.following,
             path: AppRoutePath.following,
-            builder: (_, state) => Text(
-              'following-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('following-${state.pathParameters['userId']}'),
           ),
           GoRoute(
             name: AppRouteName.followers,
             path: AppRoutePath.followers,
-            builder: (_, state) => Text(
-              'followers-${state.pathParameters['userId']}',
-            ),
+            builder: (_, state) =>
+                Text('followers-${state.pathParameters['userId']}'),
           ),
         ],
       );
@@ -108,14 +103,10 @@ void main() {
       return router;
     }
 
-    testWidgets('renders the shared account header structure', (
-      tester,
-    ) async {
+    testWidgets('renders the shared account header structure', (tester) async {
       await pumpView(
         tester,
-        const UserProfileLoadSuccess(
-          profile: _profile,
-        ),
+        const UserProfileLoadSuccess(profile: _profile),
         friendRequestCount: 4,
       );
       final context = tester.element(find.byType(UserProfileView));
@@ -133,18 +124,13 @@ void main() {
         findsOneWidget,
       );
       // The header no longer uses the legacy location labels.
-      expect(
-        find.text('所在地：${_profile.location}'),
-        findsNothing,
-      );
+      expect(find.text('所在地：${_profile.location}'), findsNothing);
       expect(
         find.text('${_profile.id} / 所在地：${_profile.location}'),
         findsNothing,
       );
       expect(
-        find.text(
-          context.l10n.userProfileAccountHandle(_profile.screenName),
-        ),
+        find.text(context.l10n.userProfileAccountHandle(_profile.screenName)),
         findsNothing,
       );
       expect(
@@ -167,10 +153,7 @@ void main() {
     testWidgets('renders a circular avatar with a divider border', (
       tester,
     ) async {
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: _profile));
       final avatarFinder = find.byKey(const Key('user-profile-avatar'));
       final context = tester.element(avatarFinder);
       final avatar = tester.widget<UserAvatar>(avatarFinder);
@@ -180,10 +163,7 @@ void main() {
       expect(avatar.borderColor, context.appColors.divider);
       expect(avatar.borderWidth, 0.5);
       final avatarContainer = tester.widget<Container>(
-        find.descendant(
-          of: avatarFinder,
-          matching: find.byType(Container),
-        ),
+        find.descendant(of: avatarFinder, matching: find.byType(Container)),
       );
       final avatarDecoration =
           avatarContainer.foregroundDecoration! as BoxDecoration;
@@ -192,10 +172,7 @@ void main() {
       expect(avatarBorder.top.color, context.appColors.divider);
       expect(avatarBorder.top.width, 0.5);
       expect(
-        find.descendant(
-          of: avatarFinder,
-          matching: find.byType(ClipOval),
-        ),
+        find.descendant(of: avatarFinder, matching: find.byType(ClipOval)),
         findsOneWidget,
       );
     });
@@ -203,10 +180,7 @@ void main() {
     testWidgets('uses compact spacing above the account identity', (
       tester,
     ) async {
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: _profile));
 
       final headerFinder = find.byType(ProfileHeader);
       final avatarFinder = find.byKey(const Key('user-profile-avatar'));
@@ -227,10 +201,7 @@ void main() {
         screenName: 'fanfou_a',
         gender: '女',
       );
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
 
       expect(find.byIcon(Icons.woman), findsOneWidget);
       expect(find.byIcon(Icons.man), findsNothing);
@@ -249,10 +220,7 @@ void main() {
         screenName: 'fanfou_a',
         gender: '未知',
       );
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
 
       expect(find.byIcon(Icons.woman), findsNothing);
       expect(find.byIcon(Icons.man), findsNothing);
@@ -261,9 +229,8 @@ void main() {
     testWidgets('does not render the superseded settings list action', (
       tester,
     ) async {
-      when(() => userProfileCubit.state).thenReturn(
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      when(() => userProfileCubit.state)
+          .thenReturn(const UserProfileLoadSuccess(profile: _profile));
       await tester.pumpApp(
         BlocProvider.value(
           value: userProfileCubit,
@@ -272,18 +239,9 @@ void main() {
       );
       final context = tester.element(find.byType(UserProfileView));
 
-      expect(
-        find.text(context.l10n.userProfileFavoritesLabel),
-        findsOneWidget,
-      );
-      expect(
-        find.text(context.l10n.userProfileSettingsLabel),
-        findsNothing,
-      );
-      expect(
-        find.text('外观与显示偏好'),
-        findsNothing,
-      );
+      expect(find.text(context.l10n.userProfileFavoritesLabel), findsOneWidget);
+      expect(find.text(context.l10n.userProfileSettingsLabel), findsNothing);
+      expect(find.text('外观与显示偏好'), findsNothing);
       expect(find.text(_profile.description!), findsOneWidget);
     });
 
@@ -296,10 +254,7 @@ void main() {
         screenName: 'fanfou_a',
         description: '第一行简介\n第二行简介\n第三行简介',
       );
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
 
       final biography = tester.widget<Text>(
         find.byKey(const Key('user-profile-description')),
@@ -324,10 +279,7 @@ void main() {
     testWidgets('shows a non-empty profile URL below the biography', (
       tester,
     ) async {
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: _profile));
 
       expect(find.byKey(const Key('user-profile-url')), findsOneWidget);
       expect(find.text(_profile.url!), findsOneWidget);
@@ -384,10 +336,7 @@ void main() {
         description: '写点什么。',
         url: '   ',
       );
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
 
       expect(find.byKey(const Key('user-profile-url')), findsNothing);
       expect(
@@ -401,9 +350,8 @@ void main() {
     testWidgets(
       'keeps the profile header surface behind the revealed top overscroll',
       (tester) async {
-        when(() => userProfileCubit.state).thenReturn(
-          const UserProfileLoadSuccess(profile: _profile),
-        );
+        when(() => userProfileCubit.state)
+            .thenReturn(const UserProfileLoadSuccess(profile: _profile));
         await tester.pumpApp(
           BlocProvider.value(
             value: userProfileCubit,
@@ -436,10 +384,7 @@ void main() {
         expect(pulledHeaderRect.top, greaterThan(initialHeaderTop));
         expect(overscrollSurfaceRect.top, lessThanOrEqualTo(viewportTop));
         expect(overscrollSurfaceRect.bottom, pulledHeaderRect.bottom);
-        expect(
-          overscrollSurface.color,
-          Theme.of(context).colorScheme.surface,
-        );
+        expect(overscrollSurface.color, Theme.of(context).colorScheme.surface);
 
         await gesture.up();
       },
@@ -448,10 +393,7 @@ void main() {
     testWidgets('removes the legacy following and followers menu group', (
       tester,
     ) async {
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: _profile));
       final context = tester.element(find.byType(UserProfileView));
 
       expect(find.text(_profile.description!), findsOneWidget);
@@ -465,28 +407,20 @@ void main() {
       expect(find.text('${_profile.statusesCount}'), findsOneWidget);
       expect(find.text(context.l10n.userProfilePhotosLabel), findsOneWidget);
       expect(find.text('${_profile.photoCount}'), findsOneWidget);
-      expect(
-        find.text(context.l10n.userProfileFavoritesLabel),
-        findsOneWidget,
-      );
+      expect(find.text(context.l10n.userProfileFavoritesLabel), findsOneWidget);
       expect(find.text('${_profile.favoritesCount}'), findsOneWidget);
       expect(find.byIcon(RemixIcons.message_line), findsOneWidget);
       expect(find.byIcon(RemixIcons.multi_image_line), findsOneWidget);
       expect(find.byIcon(RemixIcons.star_line), findsOneWidget);
       expect(find.byIcon(Icons.chevron_right), findsNWidgets(3));
       final profileTiles = tester
-          .widgetList<ProfileTile>(
-            find.byType(ProfileTile),
-          )
+          .widgetList<ProfileTile>(find.byType(ProfileTile))
           .toList();
-      expect(
-        profileTiles.map((tile) => tile.icon),
-        [
-          RemixIcons.message_line,
-          RemixIcons.multi_image_line,
-          RemixIcons.star_line,
-        ],
-      );
+      expect(profileTiles.map((tile) => tile.icon), [
+        RemixIcons.message_line,
+        RemixIcons.multi_image_line,
+        RemixIcons.star_line,
+      ]);
       expect(find.byIcon(RemixIcons.user_shared_line), findsNothing);
       expect(find.byIcon(RemixIcons.user_received_line), findsNothing);
       expect(find.byIcon(RemixIcons.user_add_line), findsNothing);
@@ -505,10 +439,7 @@ void main() {
     testWidgets('does not play a ripple when an entry is tapped', (
       tester,
     ) async {
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: _profile));
       final inkWells = tester.widgetList<InkWell>(
         find.descendant(
           of: find.byType(ProfileMenuSection),
@@ -557,10 +488,7 @@ void main() {
         protected: true,
         following: false,
       );
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
       final context = tester.element(find.text(profile.name));
       final l10n = context.l10n;
 
@@ -599,10 +527,7 @@ void main() {
           find.text(l10n.userProfileProtectedDialogFollowUnknownLabel),
         );
         await tester.pumpAndSettle();
-        expect(
-          find.text(l10n.userProfileProtectedDialogTitle),
-          findsNothing,
-        );
+        expect(find.text(l10n.userProfileProtectedDialogTitle), findsNothing);
       }
     });
 
@@ -653,10 +578,7 @@ void main() {
         protected: true,
         following: false,
       );
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
       final context = tester.element(find.text(profile.name));
       final l10n = context.l10n;
 
@@ -724,17 +646,13 @@ void main() {
     ) async {
       await pumpView(
         tester,
-        const UserProfileLoadSuccess(
-          profile: _profile,
-        ),
+        const UserProfileLoadSuccess(profile: _profile),
         friendRequestCount: 4,
       );
       final context = tester.element(find.byType(ProfileHeader));
 
       expect(
-        find.text(
-          context.l10n.userProfileFollowRequestsCount(4),
-        ),
+        find.text(context.l10n.userProfileFollowRequestsCount(4)),
         findsOneWidget,
       );
       expect(find.byIcon(RemixIcons.user_add_line), findsNothing);
@@ -781,37 +699,34 @@ void main() {
           (label: '收藏', destination: 'favorites-user-a', count: 5),
           (label: '照片', destination: 'photos-user-a', count: 7),
         ]) {
-          testWidgets(
-            'refreshes after ${entry.label} only for '
-            'the current account=$isCurrentUser',
-            (tester) async {
-              when(() => userProfileCubit.load()).thenAnswer((_) async {});
-              final router = await pumpViewWithRouter(
-                tester,
-                const UserProfileLoadSuccess(profile: _profile),
-                isCurrentUser: isCurrentUser,
-              );
+          testWidgets('refreshes after ${entry.label} only for '
+              'the current account=$isCurrentUser', (tester) async {
+            when(() => userProfileCubit.load()).thenAnswer((_) async {});
+            final router = await pumpViewWithRouter(
+              tester,
+              const UserProfileLoadSuccess(profile: _profile),
+              isCurrentUser: isCurrentUser,
+            );
 
-              await tester.tap(find.text(entry.label));
-              await tester.pumpAndSettle();
-              expect(find.text(entry.destination), findsOneWidget);
-              expect(
-                router.state.uri.queryParameters['profileItemCount'],
-                '${entry.count}',
-              );
+            await tester.tap(find.text(entry.label));
+            await tester.pumpAndSettle();
+            expect(find.text(entry.destination), findsOneWidget);
+            expect(
+              router.state.uri.queryParameters['profileItemCount'],
+              '${entry.count}',
+            );
+            verifyNever(() => userProfileCubit.load());
+
+            router.pop();
+            await tester.pumpAndSettle();
+
+            expect(find.byType(UserProfileView), findsOneWidget);
+            if (isCurrentUser) {
+              verify(() => userProfileCubit.load()).called(1);
+            } else {
               verifyNever(() => userProfileCubit.load());
-
-              router.pop();
-              await tester.pumpAndSettle();
-
-              expect(find.byType(UserProfileView), findsOneWidget);
-              if (isCurrentUser) {
-                verify(() => userProfileCubit.load()).called(1);
-              } else {
-                verifyNever(() => userProfileCubit.load());
-              }
-            },
-          );
+            }
+          });
         }
       }
     });
@@ -825,10 +740,7 @@ void main() {
         screenName: 'fanfou_a',
       );
 
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: profile));
 
       expect(find.text('0'), findsNWidgets(3));
     });
@@ -836,10 +748,7 @@ void main() {
     testWidgets('extends information dividers across the full section width', (
       tester,
     ) async {
-      await pumpView(
-        tester,
-        const UserProfileLoadSuccess(profile: _profile),
-      );
+      await pumpView(tester, const UserProfileLoadSuccess(profile: _profile));
 
       final sectionRect = tester.getRect(find.byType(ProfileMenuSection).first);
       final dividerRect = tester.getRect(find.byType(Divider).first);
@@ -862,49 +771,46 @@ void main() {
 
     group('load failure feedback', () {
       for (final profile in [null, _profile]) {
-        testWidgets(
-          'shows a transient toast when loading fails '
-          'with cached profile=${profile != null}',
-          (tester) async {
-            final states = StreamController<UserProfileState>();
-            addTearDown(states.close);
-            final loading = UserProfileLoadInProgress(profile: profile);
-            whenListen(userProfileCubit, states.stream, initialState: loading);
-            when(() => userProfileCubit.load()).thenAnswer((_) async {});
-            await tester.pumpApp(
-              Scaffold(
-                body: BlocProvider.value(
-                  value: userProfileCubit,
-                  child: const UserProfileView(userId: 'user-a'),
-                ),
+        testWidgets('shows a transient toast when loading fails '
+            'with cached profile=${profile != null}', (tester) async {
+          final states = StreamController<UserProfileState>();
+          addTearDown(states.close);
+          final loading = UserProfileLoadInProgress(profile: profile);
+          whenListen(userProfileCubit, states.stream, initialState: loading);
+          when(() => userProfileCubit.load()).thenAnswer((_) async {});
+          await tester.pumpApp(
+            Scaffold(
+              body: BlocProvider.value(
+                value: userProfileCubit,
+                child: const UserProfileView(userId: 'user-a'),
               ),
-            );
-            final context = tester.element(find.byType(UserProfileView));
-            expect(find.text(context.l10n.retryPageMessage), findsNothing);
+            ),
+          );
+          final context = tester.element(find.byType(UserProfileView));
+          expect(find.text(context.l10n.retryPageMessage), findsNothing);
 
-            states.add(UserProfileLoadFailure(profile: profile));
-            await tester.pump();
-            await tester.pump(const Duration(milliseconds: 300));
+          states.add(UserProfileLoadFailure(profile: profile));
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
 
-            expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
-            expect(find.byType(AppRetryView), findsNothing);
-            if (profile != null) {
-              expect(find.text(profile.name), findsOneWidget);
-              expect(find.byType(ProfileMenuSection), findsOneWidget);
-            }
+          expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
+          expect(find.byType(AppRetryView), findsNothing);
+          if (profile != null) {
+            expect(find.text(profile.name), findsOneWidget);
+            expect(find.byType(ProfileMenuSection), findsOneWidget);
+          }
 
-            verifyNever(() => userProfileCubit.load());
-            await tester.pumpToastDismissal();
-            expect(find.text(context.l10n.retryPageMessage), findsNothing);
+          verifyNever(() => userProfileCubit.load());
+          await tester.pumpToastDismissal();
+          expect(find.text(context.l10n.retryPageMessage), findsNothing);
 
-            states
-              ..add(loading)
-              ..add(UserProfileLoadFailure(profile: profile));
-            await tester.pump();
-            await tester.pump(const Duration(milliseconds: 300));
-            expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
-          },
-        );
+          states
+            ..add(loading)
+            ..add(UserProfileLoadFailure(profile: profile));
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 300));
+          expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
+        });
       }
     });
   });

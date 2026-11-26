@@ -9,7 +9,7 @@ import 'package:material_ui/material_ui.dart';
 /// the implicit back button that pushed routes provide.
 class AppSubpageAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Creates a sub-page app bar with an optional [title].
-  const AppSubpageAppBar({
+  const new({
     required this.title,
     this.toolbarHeight = AppLayout.appBarToolbarHeight,
     this.showBottomDivider = true,

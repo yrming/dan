@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 /// A locally selected photo and its preview bytes.
 final class StatusComposerPhoto extends Equatable {
   /// Copies [bytes] so the selected photo remains immutable.
-  StatusComposerPhoto({required this.path, required Uint8List bytes})
+  new({required this.path, required Uint8List bytes})
     : bytes = Uint8List.fromList(bytes).asUnmodifiableView();
 
   /// Local file passed to the upload endpoint.

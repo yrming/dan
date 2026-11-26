@@ -20,12 +20,12 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockDirectMessageRepository extends Mock
-    implements DirectMessageRepository {}
+    implements DirectMessageRepository;
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 class _MockNotificationCountsCubit extends MockCubit<NotificationCountsState>
-    implements NotificationCountsCubit {}
+    implements NotificationCountsCubit;
 
 DirectMessageConversation _conversationForUser(
   int index, {
@@ -67,24 +67,20 @@ void main() {
 
     setUp(() {
       directMessageRepository = _MockDirectMessageRepository();
-      when(() => directMessageRepository.messageChanges).thenAnswer(
-        (_) => const Stream.empty(),
-      );
+      when(() => directMessageRepository.messageChanges)
+          .thenAnswer((_) => const Stream.empty());
       userRepository = _MockUserRepository();
       notificationCountsCubit = _MockNotificationCountsCubit();
-      when(
-        () => notificationCountsCubit.state,
-      ).thenReturn(const NotificationCountsInitial());
+      when(() => notificationCountsCubit.state)
+          .thenReturn(const NotificationCountsInitial());
       cachedProfile = null;
       when(() => userRepository.cacheUser(any())).thenAnswer((invocation) {
         cachedProfile = invocation.positionalArguments.single as UserProfile;
       });
-      when(
-        () => userRepository.getCachedUser(any()),
-      ).thenAnswer((_) => cachedProfile);
-      when(
-        () => userRepository.getUser(any()),
-      ).thenAnswer((_) async => _peerProfile);
+      when(() => userRepository.getCachedUser(any()))
+          .thenAnswer((_) => cachedProfile);
+      when(() => userRepository.getUser(any()))
+          .thenAnswer((_) async => _peerProfile);
       when(
         () => directMessageRepository.getConversation(
           any(),
@@ -256,10 +252,7 @@ void main() {
       await pumpPage(tester);
       final context = tester.element(find.byType(ConversationListView));
 
-      expect(
-        find.text(context.l10n.retryPageMessage),
-        findsOneWidget,
-      );
+      expect(find.text(context.l10n.retryPageMessage), findsOneWidget);
 
       when(
         () => directMessageRepository.getConversationList(
@@ -324,187 +317,177 @@ void main() {
 
     group('opening an unread conversation', () {
       for (final historyFails in [false, true]) {
-        testWidgets(
-          'clears only the opened badge locally '
-          'with historyFails=$historyFails',
-          (tester) async {
-            final unread = _conversationForUser(
-              1,
-              withProfile: true,
-              hasUnread: true,
-            );
-            final otherUnread = _conversationForUser(2, hasUnread: true);
+        testWidgets('clears only the opened badge locally '
+            'with historyFails=$historyFails', (tester) async {
+          final unread = _conversationForUser(
+            1,
+            withProfile: true,
+            hasUnread: true,
+          );
+          final otherUnread = _conversationForUser(2, hasUnread: true);
+          when(
+            () => directMessageRepository.getConversationList(
+              limit: pageSize,
+              page: 1,
+            ),
+          ).thenAnswer(
+            (_) async => DirectMessageConversationPage(
+              conversations: [unread, otherUnread],
+              hasMore: false,
+              nextPage: null,
+            ),
+          );
+          if (historyFails) {
             when(
-              () => directMessageRepository.getConversationList(
+              () => directMessageRepository.getConversation(
+                'user-1',
                 limit: pageSize,
                 page: 1,
               ),
-            ).thenAnswer(
-              (_) async => DirectMessageConversationPage(
-                conversations: [unread, otherUnread],
-                hasMore: false,
-                nextPage: null,
-              ),
-            );
-            if (historyFails) {
-              when(
-                () => directMessageRepository.getConversation(
-                  'user-1',
-                  limit: pageSize,
-                  page: 1,
-                ),
-              ).thenThrow(const DirectMessageRepositoryUnknownFailure());
-            }
-            await pumpPage(tester);
-            int unreadCount() => tester
-                .widgetList<Badge>(find.byType(Badge))
-                .where((badge) => badge.isLabelVisible)
-                .length;
-            expect(unreadCount(), 2);
-            final bloc = tester
-                .element(find.byType(ConversationListView))
-                .read<ConversationListBloc>();
-            await tester.tap(find.text('最近在做什么？1'));
-            await tester.pump();
-            await tester.pump(const Duration(milliseconds: 400));
-            expect(find.byType(ConversationPage), findsOneWidget);
-            expect(bloc.state.conversations, [
-              _conversationForUser(1, withProfile: true),
-              otherUnread,
-            ]);
+            ).thenThrow(const DirectMessageRepositoryUnknownFailure());
+          }
+          await pumpPage(tester);
+          int unreadCount() => tester
+              .widgetList<Badge>(find.byType(Badge))
+              .where((badge) => badge.isLabelVisible)
+              .length;
+          expect(unreadCount(), 2);
+          final bloc = tester
+              .element(find.byType(ConversationListView))
+              .read<ConversationListBloc>();
+          await tester.tap(find.text('最近在做什么？1'));
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 400));
+          expect(find.byType(ConversationPage), findsOneWidget);
+          expect(bloc.state.conversations, [
+            _conversationForUser(1, withProfile: true),
+            otherUnread,
+          ]);
 
-            GoRouter.of(tester.element(find.byType(ConversationPage))).pop();
-            await tester.pumpAndSettle(
-              const Duration(milliseconds: 100),
-              EnginePhase.sendSemanticsUpdate,
-              const Duration(seconds: 5),
-            );
-            expect(unreadCount(), 1);
-            expect(find.text('最近在做什么？1'), findsOneWidget);
-            expect(find.text('最近在做什么？2'), findsOneWidget);
-            verify(
-              () => directMessageRepository.getConversationList(
-                limit: pageSize,
-                page: 1,
-              ),
-            ).called(1);
-          },
-        );
+          GoRouter.of(tester.element(find.byType(ConversationPage))).pop();
+          await tester.pumpAndSettle(
+            const Duration(milliseconds: 100),
+            EnginePhase.sendSemanticsUpdate,
+            const Duration(seconds: 5),
+          );
+          expect(unreadCount(), 1);
+          expect(find.text('最近在做什么？1'), findsOneWidget);
+          expect(find.text('最近在做什么？2'), findsOneWidget);
+          verify(
+            () => directMessageRepository.getConversationList(
+              limit: pageSize,
+              page: 1,
+            ),
+          ).called(1);
+        });
       }
     });
 
     group('profile navigation', () {
       for (final target in ['avatar', 'nickname']) {
         for (final withProfile in [true, false]) {
-          testWidgets(
-            'opens profile from $target with details=$withProfile '
-            'before refreshing',
-            (tester) async {
-              final profileRequest = Completer<UserProfile>();
-              when(
-                () => userRepository.getUser('user-1'),
-              ).thenAnswer((_) => profileRequest.future);
-              when(
-                () => directMessageRepository.getConversationList(
-                  limit: any(named: 'limit'),
-                  page: any(named: 'page'),
-                ),
-              ).thenAnswer(
-                (_) async => DirectMessageConversationPage(
-                  conversations: [
-                    _conversationForUser(
-                      1,
-                      withProfile: withProfile,
-                      hasUnread: true,
-                    ),
-                  ],
-                  hasMore: false,
-                  nextPage: null,
-                ),
-              );
-              await pumpPage(tester);
-              final router = GoRouter.of(
-                tester.element(find.byType(ConversationListPage)),
-              );
-              await tester.tap(
-                target == 'avatar'
-                    ? find.byType(UserAvatar)
-                    : find.text('fanfou_b_1'),
-              );
-              await tester.pump();
-              await tester.pump(const Duration(milliseconds: 400));
-
-              expect(find.byType(UserProfilePage), findsOneWidget);
-              expect(router.state.uri.path, '/users/user-1');
-              expect(
-                router.state.uri.queryParameters['presentation'],
-                'pushed',
-              );
-              expect(find.byType(ConversationPage), findsNothing);
-              final header = tester.widget<ProfileHeader>(
-                find.byType(ProfileHeader),
-              );
-              expect(header.id, 'user-1');
-              expect(header.name, withProfile ? _peerProfile.name : '');
-              expect(header.screenName, 'fanfou_b_1');
-              expect(header.avatarUrl, 'https://example.com/user-1.png');
-              if (withProfile) {
-                expect(cachedProfile, _peerProfile);
-                expect(find.text(_peerProfile.description!), findsOneWidget);
-                expect(header.followersCount, 224);
-                expect(header.friendsCount, 178);
-              } else {
-                expect(
-                  cachedProfile,
-                  const UserProfile(
-                    id: 'user-1',
-                    name: '',
-                    screenName: 'fanfou_b_1',
-                    avatarUrl: 'https://example.com/user-1.png',
+          testWidgets('opens profile from $target with details=$withProfile '
+              'before refreshing', (tester) async {
+            final profileRequest = Completer<UserProfile>();
+            when(() => userRepository.getUser('user-1'))
+                .thenAnswer((_) => profileRequest.future);
+            when(
+              () => directMessageRepository.getConversationList(
+                limit: any(named: 'limit'),
+                page: any(named: 'page'),
+              ),
+            ).thenAnswer(
+              (_) async => DirectMessageConversationPage(
+                conversations: [
+                  _conversationForUser(
+                    1,
+                    withProfile: withProfile,
+                    hasUnread: true,
                   ),
-                );
-              }
-              verify(() => userRepository.getUser('user-1')).called(1);
-              verifyNever(
-                () => directMessageRepository.getConversation(
-                  any(),
-                  limit: any(named: 'limit'),
-                  page: any(named: 'page'),
-                ),
-              );
+                ],
+                hasMore: false,
+                nextPage: null,
+              ),
+            );
+            await pumpPage(tester);
+            final router = GoRouter.of(
+              tester.element(find.byType(ConversationListPage)),
+            );
+            await tester.tap(
+              target == 'avatar'
+                  ? find.byType(UserAvatar)
+                  : find.text('fanfou_b_1'),
+            );
+            await tester.pump();
+            await tester.pump(const Duration(milliseconds: 400));
 
-              profileRequest.complete(
+            expect(find.byType(UserProfilePage), findsOneWidget);
+            expect(router.state.uri.path, '/users/user-1');
+            expect(router.state.uri.queryParameters['presentation'], 'pushed');
+            expect(find.byType(ConversationPage), findsNothing);
+            final header = tester.widget<ProfileHeader>(
+              find.byType(ProfileHeader),
+            );
+            expect(header.id, 'user-1');
+            expect(header.name, withProfile ? _peerProfile.name : '');
+            expect(header.screenName, 'fanfou_b_1');
+            expect(header.avatarUrl, 'https://example.com/user-1.png');
+            if (withProfile) {
+              expect(cachedProfile, _peerProfile);
+              expect(find.text(_peerProfile.description!), findsOneWidget);
+              expect(header.followersCount, 224);
+              expect(header.friendsCount, 178);
+            } else {
+              expect(
+                cachedProfile,
                 const UserProfile(
                   id: 'user-1',
-                  name: '更新后的昵称',
+                  name: '',
                   screenName: 'fanfou_b_1',
-                  description: '更新后的简介',
+                  avatarUrl: 'https://example.com/user-1.png',
                 ),
               );
-              await tester.pump();
-              await tester.pump();
-              expect(find.text('更新后的昵称'), findsOneWidget);
-              expect(find.text('更新后的简介'), findsOneWidget);
-              router.pop();
-              await tester.pumpAndSettle(
-                const Duration(milliseconds: 100),
-                EnginePhase.sendSemanticsUpdate,
-                const Duration(seconds: 5),
-              );
-              expect(find.byType(ConversationListPage), findsOneWidget);
-              expect(find.text('最近在做什么？1'), findsOneWidget);
-              expect(
-                tester.widget<Badge>(find.byType(Badge)).isLabelVisible,
-                isTrue,
-              );
-              verify(
-                () => directMessageRepository.getConversationList(
-                  limit: pageSize,
-                  page: 1,
-                ),
-              ).called(1);
-            },
-          );
+            }
+            verify(() => userRepository.getUser('user-1')).called(1);
+            verifyNever(
+              () => directMessageRepository.getConversation(
+                any(),
+                limit: any(named: 'limit'),
+                page: any(named: 'page'),
+              ),
+            );
+
+            profileRequest.complete(
+              const UserProfile(
+                id: 'user-1',
+                name: '更新后的昵称',
+                screenName: 'fanfou_b_1',
+                description: '更新后的简介',
+              ),
+            );
+            await tester.pump();
+            await tester.pump();
+            expect(find.text('更新后的昵称'), findsOneWidget);
+            expect(find.text('更新后的简介'), findsOneWidget);
+            router.pop();
+            await tester.pumpAndSettle(
+              const Duration(milliseconds: 100),
+              EnginePhase.sendSemanticsUpdate,
+              const Duration(seconds: 5),
+            );
+            expect(find.byType(ConversationListPage), findsOneWidget);
+            expect(find.text('最近在做什么？1'), findsOneWidget);
+            expect(
+              tester.widget<Badge>(find.byType(Badge)).isLabelVisible,
+              isTrue,
+            );
+            verify(
+              () => directMessageRepository.getConversationList(
+                limit: pageSize,
+                page: 1,
+              ),
+            ).called(1);
+          });
         }
       }
     });

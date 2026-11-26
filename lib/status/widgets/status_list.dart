@@ -16,7 +16,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 /// Displays a refreshable, paginated list of Fanfou statuses.
 class StatusList extends StatefulWidget {
   /// Creates a status list.
-  const StatusList({
+  const new({
     this.scrollToTopKey,
     this.emptyLabel,
     this.enableRefresh = true,
@@ -104,9 +104,7 @@ class _StatusListState extends State<StatusList> {
       return;
     }
     if (position.extentAfter <= position.viewportDimension * 0.5) {
-      context.read<StatusListBloc>().add(
-        const StatusListLoadMoreRequested(),
-      );
+      context.read<StatusListBloc>().add(const StatusListLoadMoreRequested());
     }
   }
 
@@ -135,10 +133,7 @@ class _StatusListState extends State<StatusList> {
           (state) => state.refreshStatus != StatusRefreshStatus.inProgress,
         );
     bloc.add(const StatusListRefreshRequested());
-    await Future.wait<Object?>([
-      minimumDisplayElapsed,
-      refreshCompleted,
-    ]);
+    await Future.wait<Object?>([minimumDisplayElapsed, refreshCompleted]);
   }
 
   @override
@@ -244,7 +239,7 @@ class _StatusListState extends State<StatusList> {
 }
 
 class _StatusListView extends StatelessWidget {
-  const _StatusListView({
+  const new({
     required this.scrollController,
     required this.statuses,
     required this.loadMoreStatus,
@@ -294,10 +289,9 @@ class _StatusListView extends StatelessWidget {
                     throw StateError('Status deletion failed.');
                   }
                 },
-                onStatusFavoriteToggle: () =>
-                    context.read<StatusListBloc>().add(
-                      StatusListStatusFavoriteToggled(status.id),
-                    ),
+                onStatusFavoriteToggle: () => context
+                    .read<StatusListBloc>()
+                    .add(StatusListStatusFavoriteToggled(status.id)),
               );
             },
             separatorBuilder: (context, index) {
@@ -319,10 +313,7 @@ class _StatusListView extends StatelessWidget {
         if (layout == StatusListLayout.timeline)
           const SliverToBoxAdapter(child: Divider(height: 1)),
         SliverToBoxAdapter(
-          child: _StatusListFooter(
-            layout: layout,
-            status: loadMoreStatus,
-          ),
+          child: _StatusListFooter(layout: layout, status: loadMoreStatus),
         ),
       ],
     );
@@ -330,7 +321,7 @@ class _StatusListView extends StatelessWidget {
 }
 
 class _RefreshableStatusListMessage extends StatelessWidget {
-  const _RefreshableStatusListMessage({
+  const new({
     required this.scrollController,
     required this.onRefresh,
     required this.child,
@@ -345,18 +336,13 @@ class _RefreshableStatusListMessage extends StatelessWidget {
     return _PlatformRefreshableScrollView(
       scrollController: scrollController,
       onRefresh: onRefresh,
-      slivers: [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: child,
-        ),
-      ],
+      slivers: [SliverFillRemaining(hasScrollBody: false, child: child)],
     );
   }
 }
 
 class _PlatformRefreshableScrollView extends StatelessWidget {
-  const _PlatformRefreshableScrollView({
+  const new({
     required this.scrollController,
     required this.onRefresh,
     required this.slivers,
@@ -385,9 +371,7 @@ class _PlatformRefreshableScrollView extends StatelessWidget {
 }
 
 class _StatusListMessage extends StatelessWidget {
-  const _StatusListMessage({
-    required this.text,
-  });
+  const new({required this.text});
 
   final String text;
 
@@ -410,7 +394,7 @@ class _StatusListMessage extends StatelessWidget {
 }
 
 class _StatusListFailure extends StatelessWidget {
-  const _StatusListFailure({required this.onRetry, this.message});
+  const new({required this.onRetry, this.message});
 
   final VoidCallback onRetry;
   final String? message;
@@ -421,10 +405,7 @@ class _StatusListFailure extends StatelessWidget {
 }
 
 class _StatusListFooter extends StatelessWidget {
-  const _StatusListFooter({
-    required this.status,
-    required this.layout,
-  });
+  const new({required this.status, required this.layout});
 
   final StatusLoadMoreStatus status;
   final StatusListLayout layout;

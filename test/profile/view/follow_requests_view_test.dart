@@ -13,7 +13,7 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockFollowRequestsCubit extends MockCubit<FollowRequestsState>
-    implements FollowRequestsCubit {}
+    implements FollowRequestsCubit;
 
 void main() {
   group(FollowRequestsView, () {
@@ -104,9 +104,8 @@ void main() {
       testWidgets('shows the empty illustration when there are no requests', (
         tester,
       ) async {
-        when(() => cubit.state).thenReturn(
-          FollowRequestsState(loading: false, hasMore: false),
-        );
+        when(() => cubit.state)
+            .thenReturn(FollowRequestsState(loading: false, hasMore: false));
         await tester.pumpApp(
           BlocProvider.value(
             value: cubit,
@@ -115,10 +114,7 @@ void main() {
         );
 
         expect(find.byType(AppEmptyView), findsOneWidget);
-        expect(
-          find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'),
-          findsNothing,
-        );
+        expect(find.text('这次季候风\n吹得格外凶\n仿佛世上一切\n已经消失所踪'), findsNothing);
       });
     });
 

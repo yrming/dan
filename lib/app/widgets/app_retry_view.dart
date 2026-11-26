@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// Shared loading failure message and retry action.
 class AppRetryView extends StatefulWidget {
-  const AppRetryView({
+  const new({
     required this.onRetry,
     this.message,
     this.revealOnDisplay = false,

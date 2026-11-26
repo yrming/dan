@@ -14,7 +14,7 @@ enum AppShellTab {
   /// Active account profile.
   mine(AppRouteName.mine, AppRoutePath.mine);
 
-  const AppShellTab(this.routeName, this.path);
+  new(this.routeName, this.path);
 
   /// Named route for the tab root.
   final String routeName;

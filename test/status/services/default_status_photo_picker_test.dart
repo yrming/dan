@@ -5,9 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:status_repository/status_repository.dart';
 
-class _MockImagePicker extends Mock implements ImagePicker {}
+class _MockImagePicker extends Mock implements ImagePicker;
 
-class _MockXFile extends Mock implements XFile {}
+class _MockXFile extends Mock implements XFile;
 
 void main() {
   group(DefaultStatusPhotoPicker, () {

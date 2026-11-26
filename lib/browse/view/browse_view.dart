@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Displays the public timeline on the browse tab.
 class BrowseView extends StatelessWidget {
   /// Creates a browse view.
-  const BrowseView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) =>

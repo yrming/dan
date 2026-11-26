@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Route boundary for reading a legal document inside the application.
 class LegalDocumentPage extends StatelessWidget {
   /// Creates the agreement page, or the privacy policy when requested.
-  const LegalDocumentPage({this.privacyPolicy = false, super.key});
+  const new({this.privacyPolicy = false, super.key});
 
   /// Whether to show the privacy policy instead of the user agreement.
   final bool privacyPolicy;

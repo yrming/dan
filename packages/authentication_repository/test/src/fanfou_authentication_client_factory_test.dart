@@ -56,10 +56,7 @@ void main() {
         final unauthenticatedClient = subject();
 
         expect(authenticatedClient.oauth.oauthToken, session.token);
-        expect(
-          authenticatedClient.oauth.oauthTokenSecret,
-          session.tokenSecret,
-        );
+        expect(authenticatedClient.oauth.oauthTokenSecret, session.tokenSecret);
         expect(unauthenticatedClient.oauth.oauthToken, isNull);
         expect(unauthenticatedClient.oauth.oauthTokenSecret, isNull);
         authenticatedClient.close();

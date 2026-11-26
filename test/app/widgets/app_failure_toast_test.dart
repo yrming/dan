@@ -7,7 +7,7 @@ import '../../helpers/helpers.dart';
 
 /// Host that shows a failure toast when its button is tapped.
 class _FailureToastLauncher extends StatelessWidget {
-  const _FailureToastLauncher({this.message});
+  const new({this.message});
 
   final String? message;
 
@@ -35,9 +35,7 @@ void main() {
       expect(find.text('Server down'), findsOneWidget);
     });
 
-    testWidgets('falls back to the generic message when blank', (
-      tester,
-    ) async {
+    testWidgets('falls back to the generic message when blank', (tester) async {
       await tester.pumpApp(const _FailureToastLauncher(message: '  '));
 
       await tester.tap(find.text('Show failure'));

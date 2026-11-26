@@ -20,7 +20,7 @@ import 'package:status_repository/status_repository.dart' as repository;
 import '../../helpers/helpers.dart';
 
 class _MockStatusImageActionsService extends Mock
-    implements StatusImageActionsService {}
+    implements StatusImageActionsService;
 
 void main() {
   group(StatusImageViewerPage, () {
@@ -29,9 +29,8 @@ void main() {
     setUp(() {
       imageActionsService = _MockStatusImageActionsService();
       when(() => imageActionsService.share(any())).thenAnswer((_) async {});
-      when(
-        () => imageActionsService.saveToGallery(any()),
-      ).thenAnswer((_) async {});
+      when(() => imageActionsService.saveToGallery(any()))
+          .thenAnswer((_) async {});
     });
 
     Future<void> pumpViewer(
@@ -73,7 +72,7 @@ void main() {
           () => _createTestImage(width: 1600, height: 900),
         );
         imageProvider = _TestImageProvider(image!);
-        addTearDown(() async => imageProvider.evict());
+        addTearDown(imageProvider.evict);
       }
 
       Future<void> swipe(WidgetTester tester, double dx) async {
@@ -97,9 +96,7 @@ void main() {
 
       testWidgets(
         'starts at the selected photo and swipes in both directions',
-        (
-          tester,
-        ) async {
+        (tester) async {
           await loadImage(tester);
           await pumpViewer(
             tester,
@@ -244,11 +241,7 @@ void main() {
         await tester.pump();
         await tester.pump();
         final controller =
-            tester
-                  .widget<PhotoView>(
-                    find.byType(PhotoView),
-                  )
-                  .controller!
+            tester.widget<PhotoView>(find.byType(PhotoView)).controller!
               ..scale = 2;
         await tester.pump();
 
@@ -321,9 +314,7 @@ void main() {
 
       testWidgets(
         'falls back to the linked photo without a matching album item',
-        (
-          tester,
-        ) async {
+        (tester) async {
           await loadImage(tester);
           await pumpViewer(
             tester,
@@ -349,19 +340,13 @@ void main() {
       final photoView = tester.widget<PhotoView>(find.byType(PhotoView));
       final imageProvider = photoView.imageProvider;
       expect(imageProvider, isA<CachedNetworkImageProvider>());
-      expect(
-        (imageProvider! as CachedNetworkImageProvider).url,
-        _imageUrl,
-      );
+      expect((imageProvider! as CachedNetworkImageProvider).url, _imageUrl);
       expect(photoView.semanticLabel, _semanticLabel);
       expect(photoView.heroAttributes?.tag, _heroTag);
       expect(photoView.heroAttributes?.flightShuttleBuilder, isNull);
       expect(photoView.initialScale, PhotoViewComputedScale.contained);
       expect(photoView.minScale, PhotoViewComputedScale.contained);
-      expect(
-        (photoView.maxScale! as PhotoViewComputedScale).multiplier,
-        4,
-      );
+      expect((photoView.maxScale! as PhotoViewComputedScale).multiplier, 4);
       expect(photoView.onTapUp, isNotNull);
       expect(find.byType(Dismissible), findsNothing);
       expect(find.byType(FilledButton), findsNothing);
@@ -372,9 +357,7 @@ void main() {
       );
     });
 
-    testWidgets('scrolls a width-fitted long image vertically', (
-      tester,
-    ) async {
+    testWidgets('scrolls a width-fitted long image vertically', (tester) async {
       final image = await tester.runAsync(
         () => _createTestImage(width: 100, height: 1000),
       );
@@ -626,9 +609,7 @@ void main() {
       final gestureLayer = find.byKey(
         const Key('status-image-viewer-gesture-layer'),
       );
-      final gesture = await tester.startGesture(
-        tester.getCenter(gestureLayer),
-      );
+      final gesture = await tester.startGesture(tester.getCenter(gestureLayer));
       for (var index = 0; index < 12; index++) {
         await gesture.moveBy(Offset(index.isEven ? 25 : -25, 20));
       }
@@ -640,65 +621,59 @@ void main() {
       expect(find.byType(StatusImageViewerPage), findsNothing);
     });
 
-    testWidgets(
-      'uses the status photo corner radius while sliding downward',
-      (tester) async {
-        final image = await tester.runAsync(
-          () => _createTestImage(width: 1600, height: 900),
-        );
-        final imageProvider = _TestImageProvider(image!);
-        addTearDown(() async {
-          await imageProvider.evict();
-        });
-        await pumpViewer(tester, imageProvider: imageProvider);
-        await tester.pump();
-        await tester.pump();
+    testWidgets('uses the status photo corner radius while sliding downward', (
+      tester,
+    ) async {
+      final image = await tester.runAsync(
+        () => _createTestImage(width: 1600, height: 900),
+      );
+      final imageProvider = _TestImageProvider(image!);
+      addTearDown(() async {
+        await imageProvider.evict();
+      });
+      await pumpViewer(tester, imageProvider: imageProvider);
+      await tester.pump();
+      await tester.pump();
 
-        final gesture = await tester.startGesture(
-          tester.getCenter(
-            find.byKey(const Key('status-image-viewer-gesture-layer')),
-          ),
-        );
-        await gesture.moveBy(const Offset(0, 100));
-        await tester.pump();
+      final gesture = await tester.startGesture(
+        tester.getCenter(
+          find.byKey(const Key('status-image-viewer-gesture-layer')),
+        ),
+      );
+      await gesture.moveBy(const Offset(0, 100));
+      await tester.pump();
 
-        expect(
-          tester
-              .widget<PhotoView>(find.byType(PhotoView))
-              .heroAttributes
-              ?.flightShuttleBuilder,
-          isNotNull,
-        );
+      expect(
+        tester
+            .widget<PhotoView>(find.byType(PhotoView))
+            .heroAttributes
+            ?.flightShuttleBuilder,
+        isNotNull,
+      );
 
-        final roundedPhoto = find.byKey(
-          const Key('status-image-viewer-rounded-photo'),
-        );
-        expect(roundedPhoto, findsOneWidget);
-        final clip = tester
-            .widget<ClipRRect>(roundedPhoto)
-            .clipper!
-            .getClip(
-              tester.getSize(roundedPhoto),
-            );
-        final scale = tester.widget<AnimatedScale>(
-          find.ancestor(
-            of: roundedPhoto,
-            matching: find.byType(AnimatedScale),
-          ),
-        );
-        expect(
-          clip.tlRadiusX * scale.scale,
-          moreOrLessEquals(xStatusPhotoBorderRadius),
-        );
-        expect(clip.trRadiusX, clip.tlRadiusX);
-        expect(clip.blRadiusX, clip.tlRadiusX);
-        expect(clip.brRadiusX, clip.tlRadiusX);
+      final roundedPhoto = find.byKey(
+        const Key('status-image-viewer-rounded-photo'),
+      );
+      expect(roundedPhoto, findsOneWidget);
+      final clip = tester
+          .widget<ClipRRect>(roundedPhoto)
+          .clipper!
+          .getClip(tester.getSize(roundedPhoto));
+      final scale = tester.widget<AnimatedScale>(
+        find.ancestor(of: roundedPhoto, matching: find.byType(AnimatedScale)),
+      );
+      expect(
+        clip.tlRadiusX * scale.scale,
+        moreOrLessEquals(xStatusPhotoBorderRadius),
+      );
+      expect(clip.trRadiusX, clip.tlRadiusX);
+      expect(clip.blRadiusX, clip.tlRadiusX);
+      expect(clip.brRadiusX, clip.tlRadiusX);
 
-        await gesture.up();
-        await tester.pump(Durations.short2);
-        await tester.pump(Durations.medium2);
-      },
-    );
+      await gesture.up();
+      await tester.pump(Durations.short2);
+      await tester.pump(Durations.medium2);
+    });
 
     testWidgets('shows a failure affordance when the image URL is empty', (
       tester,
@@ -790,10 +765,7 @@ void main() {
 
       expect(saveRect.height, AppLayout.actionSheetItemHeight);
       expect(shareRect.height, AppLayout.actionSheetItemHeight);
-      expect(
-        dividerRect.height,
-        AppLayout.actionSheetDividerThickness,
-      );
+      expect(dividerRect.height, AppLayout.actionSheetDividerThickness);
       expect(dividerRect.width, groupRect.width);
       expect(dividerRect.top, saveRect.bottom);
       expect(shareRect.top, dividerRect.bottom);
@@ -856,9 +828,8 @@ void main() {
     testWidgets('reports a failure when saving does not complete', (
       tester,
     ) async {
-      when(() => imageActionsService.saveToGallery(any())).thenAnswer(
-        (_) async => throw const StatusImageGallerySaveFailure(),
-      );
+      when(() => imageActionsService.saveToGallery(any()))
+          .thenAnswer((_) async => throw const StatusImageGallerySaveFailure());
       await pumpViewer(tester);
       final context = tester.element(find.byType(PhotoView));
 
@@ -1071,9 +1042,8 @@ GoRouter _buildRouter({
       GoRoute(
         name: AppRouteName.statusDetail,
         path: '/status/:userId/:statusId',
-        builder: (_, state) => Scaffold(
-          body: Text('status ${state.pathParameters['statusId']}'),
-        ),
+        builder: (_, state) =>
+            Scaffold(body: Text('status ${state.pathParameters['statusId']}')),
       ),
     ],
   );
@@ -1108,11 +1078,11 @@ Future<ui.Image> _createTestImage({
 }) async {
   final recorder = ui.PictureRecorder();
   Canvas(recorder).drawColor(Colors.white, BlendMode.src);
-  return recorder.endRecording().toImage(width, height);
+  return await recorder.endRecording().toImage(width, height);
 }
 
 class _TestImageProvider extends ImageProvider<_TestImageProvider> {
-  const _TestImageProvider(this.image);
+  const new(this.image);
 
   final ui.Image image;
 

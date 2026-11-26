@@ -24,10 +24,7 @@ void main() {
                     groups: [
                       AppActionSheetGroup(
                         children: const [
-                          AppActionSheetItem(
-                            label: '回复',
-                            icon: Icons.reply,
-                          ),
+                          AppActionSheetItem(label: '回复', icon: Icons.reply),
                         ],
                       ),
                     ],

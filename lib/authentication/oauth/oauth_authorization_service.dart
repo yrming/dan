@@ -9,19 +9,19 @@ abstract interface class OAuthAuthorizationService {
 
 /// Base type for sanitized browser authorization failures.
 sealed class OAuthAuthorizationServiceFailure implements Exception {
-  const OAuthAuthorizationServiceFailure();
+  const new();
 }
 
 /// Thrown when the user closes the browser authorization session.
 final class OAuthAuthorizationCancelled
     extends OAuthAuthorizationServiceFailure {
   /// Creates a cancellation failure.
-  const OAuthAuthorizationCancelled();
+  const new();
 }
 
 /// Thrown when the browser authorization session cannot be completed.
 final class OAuthAuthorizationLaunchFailure
     extends OAuthAuthorizationServiceFailure {
   /// Creates a sanitized browser authorization failure.
-  const OAuthAuthorizationLaunchFailure();
+  const new();
 }

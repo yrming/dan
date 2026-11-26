@@ -106,7 +106,7 @@ class StatusRepository {
     if (keyword.isEmpty) {
       throw ArgumentError.value(query, 'query', 'Must not be empty.');
     }
-    return _searchStatuses(
+    return await _searchStatuses(
       keyword,
       limit: limit,
       userId: userId,
@@ -130,7 +130,7 @@ class StatusRepository {
     if (keyword.isEmpty) {
       throw ArgumentError.value(query, 'query', 'Must not be empty.');
     }
-    return _searchStatuses(
+    return await _searchStatuses(
       keyword,
       limit: limit,
       mine: true,
@@ -261,10 +261,7 @@ class StatusRepository {
   /// Returns one status by [statusId].
   Future<Status> getStatus(String statusId) async {
     final status = await _withClient(
-      (client) => client.statuses.show(
-        statusId,
-        format: _statusResponseFormat,
-      ),
+      (client) => client.statuses.show(statusId, format: _statusResponseFormat),
     );
     return _mapStatus(status);
   }
@@ -335,10 +332,8 @@ class StatusRepository {
   Future<void> deleteStatus(String statusId) async {
     final accountId = _requireActiveAccountId();
     await _withClient(
-      (client) => client.statuses.destroy(
-        statusId,
-        format: _statusResponseFormat,
-      ),
+      (client) =>
+          client.statuses.destroy(statusId, format: _statusResponseFormat),
     );
     _statusChangesController.add(
       StatusDeleted(accountId: accountId, statusId: statusId),
@@ -356,10 +351,8 @@ class StatusRepository {
   }) async {
     final accountId = _requireActiveAccountId();
     await _withClient(
-      (client) => client.favorites.create(
-        statusId,
-        format: _statusResponseFormat,
-      ),
+      (client) =>
+          client.favorites.create(statusId, format: _statusResponseFormat),
     );
     final status = currentStatus.copyWith(isFavorited: true);
     _statusChangesController.add(
@@ -379,10 +372,8 @@ class StatusRepository {
   }) async {
     final accountId = _requireActiveAccountId();
     await _withClient(
-      (client) => client.favorites.destroy(
-        statusId,
-        format: _statusResponseFormat,
-      ),
+      (client) =>
+          client.favorites.destroy(statusId, format: _statusResponseFormat),
     );
     final status = currentStatus.copyWith(isFavorited: false);
     _statusChangesController.add(

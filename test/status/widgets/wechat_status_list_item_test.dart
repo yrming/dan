@@ -69,10 +69,7 @@ void main() {
                   Size(17 * fontSize / 16, 3 * fontSize / 16),
                 );
                 final metadataRow = find
-                    .ancestor(
-                      of: button,
-                      matching: find.byType(Row),
-                    )
+                    .ancestor(of: button, matching: find.byType(Row))
                     .first;
                 expect(
                   tester.getSize(metadataRow).height,
@@ -207,9 +204,7 @@ void main() {
           const Size.square(statusActionButtonHitTargetSize),
         );
         final actionHitTargetRect = tester.getRect(actionHitTarget);
-        await tester.tapAt(
-          actionHitTargetRect.topLeft + const Offset(2, 2),
-        );
+        await tester.tapAt(actionHitTargetRect.topLeft + const Offset(2, 2));
         await tester.pump();
         expect(actionTapCount, 2);
         final tooltip = MaterialLocalizations.of(
@@ -253,54 +248,50 @@ void main() {
           (span) => span.style?.color == AppColors.danLight.wechatLinkText,
         );
 
-        expect(
-          linkSpans.map((span) => span.text),
-          [
-            '@user_a',
-            '#Flutter开发#',
-            '文档',
-          ],
-        );
+        expect(linkSpans.map((span) => span.text), [
+          '@user_a',
+          '#Flutter开发#',
+          '文档',
+        ]);
         expect(textSpan.style?.color, AppColors.danLight.textBase);
         expect(spans.any((span) => span.text == '。'), isTrue);
       },
     );
 
-    testWidgets(
-      'displays ten-pixel spacing when text is empty',
-      (tester) async {
-        const status = status_repository.Status(
-          id: 'status-empty',
-          text: '',
-          createdAt: 'Tue Jul 28 00:00:00 +0000 2026',
-          author: _statusAuthor,
-        );
-        await tester.pumpApp(
-          WeChatStatusListItem(
-            status: status,
-            authorName: status.author.name,
-            onAuthorTap: null,
-            onStatusTap: null,
-          ),
-          theme: AppTheme.light(),
-          themeMode: ThemeMode.light,
-        );
+    testWidgets('displays ten-pixel spacing when text is empty', (
+      tester,
+    ) async {
+      const status = status_repository.Status(
+        id: 'status-empty',
+        text: '',
+        createdAt: 'Tue Jul 28 00:00:00 +0000 2026',
+        author: _statusAuthor,
+      );
+      await tester.pumpApp(
+        WeChatStatusListItem(
+          status: status,
+          authorName: status.author.name,
+          onAuthorTap: null,
+          onStatusTap: null,
+        ),
+        theme: AppTheme.light(),
+        themeMode: ThemeMode.light,
+      );
 
-        expect(find.byType(StatusBodyText), findsNothing);
-        expect(
-          find.byWidgetPredicate(
-            (widget) => widget is SizedBox && widget.height == 6,
-          ),
-          findsNothing,
-        );
-        expect(
-          find.byWidgetPredicate(
-            (widget) => widget is SizedBox && widget.height == 10,
-          ),
-          findsOneWidget,
-        );
-      },
-    );
+      expect(find.byType(StatusBodyText), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is SizedBox && widget.height == 6,
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is SizedBox && widget.height == 10,
+        ),
+        findsOneWidget,
+      );
+    });
 
     testWidgets(
       'appends the status source after the timestamp when showSource is set',
@@ -328,66 +319,62 @@ void main() {
       },
     );
 
-    testWidgets(
-      'hides the status source by default and when it is absent',
-      (tester) async {
-        await tester.pumpApp(
-          WeChatStatusListItem(
-            status: _status,
-            authorName: _status.author.name,
-            onAuthorTap: null,
-            onStatusTap: null,
-          ),
-          theme: AppTheme.light(),
-          themeMode: ThemeMode.light,
-        );
+    testWidgets('hides the status source by default and when it is absent', (
+      tester,
+    ) async {
+      await tester.pumpApp(
+        WeChatStatusListItem(
+          status: _status,
+          authorName: _status.author.name,
+          onAuthorTap: null,
+          onStatusTap: null,
+        ),
+        theme: AppTheme.light(),
+        themeMode: ThemeMode.light,
+      );
 
-        expect(find.textContaining('·'), findsNothing);
-      },
-    );
+      expect(find.textContaining('·'), findsNothing);
+    });
 
-    testWidgets(
-      'uses distinct author and mention colors in dark mode',
-      (
-        tester,
-      ) async {
-        const status = status_repository.Status(
-          id: 'status-dark-link',
-          text: '@<a href="https://fanfou.com/user-a">user_a</a>',
-          createdAt: 'Tue Jul 28 00:00:00 +0000 2026',
-          author: _statusAuthor,
-        );
-        await tester.pumpApp(
-          WeChatStatusListItem(
-            status: status,
-            authorName: status.author.name,
-            onAuthorTap: null,
-            onStatusTap: null,
-          ),
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
-          themeMode: ThemeMode.dark,
-        );
+    testWidgets('uses distinct author and mention colors in dark mode', (
+      tester,
+    ) async {
+      const status = status_repository.Status(
+        id: 'status-dark-link',
+        text: '@<a href="https://fanfou.com/user-a">user_a</a>',
+        createdAt: 'Tue Jul 28 00:00:00 +0000 2026',
+        author: _statusAuthor,
+      );
+      await tester.pumpApp(
+        WeChatStatusListItem(
+          status: status,
+          authorName: status.author.name,
+          onAuthorTap: null,
+          onStatusTap: null,
+        ),
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: ThemeMode.dark,
+      );
 
-        final author = tester.widget<Text>(find.text(status.author.name));
-        final body = tester.widget<Text>(
-          find.descendant(
-            of: find.byType(StatusBodyText),
-            matching: find.byType(Text),
-          ),
-        );
-        final textSpan = body.textSpan! as TextSpan;
-        final mentionSpan = textSpan.children!.cast<TextSpan>().singleWhere(
-          (span) => span.text == '@user_a',
-        );
-        final avatar = tester.widget<UserAvatar>(find.byType(UserAvatar));
+      final author = tester.widget<Text>(find.text(status.author.name));
+      final body = tester.widget<Text>(
+        find.descendant(
+          of: find.byType(StatusBodyText),
+          matching: find.byType(Text),
+        ),
+      );
+      final textSpan = body.textSpan! as TextSpan;
+      final mentionSpan = textSpan.children!.cast<TextSpan>().singleWhere(
+        (span) => span.text == '@user_a',
+      );
+      final avatar = tester.widget<UserAvatar>(find.byType(UserAvatar));
 
-        expect(author.style?.color, AppColors.danDark.textBase);
-        expect(mentionSpan.style?.color, AppColors.danDark.wechatLinkText);
-        expect(avatar.borderColor, AppColors.danDark.divider);
-        expect(avatar.borderWidth, 0.5);
-      },
-    );
+      expect(author.style?.color, AppColors.danDark.textBase);
+      expect(mentionSpan.style?.color, AppColors.danDark.wechatLinkText);
+      expect(avatar.borderColor, AppColors.danDark.divider);
+      expect(avatar.borderWidth, 0.5);
+    });
   });
 }
 

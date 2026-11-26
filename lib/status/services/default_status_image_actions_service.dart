@@ -14,7 +14,7 @@ class DefaultStatusImageActionsService implements StatusImageActionsService {
   /// Pass a custom [cacheManager] in tests; defaults to
   /// [DefaultCacheManager], which is also what the viewer's image provider
   /// uses.
-  DefaultStatusImageActionsService({CacheManager? cacheManager})
+  new({CacheManager? cacheManager})
     : _cacheManager = cacheManager ?? DefaultCacheManager();
 
   final CacheManager _cacheManager;
@@ -33,8 +33,8 @@ class DefaultStatusImageActionsService implements StatusImageActionsService {
   Future<void> saveToGallery(String imageUrl) async {
     try {
       final file = await _cacheManager.getSingleFile(imageUrl);
-      if (!await Gal.hasAccess()) {
-        final granted = await Gal.requestAccess();
+      if (!await Gal.hasPermission()) {
+        final granted = await Gal.requestPermission();
         if (!granted) throw const StatusImageGallerySaveFailure();
       }
       await Gal.putImage(file.path);

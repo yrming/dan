@@ -9,7 +9,7 @@ import 'package:remixicon/remixicon.dart';
 /// Displays the app identity, its story, and legal document links.
 class AboutView extends StatelessWidget {
   /// Creates the about view.
-  const AboutView({
+  const new({
     required this.buildInfo,
     required this.onStoryPressed,
     required this.onUserAgreementPressed,
@@ -70,9 +70,7 @@ class AboutView extends StatelessWidget {
                         children: [
                           Column(
                             children: [
-                              SizedBox(
-                                height: sizing.scaled(AppSpacing.xxl),
-                              ),
+                              SizedBox(height: sizing.scaled(AppSpacing.xxl)),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(
                                   sizing.scaled(
@@ -86,18 +84,14 @@ class AboutView extends StatelessWidget {
                                   excludeFromSemantics: true,
                                 ),
                               ),
-                              SizedBox(
-                                height: sizing.scaled(AppSpacing.lg),
-                              ),
+                              SizedBox(height: sizing.scaled(AppSpacing.lg)),
                               Text(
                                 l10n.loginBrandLogoLabel,
                                 style: typography.brandTagline,
                                 textAlign: TextAlign.center,
                               ),
                               if (buildInfo.version.isNotEmpty) ...[
-                                SizedBox(
-                                  height: sizing.scaled(AppSpacing.sm),
-                                ),
+                                SizedBox(height: sizing.scaled(AppSpacing.sm)),
                                 Text(
                                   buildInfo.buildNumber.isEmpty
                                       ? l10n.aboutVersion(buildInfo.version)
@@ -109,14 +103,10 @@ class AboutView extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                               ],
-                              SizedBox(
-                                height: sizing.scaled(AppSpacing.xxl),
-                              ),
+                              SizedBox(height: sizing.scaled(AppSpacing.xxl)),
                               Card(
                                 elevation: 0,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface,
+                                color: Theme.of(context).colorScheme.surface,
                                 margin: EdgeInsets.zero,
                                 clipBehavior: Clip.antiAlias,
                                 child: Column(
@@ -175,7 +165,7 @@ class AboutView extends StatelessWidget {
 }
 
 class _AboutPullReveal extends StatefulWidget {
-  const _AboutPullReveal({
+  const new({
     required this.imageExtent,
     required this.viewportHeight,
     required this.child,
@@ -284,7 +274,7 @@ class _AboutPullRevealState extends State<_AboutPullReveal> {
 }
 
 class _AboutRow extends StatelessWidget {
-  const _AboutRow({
+  const new({
     required this.title,
     required this.icon,
     required this.onTap,

@@ -10,15 +10,9 @@ void main() {
       final darkTheme = AppTheme.dark();
 
       expect(lightTheme.colorScheme.primary, AppColors.danLight.wechatGreen);
-      expect(
-        lightTheme.colorScheme.onPrimary,
-        AppColors.wechatGreenForeground,
-      );
+      expect(lightTheme.colorScheme.onPrimary, AppColors.wechatGreenForeground);
       expect(darkTheme.colorScheme.primary, AppColors.danDark.wechatGreen);
-      expect(
-        darkTheme.colorScheme.onPrimary,
-        AppColors.wechatGreenForeground,
-      );
+      expect(darkTheme.colorScheme.onPrimary, AppColors.wechatGreenForeground);
       for (final theme in [lightTheme, darkTheme]) {
         expect(
           theme.filledButtonTheme.style?.foregroundColor?.resolve({}),
@@ -90,9 +84,10 @@ void main() {
         16,
       );
       expect(
-        AppTheme.light(
-          appearance: const AppearanceSettings(fontSize: 20),
-        ).extension<AppTypography>()?.statusBody.fontSize,
+        AppTheme.light(appearance: const AppearanceSettings(fontSize: 20))
+            .extension<AppTypography>()
+            ?.statusBody
+            .fontSize,
         20,
       );
     });
@@ -112,10 +107,7 @@ void main() {
         lightTheme.colorScheme.onSurfaceVariant,
         AppColors.danLight.textSecondary,
       );
-      expect(
-        lightTheme.colorScheme.outlineVariant,
-        AppColors.danLight.divider,
-      );
+      expect(lightTheme.colorScheme.outlineVariant, AppColors.danLight.divider);
       expect(
         darkTheme.extension<AppStyle>()?.statusPhotoStyle,
         StatusPhotoStyle.x,
@@ -147,14 +139,8 @@ void main() {
       expect(sizing.scale, closeTo(20 / 16, 0.000001));
       expect(sizing.statusFontSize, closeTo(16 * (20 / 16), 0.000001));
       expect(sizing.statusAvatarSize, closeTo(44 * (20 / 16), 0.000001));
-      expect(
-        sizing.appBarAccountAvatarSize,
-        closeTo(32 * (20 / 16), 0.000001),
-      );
-      expect(
-        sizing.appBarHorizontalPadding,
-        closeTo(16 * (20 / 16), 0.000001),
-      );
+      expect(sizing.appBarAccountAvatarSize, closeTo(32 * (20 / 16), 0.000001));
+      expect(sizing.appBarHorizontalPadding, closeTo(16 * (20 / 16), 0.000001));
       expect(
         theme.extension<AppTypography>()?.statusBody.fontSize,
         closeTo(16 * (20 / 16), 0.000001),
@@ -168,10 +154,7 @@ void main() {
         theme.appBarTheme.iconTheme?.size,
         closeTo(26 * (20 / 16), 0.000001),
       );
-      expect(
-        theme.appBarTheme.iconTheme?.color,
-        AppColors.danLight.textBase,
-      );
+      expect(theme.appBarTheme.iconTheme?.color, AppColors.danLight.textBase);
       expect(
         theme.appBarTheme.actionsIconTheme?.size,
         closeTo(26 * (20 / 16), 0.000001),
@@ -193,10 +176,7 @@ void main() {
       final darkTypography = darkTheme.extension<AppTypography>()!;
 
       expect(lightTypography.statusBody.fontSize, 16);
-      expect(
-        darkTypography.statusBody.color,
-        darkTheme.colorScheme.onSurface,
-      );
+      expect(darkTypography.statusBody.color, darkTheme.colorScheme.onSurface);
     });
 
     test('does not shrink navigation hit areas below their baselines', () {

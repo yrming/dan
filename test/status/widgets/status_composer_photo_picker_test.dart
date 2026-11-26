@@ -215,9 +215,7 @@ void main() {
 
       testWidgets(
         'keeps a failed photo removable without a decoding exception',
-        (
-          tester,
-        ) async {
+        (tester) async {
           await pumpPhoto(
             tester,
             StatusComposerPhoto(path: '/broken.png', bytes: Uint8List(0)),

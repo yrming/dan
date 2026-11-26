@@ -7,7 +7,7 @@ part 'status_image_viewer_state.dart';
 /// Performs share and gallery-save actions for the viewed status image.
 class StatusImageViewerCubit extends Cubit<StatusImageViewerState> {
   /// Creates a status image viewer cubit.
-  StatusImageViewerCubit({required this._imageActionsService})
+  new({required this._imageActionsService})
     : super(const StatusImageViewerState());
 
   final StatusImageActionsService _imageActionsService;

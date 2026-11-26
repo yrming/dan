@@ -17,8 +17,7 @@ import 'package:status_repository/status_repository.dart' as repository;
 
 import '../../helpers/helpers.dart';
 
-class _MockStatusRepository extends Mock
-    implements repository.StatusRepository {}
+class _MockStatusRepository extends Mock implements repository.StatusRepository;
 
 void main() {
   group(SearchView, () {
@@ -27,9 +26,8 @@ void main() {
 
     setUp(() {
       statusRepository = _MockStatusRepository();
-      when(
-        () => statusRepository.statusChanges,
-      ).thenAnswer((_) => const Stream.empty());
+      when(() => statusRepository.statusChanges)
+          .thenAnswer((_) => const Stream.empty());
     });
 
     Future<void> pumpSearch(WidgetTester tester, {String? initialQuery}) async {
@@ -64,13 +62,8 @@ void main() {
     }
 
     testWidgets('does not autofocus when opened from a topic', (tester) async {
-      when(
-        () => statusRepository.searchStatuses(query: 'flutter'),
-      ).thenAnswer(
-        (_) async => repository.StatusPage(
-          statuses: const [],
-          hasMore: false,
-        ),
+      when(() => statusRepository.searchStatuses(query: 'flutter')).thenAnswer(
+        (_) async => repository.StatusPage(statuses: const [], hasMore: false),
       );
       await pumpSearch(tester, initialQuery: 'flutter');
       expect(
@@ -191,10 +184,7 @@ void main() {
       await tester.pump();
       expect(find.byTooltip('清空搜索'), findsOneWidget);
       expect(find.byIcon(RemixIcons.close_line), findsOneWidget);
-      expect(
-        tester.getSize(find.byType(IconButton)),
-        const Size(40, 40),
-      );
+      expect(tester.getSize(find.byType(IconButton)), const Size(40, 40));
       expect(tester.getRect(input), initialRect);
 
       FocusManager.instance.primaryFocus?.unfocus();
@@ -213,10 +203,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.widget<InputDecorator>(input).isFocused, isTrue);
       expect(find.text('搜索'), findsNothing);
-      expect(
-        find.byKey(const ValueKey('search-action-divider')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey('search-action-divider')), findsNothing);
       expect(tester.getRect(input), initialRect);
     });
 
@@ -224,9 +211,8 @@ void main() {
       tester,
     ) async {
       final response = Completer<repository.StatusPage>();
-      when(
-        () => statusRepository.searchStatuses(query: '猫'),
-      ).thenAnswer((_) => response.future);
+      when(() => statusRepository.searchStatuses(query: '猫'))
+          .thenAnswer((_) => response.future);
       await pumpSearch(tester);
       await tester.enterText(find.byType(TextField), ' 猫 ');
       await tester.pump();
@@ -280,14 +266,13 @@ void main() {
       tester,
     ) async {
       var calls = 0;
-      when(() => statusRepository.searchStatuses(query: '猫')).thenAnswer((
-        _,
-      ) async {
-        if (calls++ == 0) {
-          throw const repository.StatusRepositoryUnknownFailure();
-        }
-        return repository.StatusPage(statuses: const [], hasMore: false);
-      });
+      when(() => statusRepository.searchStatuses(query: '猫'))
+          .thenAnswer((_) async {
+            if (calls++ == 0) {
+              throw const repository.StatusRepositoryUnknownFailure();
+            }
+            return repository.StatusPage(statuses: const [], hasMore: false);
+          });
       await pumpSearch(tester);
       await tester.enterText(find.byType(TextField), '猫');
       await tester.pump();

@@ -8,7 +8,7 @@ import 'package:remixicon/remixicon.dart';
 /// App bar used by the authenticated shell.
 class AppShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Creates a shell app bar for [selectedTab].
-  const AppShellAppBar({
+  const new({
     required this.selectedTab,
     this.toolbarHeight = AppLayout.appBarToolbarHeight,
     this.directMessagesCount,
@@ -101,10 +101,7 @@ class AppShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _mailIcon(BuildContext context) {
-    final icon = Icon(
-      RemixIcons.mail_line,
-      color: context.appColors.textBase,
-    );
+    final icon = Icon(RemixIcons.mail_line, color: context.appColors.textBase);
     final unreadCount = directMessagesCount ?? 0;
     if (unreadCount <= 0) return icon;
 
@@ -115,10 +112,7 @@ class AppShellAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget? _titleFor(
-    BuildContext context,
-    AppShellTab selectedTab,
-  ) {
+  Widget? _titleFor(BuildContext context, AppShellTab selectedTab) {
     return switch (selectedTab) {
       AppShellTab.home => Text(context.l10n.homePageTitle),
       AppShellTab.mentions => Text(context.l10n.mentionsPageTitle),

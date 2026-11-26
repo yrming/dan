@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Displays the original story behind Dan.
 class AboutStoryPage extends StatelessWidget {
   /// Creates the story page.
-  const AboutStoryPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

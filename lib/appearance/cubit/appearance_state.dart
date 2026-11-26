@@ -18,10 +18,7 @@ enum AppearanceStatus {
 /// State emitted by [AppearanceCubit].
 final class AppearanceState extends Equatable {
   /// Creates appearance state.
-  const AppearanceState({
-    required this.status,
-    required this.settings,
-  });
+  const new({required this.status, required this.settings});
 
   /// Current loading or persistence status.
   final AppearanceStatus status;

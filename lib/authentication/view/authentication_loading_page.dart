@@ -4,7 +4,7 @@ import 'package:material_ui/material_ui.dart';
 /// Loading boundary shown while stored accounts are restored.
 class AuthenticationLoadingPage extends StatelessWidget {
   /// Creates an authentication loading page.
-  const AuthenticationLoadingPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

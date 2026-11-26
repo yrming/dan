@@ -45,15 +45,9 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
     // List items use ten pixels; paragraph padding adds six more for prose.
     blockSpacing: sizing.scaled(AppSpacing.space10),
     pPadding: EdgeInsets.only(bottom: sizing.scaled(AppSpacing.space6)),
-    h1: heading.copyWith(
-      fontSize: sizing.scaled(26),
-      height: 1.4,
-    ),
+    h1: heading.copyWith(fontSize: sizing.scaled(26), height: 1.4),
     h1Padding: EdgeInsets.only(bottom: sizing.scaled(18)),
-    h2: heading.copyWith(
-      fontSize: sizing.scaled(20),
-      height: 1.5,
-    ),
+    h2: heading.copyWith(fontSize: sizing.scaled(20), height: 1.5),
     h2Padding: EdgeInsets.only(
       top: sizing.scaled(AppSpacing.xl),
       bottom: sizing.scaled(AppSpacing.space6),
@@ -63,10 +57,7 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
       top: sizing.scaled(AppSpacing.sm),
       bottom: sizing.scaled(2),
     ),
-    strong: body.copyWith(
-      color: colors.textBase,
-      fontWeight: FontWeight.w600,
-    ),
+    strong: body.copyWith(color: colors.textBase, fontWeight: FontWeight.w600),
     a: body.copyWith(
       color: colors.textBase,
       decoration: TextDecoration.underline,
@@ -101,7 +92,7 @@ MarkdownStyleSheet documentMarkdownStyle(BuildContext context) {
 /// Recognizes a block of emphasized key/value lines immediately after a title.
 class DocumentMetadataSyntax extends md.BlockSyntax {
   /// Creates the optional document metadata syntax.
-  const DocumentMetadataSyntax();
+  const new();
 
   @override
   RegExp get pattern => RegExp(r'^\*\*([^*]+[：:][^*]+)\*\*\s*$');

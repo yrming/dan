@@ -12,7 +12,7 @@ typedef DirectMessageExternalLinkLauncher = Future<bool> Function(Uri uri);
 /// One direct-message bubble aligned by its sender.
 class DirectMessageBubble extends StatelessWidget {
   /// Creates a direct message bubble row.
-  const DirectMessageBubble({
+  const new({
     required this.message,
     required this.isSentByActiveAccount,
     this.avatarUrl,
@@ -78,7 +78,7 @@ class DirectMessageBubble extends StatelessWidget {
 }
 
 class _MessageBubble extends StatelessWidget {
-  const _MessageBubble({
+  const new({
     required this.color,
     required this.textColor,
     required this.linkColor,
@@ -125,7 +125,7 @@ class _MessageBubble extends StatelessWidget {
 }
 
 class _DirectMessageText extends StatefulWidget {
-  const _DirectMessageText({
+  const new({
     required this.text,
     required this.textColor,
     required this.linkColor,

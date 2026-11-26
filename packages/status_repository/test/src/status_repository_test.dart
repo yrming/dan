@@ -218,23 +218,20 @@ void main() {
         verify(() => fanfouClient.close()).called(1);
       });
 
-      test(
-        'ends pagination when a short response advances maxId',
-        () async {
-          when(
-            () => statusesApi.homeTimeline(
-              format: 'html',
-              count: 20,
-              maxId: 'cursor-a',
-            ),
-          ).thenAnswer((_) async => [_fanfouStatus]);
+      test('ends pagination when a short response advances maxId', () async {
+        when(
+          () => statusesApi.homeTimeline(
+            format: 'html',
+            count: 20,
+            maxId: 'cursor-a',
+          ),
+        ).thenAnswer((_) async => [_fanfouStatus]);
 
-          final result = await subject.getHomeTimeline(maxId: 'cursor-a');
+        final result = await subject.getHomeTimeline(maxId: 'cursor-a');
 
-          expect(result.hasMore, isFalse);
-          expect(result.nextCursor, isNull);
-        },
-      );
+        expect(result.hasMore, isFalse);
+        expect(result.nextCursor, isNull);
+      });
 
       test(
         'stops pagination when the response does not advance maxId',
@@ -307,22 +304,14 @@ void main() {
 
       test('searches the current account without sending an id', () async {
         when(
-          () => searchApi.userTimeline(
-            '猫',
-            count: 20,
-            format: 'html',
-          ),
+          () => searchApi.userTimeline('猫', count: 20, format: 'html'),
         ).thenAnswer((_) async => []);
 
         final result = await subject.searchMyStatuses(query: '猫');
 
         expect(result.statuses, isEmpty);
         verify(
-          () => searchApi.userTimeline(
-            '猫',
-            count: 20,
-            format: 'html',
-          ),
+          () => searchApi.userTimeline('猫', count: 20, format: 'html'),
         ).called(1);
       });
 
@@ -412,21 +401,13 @@ void main() {
     group('getMentions', () {
       test('maps the opaque cursor to maxId', () async {
         when(
-          () => statusesApi.mentions(
-            format: 'html',
-            count: 30,
-            maxId: 'max-a',
-          ),
+          () => statusesApi.mentions(format: 'html', count: 30, maxId: 'max-a'),
         ).thenAnswer((_) async => [_fanfouStatus]);
 
         await subject.getMentions(limit: 30, maxId: 'max-a');
 
         verify(
-          () => statusesApi.mentions(
-            format: 'html',
-            count: 30,
-            maxId: 'max-a',
-          ),
+          () => statusesApi.mentions(format: 'html', count: 30, maxId: 'max-a'),
         ).called(1);
       });
 
@@ -572,10 +553,7 @@ void main() {
 
       test('throws $ArgumentError for a malformed cursor', () {
         expect(
-          subject.getFavorites(
-            userId: 'user-a',
-            cursor: 'not-a-page',
-          ),
+          subject.getFavorites(userId: 'user-a', cursor: 'not-a-page'),
           throwsArgumentError,
         );
         verifyNever(() => fanfouClient.favorites);
@@ -675,12 +653,7 @@ void main() {
         ).thenAnswer((_) async => _fanfouStatus);
         final change = expectLater(
           subject.statusChanges,
-          emits(
-            const StatusCreated(
-              accountId: 'account-a',
-              status: _status,
-            ),
-          ),
+          emits(const StatusCreated(accountId: 'account-a', status: _status)),
         );
 
         final result = await subject.createStatus('  ${_status.text}  ');
@@ -814,19 +787,14 @@ void main() {
         final change = expectLater(
           subject.statusChanges,
           emits(
-            const StatusDeleted(
-              accountId: 'account-a',
-              statusId: 'status-a',
-            ),
+            const StatusDeleted(accountId: 'account-a', statusId: 'status-a'),
           ),
         );
 
         await subject.deleteStatus(_status.id);
 
         await change;
-        verify(
-          () => statusesApi.destroy(_status.id, format: 'html'),
-        ).called(1);
+        verify(() => statusesApi.destroy(_status.id, format: 'html')).called(1);
       });
     });
 
@@ -1003,11 +971,7 @@ const _olderStatus = Status(
   id: 'status-b',
   text: 'older fanfou',
   createdAt: 'Tue Jul 27 00:00:00 +0000 2026',
-  author: StatusAuthor(
-    id: 'user-b',
-    name: 'User B',
-    screenName: 'user_b',
-  ),
+  author: StatusAuthor(id: 'user-b', name: 'User B', screenName: 'user_b'),
 );
 
 final fanfou.Status _fanfouStatus = _buildFanfouStatus(_status);

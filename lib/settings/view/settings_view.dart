@@ -12,7 +12,7 @@ import 'package:remixicon/remixicon.dart';
 /// Renders appearance and display settings.
 class SettingsView extends StatelessWidget {
   /// Creates the settings view.
-  const SettingsView({
+  const new({
     this.onFontSizePressed,
     this.onBlacklistPressed,
     this.onAboutPressed,
@@ -151,7 +151,7 @@ class SettingsView extends StatelessWidget {
 }
 
 class _AppearanceSettingRow<T> extends StatelessWidget {
-  const _AppearanceSettingRow({
+  const new({
     required this.title,
     required this.icon,
     required this.selected,
@@ -205,7 +205,7 @@ class _AppearanceSettingRow<T> extends StatelessWidget {
 }
 
 class _SettingsActionsSection extends StatelessWidget {
-  const _SettingsActionsSection({
+  const new({
     required this.onSwitchAccountPressed,
     required this.onSignOutPressed,
   });
@@ -242,7 +242,7 @@ class _SettingsActionsSection extends StatelessWidget {
 }
 
 class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({
+  const new({
     required this.title,
     required this.icon,
     required this.enabled,

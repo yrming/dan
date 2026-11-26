@@ -9,10 +9,7 @@ enum StatusImageViewerActionStatus { idle, inProgress, success, failure }
 /// Holds the outcome of the latest share or gallery-save action.
 class StatusImageViewerState extends Equatable {
   /// Creates a status image viewer state.
-  const StatusImageViewerState({
-    this.action,
-    this.status = StatusImageViewerActionStatus.idle,
-  });
+  const new({this.action, this.status = StatusImageViewerActionStatus.idle});
 
   /// The action this state refers to, or null while [status] is idle.
   final StatusImageViewerAction? action;

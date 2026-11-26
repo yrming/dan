@@ -17,9 +17,9 @@ enum StatusPhotoFormat {
     final extension = name.split('.').last;
     bool startsWith(List<int> signature) =>
         header.length >= signature.length &&
-        Iterable<int>.generate(signature.length).every(
-          (index) => header[index] == signature[index],
-        );
+        Iterable<int>.generate(
+          signature.length,
+        ).every((index) => header[index] == signature[index]);
 
     if ((extension == 'jpg' || extension == 'jpeg') &&
         startsWith([0xff, 0xd8, 0xff])) {

@@ -12,9 +12,8 @@ final class SharedPreferencesAuthenticationSessionStorage
   /// Creates a shared-preferences authentication state store.
   ///
   /// A custom [preferences] instance can be injected by tests.
-  SharedPreferencesAuthenticationSessionStorage({
-    SharedPreferencesAsync? preferences,
-  }) : _preferences = preferences ?? SharedPreferencesAsync();
+  new({SharedPreferencesAsync? preferences})
+    : _preferences = preferences ?? SharedPreferencesAsync();
 
   static const _storageVersion = 1;
   static const _stateKey = 'dan.authentication.accounts';
@@ -60,10 +59,7 @@ final class SharedPreferencesAuthenticationSessionStorage
 
     final state = await _readState();
     final accounts = List<_StoredAccount>.of(state.accounts);
-    final storedAccount = _StoredAccount(
-      account: account,
-      session: session,
-    );
+    final storedAccount = _StoredAccount(account: account, session: session);
     final index = accounts.indexWhere(
       (candidate) => candidate.account.id == account.id,
     );
@@ -206,10 +202,7 @@ final class SharedPreferencesAuthenticationSessionStorage
 }
 
 final class _StoredAuthenticationState {
-  const _StoredAuthenticationState({
-    this.activeAccountId,
-    this.accounts = const [],
-  });
+  const new({this.activeAccountId, this.accounts = const []});
 
   final String? activeAccountId;
   final List<_StoredAccount> accounts;
@@ -224,10 +217,7 @@ final class _StoredAuthenticationState {
 }
 
 final class _StoredAccount {
-  const _StoredAccount({
-    required this.account,
-    required this.session,
-  });
+  const new({required this.account, required this.session});
 
   static _StoredAccount? fromJson(Object? source) {
     if (source is! Map<String, Object?>) {

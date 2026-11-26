@@ -9,7 +9,7 @@ const statusActionButtonHitTargetSize = 40.0;
 /// Displays the status action button.
 class StatusActionButton extends StatefulWidget {
   /// Creates a status action button.
-  const StatusActionButton({required this.onPressed, super.key});
+  const new({required this.onPressed, super.key});
 
   /// Called when the button is activated, or null when no action is available.
   final VoidCallback? onPressed;
@@ -135,7 +135,7 @@ class _StatusActionButtonState extends State<StatusActionButton> {
 }
 
 class _ActionDot extends StatelessWidget {
-  const _ActionDot({required this.color});
+  const new({required this.color});
 
   final Color color;
 

@@ -15,7 +15,7 @@ import 'package:material_ui/material_ui.dart';
 /// Route boundary for application settings.
 class SettingsPage extends StatelessWidget {
   /// Creates a settings page.
-  const SettingsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +34,9 @@ class SettingsPage extends StatelessWidget {
             'userId': GoRouterState.of(context).pathParameters['userId']!,
           },
         ),
-        onBlacklistPressed: () => context.pushNamed<void>(
-          AppRouteName.blacklist,
-        ),
-        onAboutPressed: () => _openDocument(
-          context,
-          AppRouteName.about,
-        ),
+        onBlacklistPressed: () =>
+            context.pushNamed<void>(AppRouteName.blacklist),
+        onAboutPressed: () => _openDocument(context, AppRouteName.about),
         onSwitchAccountPressed: () => showAccountSwitcherSheet(
           context,
           onAddAccountPressed: () => context.pushNamed<void>(

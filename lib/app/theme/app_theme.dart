@@ -101,9 +101,7 @@ abstract final class AppTheme {
       extensions: [
         colors,
         sizing,
-        AppStyle(
-          statusPhotoStyle: appearance.statusPhotoStyle,
-        ),
+        AppStyle(statusPhotoStyle: appearance.statusPhotoStyle),
         typography,
       ],
       appBarTheme: AppBarTheme(
@@ -125,10 +123,7 @@ abstract final class AppTheme {
         titleSpacing: sizing.appBarHorizontalPadding,
         titleTextStyle: typography.navigationTitle,
         shape: Border(
-          bottom: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 0,
-          ),
+          bottom: BorderSide(color: colorScheme.outlineVariant, width: 0),
         ),
         systemOverlayStyle: systemUiOverlayStyle,
       ),
@@ -139,10 +134,7 @@ abstract final class AppTheme {
       sliderTheme: const SliderThemeData(
         trackHeight: 12,
         overlayColor: AppColors.transparent,
-        thumbShape: RoundSliderThumbShape(
-          elevation: 0,
-          pressedElevation: 0,
-        ),
+        thumbShape: RoundSliderThumbShape(elevation: 0, pressedElevation: 0),
         padding: EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.md,

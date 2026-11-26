@@ -7,7 +7,7 @@ import 'package:material_ui/material_ui.dart';
 /// Route boundary using the application-wide appearance cubit.
 class FontSizePage extends StatelessWidget {
   /// Creates the font-size adjustment page.
-  const FontSizePage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

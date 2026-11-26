@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 const _user = UserProfile(id: 'u1', name: 'User', screenName: 'user');
 
@@ -64,12 +64,10 @@ void main() {
     blocTest<FollowRequestsCubit, FollowRequestsState>(
       'emits loaded requests and removes a request after accepting it',
       setUp: () {
-        when(
-          () => repository.getFollowRequests(),
-        ).thenAnswer((_) async => [_user]);
-        when(
-          () => repository.acceptFollowRequest('u1'),
-        ).thenAnswer((_) async => _user);
+        when(() => repository.getFollowRequests())
+            .thenAnswer((_) async => [_user]);
+        when(() => repository.acceptFollowRequest('u1'))
+            .thenAnswer((_) async => _user);
       },
       build: build,
       act: (cubit) async {
@@ -105,12 +103,10 @@ void main() {
     blocTest<FollowRequestsCubit, FollowRequestsState>(
       'keeps a request and reports a failure when ignoring fails',
       setUp: () {
-        when(
-          () => repository.getFollowRequests(),
-        ).thenAnswer((_) async => [_user]);
-        when(
-          () => repository.ignoreFollowRequest('u1'),
-        ).thenThrow(StateError('offline'));
+        when(() => repository.getFollowRequests())
+            .thenAnswer((_) async => [_user]);
+        when(() => repository.ignoreFollowRequest('u1'))
+            .thenThrow(StateError('offline'));
       },
       build: build,
       act: (cubit) async {

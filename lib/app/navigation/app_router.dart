@@ -55,10 +55,7 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
       };
     },
     routes: [
-      GoRoute(
-        path: '/',
-        redirect: (_, _) => AppRoutePath.home,
-      ),
+      GoRoute(path: '/', redirect: (_, _) => AppRoutePath.home),
       GoRoute(
         name: AppRouteName.loading,
         path: AppRoutePath.loading,
@@ -86,10 +83,8 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
       GoRoute(
         name: AppRouteName.publicUserAgreement,
         path: AppRoutePath.publicUserAgreement,
-        pageBuilder: (context, state) => _buildCupertinoPage(
-          state,
-          const LegalDocumentPage(),
-        ),
+        pageBuilder: (context, state) =>
+            _buildCupertinoPage(state, const LegalDocumentPage()),
       ),
       GoRoute(
         name: AppRouteName.publicPrivacyPolicy,
@@ -210,9 +205,7 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
       ),
       StatefulShellRoute.indexedStack(
         pageBuilder: (context, state, navigationShell) {
-          final activeAccountId = _activeAccount(
-            authenticationBloc.state,
-          )!.id;
+          final activeAccountId = _activeAccount(authenticationBloc.state)!.id;
           return CupertinoPage<void>(
             key: ValueKey((state.pageKey, activeAccountId)),
             child: AppShell(
@@ -287,9 +280,7 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
                     routeName: AppRouteName.mine,
                     state: state,
                     child: MinePage(
-                      activeAccount: _activeAccount(
-                        authenticationBloc.state,
-                      )!,
+                      activeAccount: _activeAccount(authenticationBloc.state)!,
                     ),
                   ),
                 ),
@@ -426,9 +417,8 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
             child: ConversationPage(
               userId: state.pathParameters['userId']!,
               activeAccountId: _activeAccount(authenticationBloc.state)?.id,
-              activeAccountAvatarUrl: _activeAccount(
-                authenticationBloc.state,
-              )?.avatarUrl,
+              activeAccountAvatarUrl: _activeAccount(authenticationBloc.state)
+                  ?.avatarUrl,
               initialPeerScreenName: state.uri.queryParameters['screenName'],
               conversation: switch (state.extra) {
                 final conversation_repository.DirectMessageConversation
@@ -483,26 +473,20 @@ GoRouter createAppRouter(AuthenticationBloc authenticationBloc) {
               GoRoute(
                 name: AppRouteName.about,
                 path: AppRoutePath.about,
-                pageBuilder: (context, state) => _buildCupertinoPage(
-                  state,
-                  const AboutPage(),
-                ),
+                pageBuilder: (context, state) =>
+                    _buildCupertinoPage(state, const AboutPage()),
                 routes: [
                   GoRoute(
                     name: AppRouteName.aboutStory,
                     path: AppRoutePath.aboutStory,
-                    pageBuilder: (context, state) => _buildCupertinoPage(
-                      state,
-                      const AboutStoryPage(),
-                    ),
+                    pageBuilder: (context, state) =>
+                        _buildCupertinoPage(state, const AboutStoryPage()),
                   ),
                   GoRoute(
                     name: AppRouteName.userAgreement,
                     path: AppRoutePath.userAgreement,
-                    pageBuilder: (context, state) => _buildCupertinoPage(
-                      state,
-                      const LegalDocumentPage(),
-                    ),
+                    pageBuilder: (context, state) =>
+                        _buildCupertinoPage(state, const LegalDocumentPage()),
                   ),
                   GoRoute(
                     name: AppRouteName.privacyPolicy,
@@ -554,9 +538,7 @@ AuthenticatedAccount? _activeAccount(AuthenticationState state) {
   };
 }
 
-bool _isTabRoot({
-  required String path,
-}) {
+bool _isTabRoot({required String path}) {
   return path == AppRoutePath.home ||
       path == AppRoutePath.mentions ||
       path == AppRoutePath.browse ||
@@ -576,31 +558,19 @@ Widget _buildLoggedPage({
 }
 
 Page<void> _buildNoTransitionPage(GoRouterState state, Widget child) {
-  return NoTransitionPage<void>(
-    key: state.pageKey,
-    child: child,
-  );
+  return NoTransitionPage<void>(key: state.pageKey, child: child);
 }
 
 Page<void> _buildCupertinoPage(GoRouterState state, Widget child) {
-  return CupertinoPage<void>(
-    key: state.pageKey,
-    child: child,
-  );
+  return CupertinoPage<void>(key: state.pageKey, child: child);
 }
 
 Page<void> _buildImageViewerPage(GoRouterState state, Widget child) {
-  return _ImageViewerPage(
-    key: state.pageKey,
-    child: child,
-  );
+  return _ImageViewerPage(key: state.pageKey, child: child);
 }
 
 class _ImageViewerPage extends Page<void> {
-  const _ImageViewerPage({
-    required this.child,
-    super.key,
-  });
+  const new({required this.child, super.key});
 
   final Widget child;
 
@@ -611,7 +581,7 @@ class _ImageViewerPage extends Page<void> {
 }
 
 class _ImageViewerPageRoute extends PageRoute<void> {
-  _ImageViewerPageRoute(_ImageViewerPage page) : super(settings: page);
+  new(_ImageViewerPage page) : super(settings: page);
 
   _ImageViewerPage get _page => settings as _ImageViewerPage;
 
@@ -663,17 +633,14 @@ class _ImageViewerPageRoute extends PageRoute<void> {
     Widget child,
   ) {
     return FadeTransition(
-      opacity: CurvedAnimation(
-        parent: animation,
-        curve: Easing.standard,
-      ),
+      opacity: CurvedAnimation(parent: animation, curve: Easing.standard),
       child: child,
     );
   }
 }
 
 class _PageEntryLogger extends StatefulWidget {
-  const _PageEntryLogger({
+  const new({
     required this.routeName,
     required this.location,
     required this.child,
@@ -704,11 +671,9 @@ class _PageEntryLoggerState extends State<_PageEntryLogger> {
 /// Refreshes [GoRouter] when the authentication stream emits.
 class GoRouterRefreshStream extends ChangeNotifier {
   /// Creates a router refresh notifier.
-  GoRouterRefreshStream(Stream<dynamic> stream) {
+  new(Stream<dynamic> stream) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-      (_) => notifyListeners(),
-    );
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
   }
 
   late final StreamSubscription<dynamic> _subscription;

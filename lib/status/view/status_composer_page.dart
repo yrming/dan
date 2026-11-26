@@ -24,7 +24,7 @@ import 'package:status_repository/status_repository.dart';
 /// Full-screen page for composing a new status.
 class StatusComposerPage extends StatelessWidget {
   /// Creates the status composer page.
-  const StatusComposerPage({
+  const new({
     this.mode = StatusComposerMode.compose,
     this.sourceStatusId,
     this.sourceAuthor,
@@ -63,10 +63,7 @@ class StatusComposerPage extends StatelessWidget {
         const StatusTextPart(text: ' '),
       ] else if (mode == StatusComposerMode.repost) ...[
         const StatusTextPart(text: '转'),
-        StatusTextPart(
-          text: '@$nickname',
-          kind: StatusTextPartKind.mention,
-        ),
+        StatusTextPart(text: '@$nickname', kind: StatusTextPartKind.mention),
         const StatusTextPart(text: ' '),
         ...parseStatusHtml(sourceText ?? ''),
       ],
@@ -111,7 +108,7 @@ class StatusComposerPage extends StatelessWidget {
 /// Renders the status composer form.
 class StatusComposerView extends StatefulWidget {
   /// Creates the status composer view.
-  const StatusComposerView({
+  const new({
     this.accountId,
     this.avatarUrl,
     this.authorName,
@@ -218,10 +215,7 @@ class _StatusComposerViewState extends State<StatusComposerView> {
           }
           if (state.photoSelectionStatus ==
               StatusPhotoSelectionStatus.failure) {
-            showAppToast(
-              context,
-              context.l10n.statusComposerPhotoPickFailure,
-            );
+            showAppToast(context, context.l10n.statusComposerPhotoPickFailure);
             return;
           }
           switch (state.submissionStatus) {
@@ -531,7 +525,7 @@ const _publishButtonHeight = 36.0;
 const _publishIndicatorSize = 16.0;
 
 class _ComposerToolbar extends StatelessWidget {
-  const _ComposerToolbar({
+  const new({
     required this.isBusy,
     required this.isPicking,
     required this.hasPhoto,

@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 /// One conversation entry of the direct message list.
 class ConversationListItem extends StatelessWidget {
   /// Creates a conversation list item.
-  const ConversationListItem({
+  const new({
     required this.conversation,
     required this.onTap,
     required this.onUserTap,

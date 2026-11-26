@@ -13,7 +13,7 @@ import 'package:status_repository/status_repository.dart';
 
 /// Anchors mention suggestions below the active @ in the editor.
 class StatusMentionSuggestions extends StatefulWidget {
-  const StatusMentionSuggestions({
+  const new({
     required this.controller,
     required this.focusNode,
     required this.enabled,

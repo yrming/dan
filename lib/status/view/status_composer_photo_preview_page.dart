@@ -5,11 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// Full-screen preview of a photo selected for a draft.
 class StatusComposerPhotoPreviewPage extends StatelessWidget {
-  const StatusComposerPhotoPreviewPage({
-    required this.photo,
-    required this.heroTag,
-    super.key,
-  });
+  const new({required this.photo, required this.heroTag, super.key});
 
   final StatusComposerPhoto photo;
   final String heroTag;

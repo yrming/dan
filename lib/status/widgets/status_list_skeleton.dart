@@ -7,7 +7,7 @@ import 'package:material_ui/material_ui.dart';
 /// Displays animated placeholders matching the status-list item layout.
 class StatusListSkeleton extends StatelessWidget {
   /// Creates a status-list skeleton.
-  const StatusListSkeleton({
+  const new({
     required this.semanticLabel,
     this.itemCount = 6,
     this.shrinkWrap = false,
@@ -89,7 +89,7 @@ class StatusListSkeleton extends StatelessWidget {
 }
 
 class _MomentsSkeletonItem extends StatelessWidget {
-  const _MomentsSkeletonItem({
+  const new({
     required this.color,
     required this.showDate,
     required this.showPhoto,
@@ -175,7 +175,7 @@ class _MomentsSkeletonItem extends StatelessWidget {
 }
 
 class _MomentsSkeletonText extends StatelessWidget {
-  const _MomentsSkeletonText({required this.color});
+  const new({required this.color});
 
   final Color color;
 
@@ -211,7 +211,7 @@ abstract final class _StatusSkeletonLayout {
 }
 
 class _StatusListSkeletonItem extends StatelessWidget {
-  const _StatusListSkeletonItem({required this.color});
+  const new({required this.color});
 
   final Color color;
 
@@ -240,17 +240,13 @@ class _StatusListSkeletonItem extends StatelessWidget {
                 _SkeletonShape.rounded(
                   color: color,
                   width: sizing.scaled(_StatusSkeletonLayout.authorWidth),
-                  height: sizing.scaled(
-                    _StatusSkeletonLayout.bodyLineHeight,
-                  ),
+                  height: sizing.scaled(_StatusSkeletonLayout.bodyLineHeight),
                 ),
                 SizedBox(height: sizing.scaled(AppSpacing.space6)),
                 _SkeletonShape.rounded(
                   color: color,
                   width: double.infinity,
-                  height: sizing.scaled(
-                    _StatusSkeletonLayout.bodyLineHeight,
-                  ),
+                  height: sizing.scaled(_StatusSkeletonLayout.bodyLineHeight),
                 ),
                 SizedBox(
                   height: sizing.scaled(_StatusSkeletonLayout.bodyLineGap),
@@ -261,14 +257,10 @@ class _StatusListSkeletonItem extends StatelessWidget {
                   child: _SkeletonShape.rounded(
                     color: color,
                     width: double.infinity,
-                    height: sizing.scaled(
-                      _StatusSkeletonLayout.bodyLineHeight,
-                    ),
+                    height: sizing.scaled(_StatusSkeletonLayout.bodyLineHeight),
                   ),
                 ),
-                SizedBox(
-                  height: sizing.scaled(AppSpacing.space6),
-                ),
+                SizedBox(height: sizing.scaled(AppSpacing.space6)),
                 _SkeletonShape.rounded(
                   color: color,
                   width: sizing.scaled(_StatusSkeletonLayout.metadataWidth),
@@ -284,17 +276,14 @@ class _StatusListSkeletonItem extends StatelessWidget {
 }
 
 class _SkeletonShape extends StatelessWidget {
-  const _SkeletonShape._({
+  const new _({
     required this.color,
     required this.width,
     required this.height,
     required this.borderRadius,
   });
 
-  factory _SkeletonShape.circle({
-    required Color color,
-    required double diameter,
-  }) {
+  factory circle({required Color color, required double diameter}) {
     return _SkeletonShape._(
       color: color,
       width: diameter,
@@ -303,7 +292,7 @@ class _SkeletonShape extends StatelessWidget {
     );
   }
 
-  factory _SkeletonShape.rounded({
+  factory rounded({
     required Color color,
     required double width,
     required double height,

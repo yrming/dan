@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 /// One tappable action of an [AppAlertDialog].
 final class AppDialogAction {
   /// Creates a dialog action.
-  const AppDialogAction({
+  const new({
     required this.label,
     required this.color,
     required this.onPressed,
@@ -57,7 +57,7 @@ Future<void> showAppAlertDialog(
 /// Centered alert dialog matching the shared application dialog style.
 class AppAlertDialog extends StatefulWidget {
   /// Creates an alert dialog.
-  const AppAlertDialog({
+  const new({
     required this.title,
     required this.content,
     required this.cancelAction,
@@ -137,9 +137,7 @@ class _AppAlertDialogState extends State<AppAlertDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsetsDirectional.all(
-                      sizing.scaled(20),
-                    ),
+                    padding: EdgeInsetsDirectional.all(sizing.scaled(20)),
                     child: Column(
                       children: [
                         Text(
@@ -194,7 +192,7 @@ class _AppAlertDialogState extends State<AppAlertDialog> {
 }
 
 class _AppDialogActionButton extends StatelessWidget {
-  const _AppDialogActionButton({
+  const new({
     required this.action,
     required this.isLoading,
     required this.onTap,

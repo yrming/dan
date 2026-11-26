@@ -33,7 +33,7 @@ enum StatusFavoriteActionStatus {
 /// State for one status detail page.
 final class StatusDetailState extends Equatable {
   /// Creates a status detail state.
-  StatusDetailState({
+  new({
     this.status = StatusDetailStatus.initial,
     this.statusDetail,
     this.contextStatus = StatusDetailStatus.initial,

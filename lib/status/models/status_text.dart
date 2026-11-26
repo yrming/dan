@@ -105,7 +105,7 @@ enum StatusTextPartKind {
 /// One visible segment of a status, shared by display and editing.
 class StatusTextPart {
   /// Creates a status text segment.
-  const StatusTextPart({
+  const new({
     required this.text,
     this.kind = StatusTextPartKind.plain,
     this.userId,
@@ -126,11 +126,7 @@ class StatusTextPart {
 }
 
 class _StatusTextEntity {
-  const _StatusTextEntity({
-    required this.match,
-    required this.kind,
-    required this.priority,
-  });
+  const new({required this.match, required this.kind, required this.priority});
 
   final RegExpMatch match;
   final StatusTextPartKind kind;

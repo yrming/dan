@@ -22,12 +22,12 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockStatusRepository extends Mock
-    implements status_repository.StatusRepository {}
+    implements status_repository.StatusRepository;
 
 class _MockStatusDetailCubit extends MockCubit<StatusDetailState>
-    implements StatusDetailCubit {}
+    implements StatusDetailCubit;
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 void main() {
   group(StatusDetailView, () {
@@ -67,12 +67,10 @@ void main() {
       (tester) async {
         final repository = _MockStatusRepository();
         final request = Completer<void>();
-        when(
-          () => repository.getContextTimeline(any()),
-        ).thenAnswer((_) async => []);
-        when(
-          () => repository.deleteStatus(_status.id),
-        ).thenAnswer((_) => request.future);
+        when(() => repository.getContextTimeline(any()))
+            .thenAnswer((_) async => []);
+        when(() => repository.deleteStatus(_status.id))
+            .thenAnswer((_) => request.future);
         final router = GoRouter(
           routes: [
             GoRoute(
@@ -238,9 +236,8 @@ void main() {
           final updates = StreamController<StatusDetailState>();
           addTearDown(updates.close);
           whenListen(cubit, updates.stream, initialState: loading);
-          when(
-            () => cubit.retry(),
-          ).thenAnswer((_) async => updates.add(loading));
+          when(() => cubit.retry())
+              .thenAnswer((_) async => updates.add(loading));
           await pumpStatusDetailView(tester);
 
           updates.add(
@@ -545,9 +542,7 @@ void main() {
       );
     });
 
-    testWidgets('uses the small photo style when selected', (
-      tester,
-    ) async {
+    testWidgets('uses the small photo style when selected', (tester) async {
       await pumpStatusDetailView(
         tester,
         appearance: const AppearanceSettings(

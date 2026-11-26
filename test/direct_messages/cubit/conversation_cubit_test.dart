@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockDirectMessageRepository extends Mock
-    implements DirectMessageRepository {}
+    implements DirectMessageRepository;
 
 void main() {
   group(ConversationCubit, () {
@@ -284,9 +284,7 @@ void main() {
             nextPage: 2,
             historyLoadStatus: ConversationHistoryLoadStatus.inProgress,
           ),
-          ConversationLoadSuccess(
-            messages: [incomingMessage, olderMessage(1)],
-          ),
+          ConversationLoadSuccess(messages: [incomingMessage, olderMessage(1)]),
         ],
       );
 
@@ -315,9 +313,7 @@ void main() {
             nextPage: 2,
             historyLoadStatus: ConversationHistoryLoadStatus.inProgress,
           ),
-          ConversationLoadSuccess(
-            messages: [incomingMessage, olderMessage(1)],
-          ),
+          ConversationLoadSuccess(messages: [incomingMessage, olderMessage(1)]),
         ],
       );
 
@@ -444,14 +440,11 @@ void main() {
       blocTest<ConversationCubit, ConversationState>(
         'emits progress then adds the sent message to the conversation',
         setUp: () {
-          when(
-            () => directMessageRepository.sendMessage('user-b', '发送内容'),
-          ).thenAnswer((_) async => outgoingMessage);
+          when(() => directMessageRepository.sendMessage('user-b', '发送内容'))
+              .thenAnswer((_) async => outgoingMessage);
         },
         build: buildCubit,
-        seed: () => const ConversationLoadSuccess(
-          messages: [incomingMessage],
-        ),
+        seed: () => const ConversationLoadSuccess(messages: [incomingMessage]),
         act: (cubit) => cubit.sendMessage('发送内容'),
         expect: () => [
           const ConversationLoadSuccess(
@@ -463,23 +456,19 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => directMessageRepository.sendMessage('user-b', '发送内容'),
-          ).called(1);
+          verify(() => directMessageRepository.sendMessage('user-b', '发送内容'))
+              .called(1);
         },
       );
 
       blocTest<ConversationCubit, ConversationState>(
         'emits a send failure while keeping existing messages',
         setUp: () {
-          when(
-            () => directMessageRepository.sendMessage('user-b', '发送内容'),
-          ).thenThrow(const DirectMessageRepositoryUnknownFailure());
+          when(() => directMessageRepository.sendMessage('user-b', '发送内容'))
+              .thenThrow(const DirectMessageRepositoryUnknownFailure());
         },
         build: buildCubit,
-        seed: () => const ConversationLoadSuccess(
-          messages: [incomingMessage],
-        ),
+        seed: () => const ConversationLoadSuccess(messages: [incomingMessage]),
         act: (cubit) => cubit.sendMessage('发送内容'),
         expect: () => [
           const ConversationLoadSuccess(
@@ -498,9 +487,8 @@ void main() {
       blocTest<ConversationCubit, ConversationState>(
         'emits progress then removes the deleted message',
         setUp: () {
-          when(
-            () => directMessageRepository.deleteMessage('dm-2'),
-          ).thenAnswer((_) async {});
+          when(() => directMessageRepository.deleteMessage('dm-2'))
+              .thenAnswer((_) async {});
         },
         build: buildCubit,
         seed: () => const ConversationLoadSuccess(
@@ -515,9 +503,7 @@ void main() {
           const ConversationLoadSuccess(messages: [incomingMessage]),
         ],
         verify: (_) {
-          verify(() => directMessageRepository.deleteMessage('dm-2')).called(
-            1,
-          );
+          verify(() => directMessageRepository.deleteMessage('dm-2')).called(1);
         },
       );
 

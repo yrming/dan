@@ -19,7 +19,7 @@ const _showProfileFollowAction = true;
 /// Displays any user using the shared grouped account layout.
 class UserProfileView extends StatefulWidget {
   /// Creates a user profile view.
-  const UserProfileView({
+  const new({
     required this.userId,
     this.isCurrentUser = false,
     this.friendRequestCount,
@@ -121,7 +121,7 @@ class _UserProfileViewState extends State<UserProfileView> {
 }
 
 class _ProfileContent extends StatelessWidget {
-  const _ProfileContent({
+  const new({
     required this.profile,
     required this.state,
     required this.isCurrentUser,
@@ -225,9 +225,7 @@ class _ProfileContent extends StatelessWidget {
                 ),
               ),
               onFollowRequestsTap: isCurrentUser
-                  ? () => unawaited(
-                      _openFollowRequests(context),
-                    )
+                  ? () => unawaited(_openFollowRequests(context))
                   : null,
             ),
             if (state is UserProfileLoadInProgress && state.profile == null)

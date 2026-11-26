@@ -8,9 +8,7 @@ void main() {
       late md.Document document;
 
       setUp(() {
-        document = md.Document(
-          blockSyntaxes: const [DocumentMetadataSyntax()],
-        );
+        document = md.Document(blockSyntaxes: const [DocumentMetadataSyntax()]);
       });
 
       test('preserves all metadata lines and the following paragraph', () {

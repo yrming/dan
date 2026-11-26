@@ -10,7 +10,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:user_repository/user_repository.dart';
 
 class FollowRequestsPage extends StatelessWidget {
-  const FollowRequestsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

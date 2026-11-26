@@ -11,9 +11,7 @@ void main() {
     group('renders', () {
       testWidgets(
         'shows the app identity, version, copyright, and legal links',
-        (
-          tester,
-        ) async {
+        (tester) async {
           await tester.binding.setSurfaceSize(const Size(320, 640));
           addTearDown(() => tester.binding.setSurfaceSize(null));
           await tester.pumpApp(
@@ -54,9 +52,7 @@ void main() {
 
       testWidgets(
         'omits the build label when the build number is unavailable',
-        (
-          tester,
-        ) async {
+        (tester) async {
           await tester.pumpApp(
             RepositoryProvider.value(
               value: const AppBuildInfo(version: '2.3.4'),

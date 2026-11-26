@@ -299,10 +299,7 @@ void main() {
           final decoration = container.decoration! as BoxDecoration;
           expect(
             container.padding,
-            const EdgeInsetsDirectional.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
+            const EdgeInsetsDirectional.symmetric(horizontal: 12, vertical: 6),
           );
           expect(decoration.borderRadius, BorderRadius.circular(45));
           final border = (decoration.border! as Border).top;
@@ -338,10 +335,7 @@ void main() {
         final locationRect = tester.getRect(
           find.byKey(const Key('user-profile-location')),
         );
-        expect(
-          locationRect.top - registeredRect.bottom,
-          closeTo(12, 0.000001),
-        );
+        expect(locationRect.top - registeredRect.bottom, closeTo(12, 0.000001));
         expect(tester.takeException(), isNull);
       });
     }
@@ -367,9 +361,7 @@ void main() {
 
     testWidgets(
       'spaces description, URL, location, and follow summary 12 apart',
-      (
-        tester,
-      ) async {
+      (tester) async {
         await tester.pumpApp(
           const ProfileHeader(
             id: 'user-a',
@@ -406,9 +398,7 @@ void main() {
 
     testWidgets(
       'spaces the URL and follow summary 12 apart without a location',
-      (
-        tester,
-      ) async {
+      (tester) async {
         await tester.pumpApp(
           const ProfileHeader(
             id: 'user-a',
@@ -460,10 +450,7 @@ void main() {
         ),
       );
 
-      expect(
-        find.byKey(const Key('user-profile-registered-at')),
-        findsNothing,
-      );
+      expect(find.byKey(const Key('user-profile-registered-at')), findsNothing);
       expect(find.text('0 关注'), findsOneWidget);
       expect(find.text('0 粉丝'), findsOneWidget);
     });

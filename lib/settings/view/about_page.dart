@@ -10,7 +10,7 @@ import 'package:material_ui/material_ui.dart';
 /// Route boundary for application information and legal documents.
 class AboutPage extends StatelessWidget {
   /// Creates the about page.
-  const AboutPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

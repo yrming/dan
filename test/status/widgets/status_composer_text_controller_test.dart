@@ -148,9 +148,7 @@ void main() {
       for (final dark in [false, true]) {
         testWidgets(
           'preserves source highlights after prepending, dark=$dark',
-          (
-            tester,
-          ) async {
+          (tester) async {
             await pumpEditor(
               tester,
               theme: dark ? AppTheme.dark() : AppTheme.light(),
@@ -225,18 +223,19 @@ void main() {
           controller.text.substring(0, 7),
         );
         expect(
-          spans(tester, withComposing: false).any(
-            (span) => span.style?.decoration == TextDecoration.underline,
-          ),
+          spans(
+            tester,
+            withComposing: false,
+          ).any((span) => span.style?.decoration == TextDecoration.underline),
           isFalse,
         );
         controller.value = controller.value.copyWith(
           composing: TextRange.empty,
         );
         expect(
-          spans(tester).any(
-            (span) => span.style?.decoration == TextDecoration.underline,
-          ),
+          spans(
+            tester,
+          ).any((span) => span.style?.decoration == TextDecoration.underline),
           isFalse,
         );
       });

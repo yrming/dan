@@ -9,7 +9,7 @@ import 'package:material_ui/material_ui.dart';
 /// Four-tab application navigation bar owned by the authenticated shell.
 class AppBottomNavigationBar extends StatelessWidget {
   /// Creates the application navigation bar.
-  const AppBottomNavigationBar({
+  const new({
     required this.selectedTab,
     required this.onTabSelected,
     this.mentionsBadgeCount,
@@ -46,10 +46,7 @@ class AppBottomNavigationBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
-          top: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 0,
-          ),
+          top: BorderSide(color: colorScheme.outlineVariant, width: 0),
         ),
       ),
       child: SafeArea(
@@ -106,7 +103,7 @@ class AppBottomNavigationBar extends StatelessWidget {
 }
 
 class _BottomNavigationAction extends StatelessWidget {
-  const _BottomNavigationAction({
+  const new({
     required this.semanticLabel,
     required this.onTap,
     required this.selected,
@@ -126,13 +123,8 @@ class _BottomNavigationAction extends StatelessWidget {
     final visual = DecoratedBox(
       key: const Key('app-bottom-navigation-create-status-visual'),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: foregroundColor,
-          width: strokeWidth,
-        ),
-        borderRadius: BorderRadius.circular(
-          AppLayout.buttonRadius,
-        ),
+        border: Border.all(color: foregroundColor, width: strokeWidth),
+        borderRadius: BorderRadius.circular(AppLayout.buttonRadius),
       ),
       child: SizedBox(
         width: sizing.createStatusButtonWidth,
@@ -188,7 +180,7 @@ class _BottomNavigationAction extends StatelessWidget {
 }
 
 class _BottomNavigationItem extends StatelessWidget {
-  const _BottomNavigationItem({
+  const new({
     required this.semanticLabel,
     required this.tab,
     required this.selectedTab,

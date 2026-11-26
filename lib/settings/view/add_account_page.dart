@@ -9,7 +9,7 @@ import 'package:material_ui/material_ui.dart';
 /// Full-screen page for adding another authenticated account.
 class AddAccountPage extends StatelessWidget {
   /// Creates an add-account page.
-  const AddAccountPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

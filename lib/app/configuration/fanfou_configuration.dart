@@ -5,10 +5,8 @@
 /// secret on an end-user device.
 final class FanfouConfiguration {
   /// Reads consumer configuration from Dart build-time environment values.
-  factory FanfouConfiguration.fromEnvironment({
-    String consumerKey = const String.fromEnvironment(
-      'FANFOU_CONSUMER_KEY',
-    ),
+  factory fromEnvironment({
+    String consumerKey = const String.fromEnvironment('FANFOU_CONSUMER_KEY'),
     String consumerSecret = const String.fromEnvironment(
       'FANFOU_CONSUMER_SECRET',
     ),
@@ -22,10 +20,7 @@ final class FanfouConfiguration {
     );
   }
 
-  const FanfouConfiguration._({
-    required this.consumerKey,
-    required this.consumerSecret,
-  });
+  const new _({required this.consumerKey, required this.consumerSecret});
 
   /// OAuth consumer key embedded at build time.
   final String consumerKey;
@@ -40,7 +35,7 @@ final class FanfouConfiguration {
 /// Thrown when required Fanfou build-time values are missing.
 final class FanfouConfigurationException implements Exception {
   /// Creates a sanitized configuration exception.
-  const FanfouConfigurationException();
+  const new();
 
   @override
   String toString() =>

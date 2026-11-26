@@ -12,7 +12,7 @@ part 'conversation_list_state.dart';
 class ConversationListBloc
     extends Bloc<ConversationListEvent, ConversationListState> {
   /// Creates a conversation list bloc.
-  ConversationListBloc({required this._directMessageRepository})
+  new({required this._directMessageRepository})
     : super(const ConversationListState()) {
     on<ConversationListConversationOpened>(_onConversationOpened);
     on<ConversationListInitialLoadRequested>(
@@ -49,7 +49,7 @@ class ConversationListBloc
   @override
   Future<void> close() async {
     await _messageChangesSubscription.cancel();
-    return super.close();
+    return await super.close();
   }
 
   void _onConversationOpened(
@@ -74,9 +74,7 @@ class ConversationListBloc
     ConversationListInitialLoadRequested event,
     Emitter<ConversationListState> emit,
   ) async {
-    emit(
-      const ConversationListState(status: ConversationListStatus.loading),
-    );
+    emit(const ConversationListState(status: ConversationListStatus.loading));
     try {
       final page = await _fetchPage(page: 1);
       emit(_stateFromFirstPage(page));

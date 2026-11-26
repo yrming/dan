@@ -8,7 +8,7 @@ import 'package:status_repository/status_repository.dart';
 /// Home timeline page.
 class HomePage extends StatelessWidget {
   /// Creates a home page.
-  const HomePage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

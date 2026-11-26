@@ -5,7 +5,7 @@ import 'package:user_repository/user_repository.dart';
 enum BlacklistStatus { loading, success, failure }
 
 final class BlacklistState extends Equatable {
-  const BlacklistState({
+  const new({
     this.status = BlacklistStatus.loading,
     this.users = const [],
     this.loadingMore = false,
@@ -64,7 +64,7 @@ final class BlacklistState extends Equatable {
 }
 
 class BlacklistCubit extends Cubit<BlacklistState> {
-  BlacklistCubit({required this._repository}) : super(const BlacklistState());
+  new({required this._repository}) : super(const BlacklistState());
 
   final UserRepository _repository;
   int _nextPage = 1;

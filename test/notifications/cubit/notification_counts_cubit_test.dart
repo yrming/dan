@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:user_repository/user_repository.dart';
 
-class _MockUserRepository extends Mock implements UserRepository {}
+class _MockUserRepository extends Mock implements UserRepository;
 
 void main() {
   group(NotificationCountsCubit, () {
@@ -17,9 +17,8 @@ void main() {
     blocTest<NotificationCountsCubit, NotificationCountsState>(
       'loads notification counts after an account is verified',
       setUp: () {
-        when(
-          () => userRepository.getNotificationCounts(),
-        ).thenAnswer((_) async => _counts);
+        when(() => userRepository.getNotificationCounts())
+            .thenAnswer((_) async => _counts);
       },
       build: () => NotificationCountsCubit(userRepository: userRepository),
       act: (cubit) => cubit.accountChanged('account-a'),
@@ -35,9 +34,8 @@ void main() {
     blocTest<NotificationCountsCubit, NotificationCountsState>(
       'does not reload when the same account remains active',
       setUp: () {
-        when(
-          () => userRepository.getNotificationCounts(),
-        ).thenAnswer((_) async => _counts);
+        when(() => userRepository.getNotificationCounts())
+            .thenAnswer((_) async => _counts);
       },
       build: () => NotificationCountsCubit(userRepository: userRepository),
       act: (cubit) async {
@@ -64,9 +62,8 @@ void main() {
     blocTest<NotificationCountsCubit, NotificationCountsState>(
       'keeps counters unavailable when loading fails',
       setUp: () {
-        when(
-          () => userRepository.getNotificationCounts(),
-        ).thenThrow(StateError('offline'));
+        when(() => userRepository.getNotificationCounts())
+            .thenThrow(StateError('offline'));
       },
       build: () => NotificationCountsCubit(userRepository: userRepository),
       act: (cubit) => cubit.accountChanged('account-a'),

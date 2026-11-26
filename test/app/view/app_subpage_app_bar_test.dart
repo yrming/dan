@@ -34,10 +34,7 @@ void main() {
     testWidgets('removes its bottom divider when requested', (tester) async {
       await tester.pumpApp(
         const Scaffold(
-          appBar: AppSubpageAppBar(
-            title: 'Profile',
-            showBottomDivider: false,
-          ),
+          appBar: AppSubpageAppBar(title: 'Profile', showBottomDivider: false),
         ),
       );
 

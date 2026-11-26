@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+    implements AuthenticationRepository;
 
 void main() {
   group(AuthenticationBloc, () {
@@ -13,16 +13,14 @@ void main() {
 
     setUp(() {
       authenticationRepository = _MockAuthenticationRepository();
-      when(
-        () => authenticationRepository.authentication,
-      ).thenAnswer((_) => const Stream.empty());
+      when(() => authenticationRepository.authentication)
+          .thenAnswer((_) => const Stream.empty());
     });
 
     test('starts with $AuthenticationInitial', () {
       expect(
-        AuthenticationBloc(
-          authenticationRepository: authenticationRepository,
-        ).state,
+        AuthenticationBloc(authenticationRepository: authenticationRepository)
+            .state,
         const AuthenticationInitial(),
       );
     });
@@ -30,21 +28,16 @@ void main() {
     blocTest<AuthenticationBloc, AuthenticationState>(
       'emits loading then unauthenticated when no account is restored',
       setUp: () {
-        when(() => authenticationRepository.restoreAccounts()).thenAnswer(
-          (_) async => AuthenticationSnapshot.unauthenticated(),
-        );
+        when(() => authenticationRepository.restoreAccounts())
+            .thenAnswer((_) async => AuthenticationSnapshot.unauthenticated());
       },
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
       ),
-      act: (bloc) => bloc.add(
-        const AuthenticationSubscriptionRequested(),
-      ),
+      act: (bloc) => bloc.add(const AuthenticationSubscriptionRequested()),
       expect: () => <AuthenticationState>[
         const AuthenticationLoadInProgress(),
-        AuthenticationUnauthenticated(
-          AuthenticationSnapshot.unauthenticated(),
-        ),
+        AuthenticationUnauthenticated(AuthenticationSnapshot.unauthenticated()),
       ],
       verify: (_) {
         verify(() => authenticationRepository.restoreAccounts()).called(1);
@@ -65,9 +58,7 @@ void main() {
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
       ),
-      act: (bloc) => bloc.add(
-        const AuthenticationSubscriptionRequested(),
-      ),
+      act: (bloc) => bloc.add(const AuthenticationSubscriptionRequested()),
       expect: () => <AuthenticationState>[
         const AuthenticationLoadInProgress(),
         AuthenticationAuthenticated(
@@ -82,12 +73,9 @@ void main() {
     blocTest<AuthenticationBloc, AuthenticationState>(
       'emits repository authentication updates after restoration',
       setUp: () {
-        when(() => authenticationRepository.restoreAccounts()).thenAnswer(
-          (_) async => AuthenticationSnapshot.unauthenticated(),
-        );
-        when(
-          () => authenticationRepository.authentication,
-        ).thenAnswer(
+        when(() => authenticationRepository.restoreAccounts())
+            .thenAnswer((_) async => AuthenticationSnapshot.unauthenticated());
+        when(() => authenticationRepository.authentication).thenAnswer(
           (_) => Stream.value(
             AuthenticationSnapshot.authenticated(
               accounts: const [_account],
@@ -99,14 +87,10 @@ void main() {
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
       ),
-      act: (bloc) => bloc.add(
-        const AuthenticationSubscriptionRequested(),
-      ),
+      act: (bloc) => bloc.add(const AuthenticationSubscriptionRequested()),
       expect: () => <AuthenticationState>[
         const AuthenticationLoadInProgress(),
-        AuthenticationUnauthenticated(
-          AuthenticationSnapshot.unauthenticated(),
-        ),
+        AuthenticationUnauthenticated(AuthenticationSnapshot.unauthenticated()),
         AuthenticationAuthenticated(
           AuthenticationSnapshot.authenticated(
             accounts: const [_account],
@@ -119,16 +103,13 @@ void main() {
     blocTest<AuthenticationBloc, AuthenticationState>(
       'emits loading then failure when restoration throws',
       setUp: () {
-        when(
-          () => authenticationRepository.restoreAccounts(),
-        ).thenThrow(const AuthenticationStorageFailure());
+        when(() => authenticationRepository.restoreAccounts())
+            .thenThrow(const AuthenticationStorageFailure());
       },
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
       ),
-      act: (bloc) => bloc.add(
-        const AuthenticationSubscriptionRequested(),
-      ),
+      act: (bloc) => bloc.add(const AuthenticationSubscriptionRequested()),
       expect: () => const <AuthenticationState>[
         AuthenticationLoadInProgress(),
         AuthenticationRestoreFailure(),
@@ -138,17 +119,14 @@ void main() {
     blocTest<AuthenticationBloc, AuthenticationState>(
       'removes the active account when sign out is requested',
       setUp: () {
-        when(
-          () => authenticationRepository.currentAuthentication,
-        ).thenReturn(
+        when(() => authenticationRepository.currentAuthentication).thenReturn(
           AuthenticationSnapshot.authenticated(
             accounts: const [_account],
             activeAccount: _account,
           ),
         );
-        when(
-          () => authenticationRepository.removeAccount(_account.id),
-        ).thenAnswer((_) async {});
+        when(() => authenticationRepository.removeAccount(_account.id))
+            .thenAnswer((_) async {});
       },
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
@@ -156,9 +134,8 @@ void main() {
       act: (bloc) => bloc.add(const AuthenticationSignOutRequested()),
       expect: () => const <AuthenticationState>[],
       verify: (_) {
-        verify(
-          () => authenticationRepository.removeAccount(_account.id),
-        ).called(1);
+        verify(() => authenticationRepository.removeAccount(_account.id))
+            .called(1);
         verifyNever(() => authenticationRepository.removeAllAccounts());
       },
     );
@@ -166,21 +143,18 @@ void main() {
     blocTest<AuthenticationBloc, AuthenticationState>(
       'switches accounts when an account switch is requested',
       setUp: () {
-        when(
-          () => authenticationRepository.switchAccount(_account.id),
-        ).thenAnswer((_) async => _account);
+        when(() => authenticationRepository.switchAccount(_account.id))
+            .thenAnswer((_) async => _account);
       },
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
       ),
-      act: (bloc) => bloc.add(
-        const AuthenticationAccountSwitchRequested(_accountId),
-      ),
+      act: (bloc) =>
+          bloc.add(const AuthenticationAccountSwitchRequested(_accountId)),
       expect: () => const <AuthenticationState>[],
       verify: (_) {
-        verify(
-          () => authenticationRepository.switchAccount(_account.id),
-        ).called(1);
+        verify(() => authenticationRepository.switchAccount(_account.id))
+            .called(1);
       },
     );
 
@@ -188,15 +162,14 @@ void main() {
       'restores accounts again when retry is requested after a failure',
       setUp: () {
         var attempts = 0;
-        when(() => authenticationRepository.restoreAccounts()).thenAnswer((
-          _,
-        ) async {
-          attempts += 1;
-          if (attempts == 1) {
-            throw const AuthenticationStorageFailure();
-          }
-          return AuthenticationSnapshot.unauthenticated();
-        });
+        when(() => authenticationRepository.restoreAccounts())
+            .thenAnswer((_) async {
+              attempts += 1;
+              if (attempts == 1) {
+                throw const AuthenticationStorageFailure();
+              }
+              return AuthenticationSnapshot.unauthenticated();
+            });
       },
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
@@ -213,9 +186,7 @@ void main() {
         const AuthenticationLoadInProgress(),
         const AuthenticationRestoreFailure(),
         const AuthenticationLoadInProgress(),
-        AuthenticationUnauthenticated(
-          AuthenticationSnapshot.unauthenticated(),
-        ),
+        AuthenticationUnauthenticated(AuthenticationSnapshot.unauthenticated()),
       ],
       verify: (_) {
         verify(() => authenticationRepository.restoreAccounts()).called(2);

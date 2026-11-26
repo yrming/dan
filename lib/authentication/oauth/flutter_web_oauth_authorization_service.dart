@@ -13,9 +13,8 @@ typedef OAuthWebAuthenticator = Future<String> Function({
 final class FlutterWebOAuthAuthorizationService
     implements OAuthAuthorizationService {
   /// Creates the production browser authorization service.
-  FlutterWebOAuthAuthorizationService({
-    OAuthWebAuthenticator? authenticate,
-  }) : _authenticate = authenticate ?? FlutterWebAuth2.authenticate;
+  new({OAuthWebAuthenticator? authenticate})
+    : _authenticate = authenticate ?? FlutterWebAuth2.authenticate;
 
   static const _callbackScheme = 'dev.yrm.dan';
   static final _callbackUri = Uri(

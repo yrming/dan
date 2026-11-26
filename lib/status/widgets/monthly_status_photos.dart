@@ -14,7 +14,7 @@ import 'package:status_repository/status_repository.dart' as status_repository;
 
 /// Lazily builds a personal photo album grouped by calendar month.
 class MonthlyStatusPhotos extends StatelessWidget {
-  const MonthlyStatusPhotos({required this.statuses, super.key});
+  const new({required this.statuses, super.key});
 
   final List<status_repository.Status> statuses;
 
@@ -70,7 +70,7 @@ class MonthlyStatusPhotos extends StatelessWidget {
 
 /// Shared geometry for album rows and their loading placeholders.
 class MonthlyPhotoRow extends StatelessWidget {
-  const MonthlyPhotoRow({
+  const new({
     required this.children,
     this.monthLabel,
     this.yearLabel,
@@ -164,7 +164,7 @@ class MonthlyPhotoRow extends StatelessWidget {
 }
 
 class _Photo extends StatelessWidget {
-  const _Photo({required this.status, required this.gallery});
+  const new({required this.status, required this.gallery});
 
   final status_repository.Status status;
   final StatusImageGallery gallery;

@@ -7,9 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 final class SharedPreferencesAppearanceSettingsStorage
     implements AppearanceSettingsStorage {
   /// Creates a shared-preferences appearance settings store.
-  SharedPreferencesAppearanceSettingsStorage({
-    SharedPreferencesAsync? preferences,
-  }) : _preferences = preferences ?? SharedPreferencesAsync();
+  new({SharedPreferencesAsync? preferences})
+    : _preferences = preferences ?? SharedPreferencesAsync();
 
   static const _storageVersion = 1;
   static const _settingsKey = 'dan.appearance.settings';

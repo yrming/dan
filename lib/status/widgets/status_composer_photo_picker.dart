@@ -7,7 +7,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// A selected attachment with preview and removal actions.
 class StatusComposerPhotoPicker extends StatefulWidget {
-  const StatusComposerPhotoPicker({
+  const new({
     required this.photo,
     required this.isBusy,
     required this.onRemove,
@@ -46,9 +46,8 @@ class _StatusComposerPhotoPickerState extends State<StatusComposerPhotoPicker> {
 
   void _resolveImage() {
     _removeImageListener();
-    final stream = MemoryImage(
-      widget.photo.bytes,
-    ).resolve(createLocalImageConfiguration(context));
+    final stream = MemoryImage(widget.photo.bytes)
+        .resolve(createLocalImageConfiguration(context));
     final listener = ImageStreamListener(
       (info, _) {
         final size = Size(

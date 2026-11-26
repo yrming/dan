@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockDirectMessageRepository extends Mock
-    implements DirectMessageRepository {}
+    implements DirectMessageRepository;
 
 DirectMessageConversation _conversationForUser(
   int index, {
@@ -48,9 +48,8 @@ void main() {
     setUp(() {
       directMessageRepository = _MockDirectMessageRepository();
       messageChanges = StreamController<DirectMessageChange>.broadcast();
-      when(() => directMessageRepository.messageChanges).thenAnswer(
-        (_) => messageChanges.stream,
-      );
+      when(() => directMessageRepository.messageChanges)
+          .thenAnswer((_) => messageChanges.stream);
     });
 
     tearDown(() => messageChanges.close());
@@ -64,10 +63,7 @@ void main() {
     test('has an initial state of initial with no conversations', () {
       final bloc = buildBloc();
 
-      expect(
-        bloc.state,
-        equals(const ConversationListState()),
-      );
+      expect(bloc.state, equals(const ConversationListState()));
     });
 
     group('ConversationListConversationOpened', () {
@@ -148,9 +144,7 @@ void main() {
         build: buildBloc,
         act: (bloc) => bloc.add(const ConversationListInitialLoadRequested()),
         expect: () => [
-          const ConversationListState(
-            status: ConversationListStatus.loading,
-          ),
+          const ConversationListState(status: ConversationListStatus.loading),
           ConversationListState(
             status: ConversationListStatus.success,
             conversations: shortPage,
@@ -185,9 +179,7 @@ void main() {
         build: buildBloc,
         act: (bloc) => bloc.add(const ConversationListInitialLoadRequested()),
         expect: () => [
-          const ConversationListState(
-            status: ConversationListStatus.loading,
-          ),
+          const ConversationListState(status: ConversationListStatus.loading),
           ConversationListState(
             status: ConversationListStatus.success,
             conversations: fullPage,
@@ -216,9 +208,7 @@ void main() {
         build: buildBloc,
         act: (bloc) => bloc.add(const ConversationListInitialLoadRequested()),
         expect: () => [
-          const ConversationListState(
-            status: ConversationListStatus.loading,
-          ),
+          const ConversationListState(status: ConversationListStatus.loading),
           const ConversationListState(status: ConversationListStatus.empty),
         ],
       );
@@ -236,9 +226,7 @@ void main() {
         build: buildBloc,
         act: (bloc) => bloc.add(const ConversationListInitialLoadRequested()),
         expect: () => [
-          const ConversationListState(
-            status: ConversationListStatus.loading,
-          ),
+          const ConversationListState(status: ConversationListStatus.loading),
           const ConversationListState(status: ConversationListStatus.failure),
         ],
       );

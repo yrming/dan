@@ -31,10 +31,7 @@ void main() {
               width: width,
               child: SingleChildScrollView(
                 child: MomentsStatusListItem(
-                  status: _status.copyWith(
-                    createdAt: createdAt,
-                    photo: photo,
-                  ),
+                  status: _status.copyWith(createdAt: createdAt, photo: photo),
                   previousCreatedAt: previousCreatedAt,
                   now: DateTime(2026, 10, 12),
                   onStatusTap: onStatusTap,
@@ -192,9 +189,7 @@ void main() {
         },
       );
 
-      testWidgets('opens the status from its text', (
-        tester,
-      ) async {
+      testWidgets('opens the status from its text', (tester) async {
         var taps = 0;
         await pumpItem(tester, onStatusTap: () => taps++);
 
@@ -204,27 +199,24 @@ void main() {
         expect(taps, 1);
       });
 
-      testWidgets(
-        'opens the photo independently of status detail',
-        (
+      testWidgets('opens the photo independently of status detail', (
+        tester,
+      ) async {
+        var statusTaps = 0;
+        var photoTaps = 0;
+        await pumpItem(
           tester,
-        ) async {
-          var statusTaps = 0;
-          var photoTaps = 0;
-          await pumpItem(
-            tester,
-            photo: _photo,
-            onStatusTap: () => statusTaps++,
-            onPhotoTap: () => photoTaps++,
-          );
+          photo: _photo,
+          onStatusTap: () => statusTaps++,
+          onPhotoTap: () => photoTaps++,
+        );
 
-          await tester.tap(find.byType(StatusPhoto));
-          await tester.pump();
+        await tester.tap(find.byType(StatusPhoto));
+        await tester.pump();
 
-          expect(photoTaps, 1);
-          expect(statusTaps, 0);
-        },
-      );
+        expect(photoTaps, 1);
+        expect(statusTaps, 0);
+      });
     });
 
     group('responsive rendering', () {

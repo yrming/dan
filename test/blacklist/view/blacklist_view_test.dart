@@ -14,7 +14,7 @@ import 'package:user_repository/user_repository.dart';
 import '../../helpers/helpers.dart';
 
 class _MockBlacklistCubit extends MockCubit<BlacklistState>
-    implements BlacklistCubit {}
+    implements BlacklistCubit;
 
 void main() {
   group(BlacklistView, () {
@@ -117,12 +117,7 @@ void main() {
 
       expect(find.text('移出黑名单？'), findsOneWidget);
       final context = tester.element(find.byType(BlacklistView));
-      expect(
-        find.text(
-          context.l10n.confirmationDialogContent,
-        ),
-        findsOneWidget,
-      );
+      expect(find.text(context.l10n.confirmationDialogContent), findsOneWidget);
 
       await tester.tap(find.text('移出').last);
       await tester.pump();

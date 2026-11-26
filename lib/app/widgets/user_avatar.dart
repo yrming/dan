@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Displays a circular user avatar with persistent network image caching.
 class UserAvatar extends StatelessWidget {
   /// Creates a user avatar.
-  const UserAvatar({
+  const new({
     required this.imageUrl,
     required this.size,
     this.semanticLabel,
@@ -86,10 +86,7 @@ class UserAvatar extends StatelessWidget {
             ),
             child: clippedImage,
           );
-    final avatar = SizedBox.square(
-      dimension: size,
-      child: borderedImage,
-    );
+    final avatar = SizedBox.square(dimension: size, child: borderedImage);
 
     if (normalizedSemanticLabel == null || normalizedSemanticLabel.isEmpty) {
       return ExcludeSemantics(child: avatar);

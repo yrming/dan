@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Highlights status entities while preserving normal text editing and IME use.
 class StatusComposerTextController extends TextEditingController {
   /// Creates a controller with optional entity metadata from the source status.
-  StatusComposerTextController({
+  new({
     required String text,
     List<StatusTextPart> parts = const [],
     bool cursorAtStart = false,
@@ -42,9 +42,8 @@ class StatusComposerTextController extends TextEditingController {
     final match = RegExp(r'@[^\s@#，。！？；：、（）【】「」『』<>]*$').firstMatch(before);
     if (match == null) return null;
     var end = selection.end;
-    final suffix = RegExp(
-      r'^[^\s@#，。！？；：、（）【】「」『』<>]*',
-    ).firstMatch(text.substring(end));
+    final suffix = RegExp(r'^[^\s@#，。！？；：、（）【】「」『』<>]*')
+        .firstMatch(text.substring(end));
     end += suffix?.end ?? 0;
     return TextRange(start: match.start, end: end);
   }

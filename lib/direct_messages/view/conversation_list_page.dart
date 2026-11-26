@@ -10,7 +10,7 @@ import 'package:material_ui/material_ui.dart';
 /// Shell route boundary for the direct message conversation list.
 class ConversationListPage extends StatelessWidget {
   /// Creates the conversation list page.
-  const ConversationListPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
